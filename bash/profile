@@ -1,0 +1,75 @@
+# vim: set filetype=sh : */
+# ~/.profile: executed by the command interpreter for login shells.
+# This file is not read by bash(1), if ~/.bash_profile or ~/.bash_login
+# exists.
+# see /usr/share/doc/bash/examples/startup-files for examples.
+# the files are located in the bash-doc package.
+
+# the default umask is set in /etc/profile; for setting the umask
+# for ssh logins, install and configure the libpam-umask package.
+#umask 022
+
+# if running bash
+if [[ -n "$BASH_VERSION" ]]; then
+    # include .bashrc if it exists
+    if [[ -f "$HOME/.bashrc" ]]; then
+    . "$HOME/.bashrc"
+    fi
+fi
+
+function prepend_to_path()
+{
+  local _dir="${1}"
+  if [[ -d "${_dir}" ]]; then
+    PATH="${_dir}:${PATH}"
+  fi
+}
+
+function append_to_path()
+{
+  local _dir="${1}"
+  if [[ -d "${_dir}" ]]; then
+    PATH="${PATH}:${_dir}"
+  fi
+}
+
+# set PATH so it includes user's private bin directories first
+prepend_to_path "$HOME/bin"
+prepend_to_path "$HOME/.local/bin"
+
+append_to_path "/opt/bin/"
+
+# go
+append_to_path "/usr/local/go/bin"
+GOPATH="${HOME}/code/langauges/go"
+
+# rust
+append_to_path "$HOME/.cargo/bin"
+
+# nodejs
+append_to_path "$HOME/.npm-packages/bin"
+
+# java
+#
+
+function source_script()
+{
+  local _script_path="${1}"
+  [[ -f "${_script_path}" ]] && source "${_script_path}"
+}
+
+source_script "$HOME/.fzf.bash"
+source_script "$HOME/dotfiles/bash/bashrc-custom"
+source_script "$HOME/dotfiles/bash/bashrc-custom-git"
+source_script "$HOME/dotfiles/bash/powerline-go"
+source_script "$HOME/cli-tools/goto/goto.sh"
+source_script "$HOME/cli-tools/z/z.sh"
+
+# Load WSL specific bashrc if we're running in WSL.
+if [[ "$(uname -a)" =~ "Microsoft" ]]; then
+  source_script "$HOME/dotfiles/bash/bashrc-wsl"
+fi
+
+umask 002
+
+echo "`date` - profile"

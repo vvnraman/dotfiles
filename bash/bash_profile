@@ -1,0 +1,11 @@
+# vim: set filetype=sh : */
+source ~/.profile
+
+#if [[ -d "$HOME/.ssh" ]]; then
+#  for F in `find $HOME/.ssh -type f -name "id_rsa"`;
+#  do
+#    eval `keychain --eval --agents ssh ${F}`
+#  done
+#fi
+
+echo "`date` - bash_profile"

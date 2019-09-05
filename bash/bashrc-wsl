@@ -1,0 +1,7 @@
+# vim: set filetype=sh : */
+
+# Export display variable for making x11 apps work with VcXsrv on Windows
+DISPLAY="localhost:0.0"
+DOCKER_HOST="tcp://localhost:2375"
+
+echo "`date` - bashrc-wsl"

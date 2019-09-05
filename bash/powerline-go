@@ -1,0 +1,39 @@
+# vim: set filetype=sh : */
+
+if [[ ! -x "$(command -v powerline-go)" ]]; then
+  echo "powerline-go is not installed"
+  return
+fi
+
+#default modules = "nix-shell,venv,user,host,ssh,cwd,perms,git,hg,jobs,exit,root,vgo"
+MODULES="nix-shell,venv,time,user,host,ssh,cwd,perms,git,hg,jobs,exit,root,vgo"
+
+DOCUMENTS="/c/Users/vvnra/Documents"
+CODE="${DOCUMENTS}/code"
+GH="${CODE}/gh"
+DOWNLOADS="/c/Users/vvnra/Downloads"
+
+PATH_ALIASES="${DOCUMENTS}=@Documents"
+PATH_ALIASES="${PATH_ALIASES},${CODE}=@code"
+PATH_ALIASES="${PATH_ALIASES},${gh}=@gh"
+
+IGNORED_REPOS=""
+
+POWERLINE_GO="powerline-go \
+  -colorize-hostname \
+  -modules ${MODULES} \
+  -path-aliases ${PATH_ALIASES} \
+  -cwd-max-depth 7 \
+  -cwd-max-dir-size 16 \
+  -newline"
+
+
+function _update_ps1()
+{
+  PS1="$(${POWERLINE_GO} -error $?)"
+}
+if [[ "$TERM" != "linux" ]]; then
+  PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"
+fi
+
+echo "`date` - powerline-go"

@@ -19,11 +19,12 @@ augroup common
 augroup edit_python
   autocmd!
   autocmd BufNewFile,BufRead,BufEnter *.py
-      \ set tabstop=4           |
-      \ set softtabstop=4       |
-      \ set shiftwidth=4        |
-      \ set textwidth=79        |
-      \ set colorcolumn=+1      |
+      \ set tabstop=4                 |
+      \ set softtabstop=4             |
+      \ set shiftwidth=4              |
+      \ set textwidth=79              |
+      \ set colorcolumn=+1            |
+      \ let python_highlight_all=1    |
 augroup END
 
 

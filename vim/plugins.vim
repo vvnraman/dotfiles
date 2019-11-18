@@ -33,26 +33,22 @@ Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'tmux-plugins/vim-tmux'
 Plug 'mzlogin/vim-markdown-toc'
 
-" Plugin outside ~/.vim/plugged with post-update hook
+" fzf and others from the same author
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'junegunn/goyo.vim'
 
+" Save named macros
 Plug 'vvnraman/marvim'
+
+" Python
 Plug 'nvie/vim-flake8'
 
-function! BuildYCM(info)
-  " info is a dictionary with 3 fields
-  " - name:   name of the plugin
-  " - status: 'installed', 'updated', or 'unchanged'
-  " - force:  set on PlugInstall! or PlugUpdate!
-  if a:info.status == 'installed' || a:info.force
-    !./install.py --clang-completer
-  endif
-endfunction
+" golang
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
-"Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
+Plug 'ycm-core/YouCompleteMe'
 
 " Initialize plugin system
 call plug#end()
@@ -105,6 +101,10 @@ let g:ycm_filetype_blacklist = {
   \ 'infolog' : 1,
   \ 'mail' : 1
   \}
+
+let g:ycm_python_binary_path = 'python3.7'
+let g:ycm_python_interpreter_path = 'python3.7'
+let g:ycm_key_list_select_completion = []
 
 "-------------------------------------------------------------------------------
 

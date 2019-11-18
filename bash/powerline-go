@@ -8,14 +8,20 @@ fi
 #default modules = "nix-shell,venv,user,host,ssh,cwd,perms,git,hg,jobs,exit,root,vgo"
 MODULES="nix-shell,venv,time,user,host,ssh,cwd,perms,git,hg,jobs,exit,root,vgo"
 
-DOCUMENTS="/c/Users/vvnra/Documents"
-CODE="${DOCUMENTS}/code"
+CODE="${HOME}/code"
 GH="${CODE}/gh"
+
+DOCUMENTS="/c/Users/vvnra/Documents"
+WIN_CODE="${DOCUMENTS}/code"
+WIN_GH="${WIN_CODE}/gh"
 DOWNLOADS="/c/Users/vvnra/Downloads"
 
 PATH_ALIASES="${DOCUMENTS}=@Documents"
+PATH_ALIASES="${DOWNLOADS}=@Downloads"
 PATH_ALIASES="${PATH_ALIASES},${CODE}=@code"
-PATH_ALIASES="${PATH_ALIASES},${gh}=@gh"
+PATH_ALIASES="${PATH_ALIASES},${GH}=@gh"
+PATH_ALIASES="${PATH_ALIASES},${WIN_CODE}=@win-code"
+PATH_ALIASES="${PATH_ALIASES},${WIN_GH}=@win-gh"
 
 IGNORED_REPOS=""
 

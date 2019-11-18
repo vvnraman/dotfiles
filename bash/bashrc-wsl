@@ -1,7 +1,13 @@
 # vim: set filetype=sh : */
 
 # Export display variable for making x11 apps work with VcXsrv on Windows
-DISPLAY="localhost:0.0"
-DOCKER_HOST="tcp://localhost:2375"
+# WSL 1 settings
+#export DISPLAY="127.0.0.1:0.0"
+#export DOCKER_HOST="tcp://127.0.0.1:2375"
+
+# WSL 2 settings
+WINDOWS_IP="$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}')"
+unset DOCKER_HOST
+export DISPLAY="${WINDOWS_IP}:0"
 
 echo "`date` - bashrc-wsl"

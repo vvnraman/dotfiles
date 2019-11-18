@@ -9,3 +9,5 @@ source ~/.profile
 #fi
 
 echo "`date` - bash_profile"
+
+export PATH

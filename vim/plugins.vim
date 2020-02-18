@@ -102,8 +102,8 @@ let g:ycm_filetype_blacklist = {
   \ 'mail' : 1
   \}
 
-let g:ycm_python_binary_path = 'python3.7'
-let g:ycm_python_interpreter_path = 'python3.7'
+let g:ycm_python_binary_path = 'python3'
+let g:ycm_python_interpreter_path = 'python3'
 let g:ycm_key_list_select_completion = []
 
 "-------------------------------------------------------------------------------

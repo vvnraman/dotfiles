@@ -24,6 +24,21 @@ function run()
   fi
 }
 
+#==================
+# pyenv
+mkdir -p "${PYENV_ROOT}/cache"
+export PYTHON_BUILD_CACHE_PATH="${PYENV_ROOT}/cache"
+
+# Build shared python library for YouCompleteMe to work.
+export PYTHON_CONFIGURE_OPTS="--enable-shared"
+
+if $(command -v pyenv 1>/dev/null 2>&1); then
+  eval "$(pyenv init -)"
+  #eval "$(pyenv virtualenv-init -)"
+else
+  echo "pyenv is not installed"
+fi
+
 
 
 echo "`date` - bashrc-custom"

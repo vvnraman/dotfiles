@@ -47,6 +47,14 @@ append_to_path "${HOME}/.cargo/bin"
 # nodejs
 append_to_path "$HOME/.npm-packages/bin"
 
+
+export PYENV_ROOT="${HOME}/.pyenv"
+append_to_path "${PYENV_ROOT}/bin"
+append_to_path "$HOME/.poetry/bin"
+
+# developement time installed binaries
+prepend_to_path "$HOME/devbin"
+
 # java
 #
 

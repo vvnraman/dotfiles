@@ -6,9 +6,15 @@ call plug#begin('~/.vim/plugged')
 
 " Use single quotes for all arguments to Plug
 
+" Alignment
 Plug 'vim-scripts/Align'
 Plug 'godlygeek/tabular'
+
+" Movements
 Plug 'Lokaltog/vim-easymotion'
+Plug 'terryma/vim-multiple-cursors'
+
+" Status
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'edkolev/tmuxline.vim'
@@ -48,6 +54,20 @@ Plug 'nvie/vim-flake8'
 " golang
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
+" Typescript Javascript
+Plug 'leafgarland/typescript-vim'
+Plug 'pangloss/vim-javascript'
+Plug 'yuezk/vim-js'
+Plug 'maxmellon/vim-jsx-pretty'
+Plug 'prettier/vim-prettier'
+
+" HTML
+Plug 'mattn/emmet-vim'
+
+" Linters
+Plug 'dense-analysis/ale'
+
+" YouCompleteMe.
 Plug 'ycm-core/YouCompleteMe'
 
 " Initialize plugin system
@@ -215,3 +235,10 @@ let g:tmuxline_preset={
     \'y'        : ['%R', '%a', '%b', '%d'],
     \'z'        : ['#(whoami)', '#H'],
     \ }
+
+"===============================================================================
+" emmet
+"===============================================================================
+let g:user_emmet_install_global = 0
+autocmd FileType html,css  EmmetInstall
+autocmd FileType html,css imap <TAB> <plug>(emmet-expand-abbr)

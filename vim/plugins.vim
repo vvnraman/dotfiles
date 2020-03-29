@@ -13,6 +13,7 @@ Plug 'godlygeek/tabular'
 " Movements
 Plug 'Lokaltog/vim-easymotion'
 Plug 'terryma/vim-multiple-cursors'
+Plug 'justinmk/vim-sneak'
 
 " Status
 Plug 'vim-airline/vim-airline'
@@ -60,9 +61,6 @@ Plug 'pangloss/vim-javascript'
 Plug 'yuezk/vim-js'
 Plug 'maxmellon/vim-jsx-pretty'
 Plug 'prettier/vim-prettier'
-
-" HTML
-Plug 'mattn/emmet-vim'
 
 " Linters
 Plug 'dense-analysis/ale'
@@ -235,10 +233,3 @@ let g:tmuxline_preset={
     \'y'        : ['%R', '%a', '%b', '%d'],
     \'z'        : ['#(whoami)', '#H'],
     \ }
-
-"===============================================================================
-" emmet
-"===============================================================================
-let g:user_emmet_install_global = 0
-autocmd FileType html,css  EmmetInstall
-autocmd FileType html,css imap <TAB> <plug>(emmet-expand-abbr)

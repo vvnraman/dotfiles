@@ -28,8 +28,8 @@ let os=GetOS()
 "Map jj to Escape out of Insert Mode 
 inoremap jk <Esc>
 
-source ~/dotfiles/vim/functions.vim
-source ~/dotfiles/vim/plugins.vim
-source ~/dotfiles/vim/settings.vim
-source ~/dotfiles/vim/mappings.vim
-source ~/dotfiles/vim/autocommands.vim
+source ~/dot-vim/functions.vim
+source ~/dot-vim/plugins.vim
+source ~/dot-vim/settings.vim
+source ~/dot-vim/mappings.vim
+source ~/dot-vim/autocommands.vim

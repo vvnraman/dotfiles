@@ -12,25 +12,8 @@ Basic overview
 
 - Use `chezmoi`_ to manage all the workflows involved.
 
-  - Use ``chezmoi``'s templates to handle machine specific configuration.
-
-- Current chezmoi source state as of ``Sun Apr 12 13:41:19 2020 EST``
-
-  .. code-block:: sh
-
-     ├── Readme.rst
-     ├── dot-bash
-     ├── dot-tmux
-     ├── dot-vim
-     ├── symlink_dot_bash_profile
-     ├── symlink_dot_bashrc
-     ├── symlink_dot_profile
-     ├── symlink_dot_tmux.conf
-     └── symlink_dot_vimrc
-
-  - Get time in vim via ``:put =strftime('%c')``
-
-  - Get directory tree via ``tree -L 1``
+  Use `chezmoi's templates <#chezmoi-templates>`_ to handle machine specific
+  configuration.
 
 Update workflow
 ===============
@@ -57,6 +40,26 @@ any terms below.
 
 - Use ``-n|--dry-run`` and ``-v|--verbose`` after ``chezmoi`` in the above
   commands if scared.
+
+- For any of the symlinks, ``chezmoi dump ~/<target>`` to see what ``chezmoi``
+  is modelling it as. eg:
+
+  .. code-block:: sh
+
+     $ chezmoi dump ~/.bash_profile
+     [
+       {
+         "type": "symlink",
+         "sourcePath": "/home/vvnraman/.local/share/chezmoi/symlink_dot_bash_profile",
+         "targetPath": ".bash_profile",
+         "template": false,
+         "linkname": "dot-bash/bash_profile"
+       }
+     ]
+
+
+  Avoid using this for non-symlinks, as the output is either json or yaml and
+  not human readable.
 
 First time setup
 ================
@@ -89,8 +92,31 @@ First time setup
      chezmoi diff     # optional to see the subsequent changes
      chezmoi apply
 
-Concepts
-********
+chezmoi docs
+************
+
+chezmoi misc
+============
+
+- Version
+
+  .. code-block:: sh
+
+     chezmoi --version
+     chezmoi version 1.7.19, commit c4dd79633ab5d7263146128847f2b429f0603c55, built at 2020-04-06T21:58:02Z, built by goreleaser
+
+- Upgrade
+
+  .. code-block:: sh
+
+     chezmoi upgrade
+
+- Completion script
+
+  .. code-block:: sh
+
+     chezmoi completion bash > ~/chezmoi-completion.bash
+     sudo mv ~/chezmoi-completion.bash /etc/bash_compltion.d/
 
 chezmoi terminology
 ===================
@@ -118,6 +144,60 @@ https://github.com/twpayne/chezmoi/blob/master/docs/REFERENCE.md#concepts
 
 - machine-specific configuration is present in a config file at
   ``$HOME/.config/chezmoi/chezmoi.toml``
+
+chezmoi templates
+=================
+
+Visit
+https://github.com/twpayne/chezmoi/blob/master/docs/REFERENCE.md#template-variables
+for latest info.
+
+- Use ``chezmoi execute-template`` to see the result for the current machine,
+  eg:
+
+  .. code-block:: sh
+
+     chezmoi execute-template '{{ .chezmoi.sourceDir }}'
+     chezmoi execute-template '{{ .chezmoi.os }}' / '{{ .chezmoi.arch }}'
+
+- The following is a json snapshot indicating the valid template fields as of
+  ``Sun Apr 12 15:07:57 2020 EST``
+
+  .. code-block:: json
+
+     {
+       "chezmoi": {
+         "arch": "amd64",
+         "fullHostname": "USH-LP19-RIX1",
+         "group": "vvnraman",
+         "homedir": "/home/vvnraman",
+         "hostname": "USH-LP19-RIX1",
+         "kernel": {
+           "osrelease": "4.19.84-microsoft-standard",
+           "ostype": "Linux",
+           "version": "#1 SMP Wed Nov 13 11:44:37 UTC 2019"
+         },
+         "os": "linux",
+         "osRelease": {
+           "bugReportURL": "https://bugs.launchpad.net/ubuntu/",
+           "homeURL": "https://www.ubuntu.com/",
+           "id": "ubuntu",
+           "idLike": "debian",
+           "name": "Ubuntu",
+           "prettyName": "Ubuntu 18.04.4 LTS",
+           "privacyPolicyURL": "https://www.ubuntu.com/legal/terms-and-policies/privacy-policy",
+           "supportURL": "https://help.ubuntu.com/",
+           "ubuntuCodename": "bionic",
+           "version": "18.04.4 LTS (Bionic Beaver)",
+           "versionCodename": "bionic",
+           "versionID": "18.04"
+         },
+         "sourceDir": "/home/vvnraman/.local/share/chezmoi",
+         "username": "vvnraman"
+       }
+     }
+
+  - Created via ``chezmoi data``
 
 Pre-requisites
 **************

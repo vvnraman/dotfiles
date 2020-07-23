@@ -70,7 +70,7 @@ nnoremap <A-u> viwU
 nnoremap <A-l> viwu
 
 " Quickly open VIMRC in a vertical split
-nnoremap <leader>ev :tabe $HOME/dotfiles/vim/settings.vim<Cr>
+nnoremap <leader>ev :tabe $HOME/.local/share/chezmoi/dot-vim/plugins.vim<Cr>
 " Quickly source VIMRC to apply settings
 nnoremap <leader>sv :source $MYVIMRC<Cr>
 

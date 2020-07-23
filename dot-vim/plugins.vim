@@ -124,6 +124,9 @@ let g:ycm_python_binary_path = 'python3'
 let g:ycm_python_interpreter_path = 'python3'
 let g:ycm_key_list_select_completion = []
 
+" Make the auto-complete window go away when we're done with it.
+let g:ycm_autoclose_window_after_completion=1
+
 "-------------------------------------------------------------------------------
 
 "===============================================================================

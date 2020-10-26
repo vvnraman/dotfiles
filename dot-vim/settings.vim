@@ -152,3 +152,8 @@ set lazyredraw
 
 ""100 command line editing history
 set history=100
+
+" default updatetime 4000ms is not good for async update
+" This is specially needed for vim-signify
+set updatetime=100
+

@@ -15,11 +15,15 @@ Plug 'Lokaltog/vim-easymotion'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'justinmk/vim-sneak'
 
+" Zig
+Plug 'ziglang/zig.vim'
+
 " Status
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'edkolev/tmuxline.vim'
 
+" tpope plugins
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-markdown'
@@ -32,6 +36,11 @@ Plug 'tomtom/tlib_vim'
 Plug 'garbas/vim-snipmate'
 Plug 'honza/vim-snippets'
 Plug 'SirVer/ultisnips'
+
+" Uses the sign column to indicate added, modified and removed lines in a file
+" under version control
+" - async execution
+Plug 'mhinz/vim-signify'
 
 Plug 'scrooloose/nerdcommenter'
 Plug 'kien/rainbow_parentheses.vim'
@@ -139,15 +148,6 @@ let g:ycm_autoclose_window_after_completion=1
 "" " C++
 "" let g:syntastic_cpp_check_header = 1
 "" let g:syntastic_cpp_checkers=['g++']
-"-------------------------------------------------------------------------------
-
-"===============================================================================
-" Git gutter settings, too slow, disable.
-"===============================================================================
-let g:gitgutter_enabled = 0
-"let g:gitgutter_signs = 0
-"let g:gitgutter_realtime = 0
-"let g:gitgutter_eager = 0
 "-------------------------------------------------------------------------------
 
 "===============================================================================

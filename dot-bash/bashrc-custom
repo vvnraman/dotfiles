@@ -24,7 +24,19 @@ function run()
   fi
 }
 
-#==================
+#===============================================================================
+# cmake
+export CMAKE_GENERATOR=Ninja
+export CMAKE_BUILD_PARALLEL_LEVEL=8
+export CMAKE_EXPORT_COMPILE_COMMANDS=1
+#------------------------------------------------------------------------------
+
+#===============================================================================
+# vcpkg
+export VCPKG_ROOT="${HOME}/code/tools/vcpkg"
+#------------------------------------------------------------------------------
+
+#===============================================================================
 # pyenv
 mkdir -p "${PYENV_ROOT}/cache"
 export PYTHON_BUILD_CACHE_PATH="${PYENV_ROOT}/cache"
@@ -38,7 +50,6 @@ if $(command -v pyenv 1>/dev/null 2>&1); then
 else
   echo "pyenv is not installed"
 fi
-
-
+#------------------------------------------------------------------------------
 
 echo "`date` - bashrc-custom"

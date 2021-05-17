@@ -79,4 +79,6 @@ fi
 
 umask 002
 
-echo "`date` - profile"
+log_stamp=$(date +"%G-week-%V")
+log_file="${HOME}/.bash-load/log-${log_stamp}.log"
+echo "`date` - profile" >> "${log_file}"

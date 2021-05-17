@@ -55,6 +55,9 @@ Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'junegunn/goyo.vim'
 
+" grep
+Plug 'mhinz/vim-grepper'
+
 " Save named macros
 Plug 'vvnraman/marvim'
 
@@ -76,6 +79,10 @@ Plug 'dense-analysis/ale'
 
 " YouCompleteMe.
 Plug 'ycm-core/YouCompleteMe'
+
+if has('nvim')
+  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+endif
 
 " Initialize plugin system
 call plug#end()
@@ -236,3 +243,53 @@ let g:tmuxline_preset={
     \'y'        : ['%R', '%a', '%b', '%d'],
     \'z'        : ['#(whoami)', '#H'],
     \ }
+
+"===============================================================================
+" ale settings
+"_______________________________________________________________________________
+" TBD
+"-------------------------------------------------------------------------------
+
+"===============================================================================
+" vim-grepper setting
+"_______________________________________________________________________________
+let g:grepper = {}
+
+" This allows us to easily use any one of these
+let g:grepper.tools=['git', 'rg', 'grep']
+" Use :GrepperGit or :GrepperRg or :GrepperGrep
+
+" search for current word
+nnoremap <Leader>* :Grepper -cword -noprompt<CR>
+
+" search for the current selection
+nmap gs <plug>(GrepperOperator)
+xmap gs <plug>(GrepperOperator)
+
+" oen grepper-prompt for a particular grep-alike tool
+nnoremap <Leader>g :Grepper -tool git<CR>
+nnoremap <Leader>G :Grepper -tool rg<CR>
+
+" To inspect tool specific setting being used by grepper
+" :echo g:grepper.rg.grepprg
+" :echo g:grepper.rg.grepformat
+" :echo g:grepper.rg.escape
+
+"-------------------------------------------------------------------------------
+
+"===============================================================================
+" snip setting
+" - 2021-05-23
+"   - 0 was the default, now deprecated. Setting to 1 (or 0) addresses the
+"     deprecation warning
+"_______________________________________________________________________________
+let g:snipMate = { 'snippet_version' : 1 }
+
+"-------------------------------------------------------------------------------
+
+"===============================================================================
+" Template: <Plugin> setting
+"_______________________________________________________________________________
+" TBD
+"-------------------------------------------------------------------------------
+

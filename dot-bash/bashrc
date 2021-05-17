@@ -114,8 +114,12 @@ fi
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
-echo "`date` - bashrc"
-
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+log_stamp=$(date +"%G-week-%V") # 2021-week-20
+mkdir -p "${HOME}/.bash-load"
+log_file="${HOME}/.bash-load/log-${log_stamp}.log"
+echo "`date` - bashrc" >> "${log_file}"
+

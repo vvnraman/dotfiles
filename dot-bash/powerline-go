@@ -42,4 +42,6 @@ if [[ "$TERM" != "linux" ]]; then
   PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"
 fi
 
-echo "`date` - powerline-go"
+log_stamp=$(date +"%G-week-%V")
+log_file="${HOME}/.bash-load/log-${log_stamp}.log"
+echo "`date` - powerline-go" >> "${log_file}"

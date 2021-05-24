@@ -10,4 +10,6 @@ WINDOWS_IP="$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}')"
 unset DOCKER_HOST
 export DISPLAY="${WINDOWS_IP}:0"
 
-echo "`date` - bashrc-wsl"
+log_stamp=$(date +"%G-week-%V")
+log_file="${HOME}/.bash-load/log-${log_stamp}.log"
+echo "`date` - bashrc-wsl" >> "${log_file}"

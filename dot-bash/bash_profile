@@ -8,6 +8,8 @@ source ~/.profile
 #  done
 #fi
 
-echo "`date` - bash_profile"
+log_stamp=$(date +"%G-week-%V")
+log_file="${HOME}/.bash-load/log-${log_stamp}.log"
+echo "`date` - bash_profile" >> "${log_file}"
 
 export PATH

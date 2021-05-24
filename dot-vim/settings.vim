@@ -1,10 +1,12 @@
 " Enable modeline for individual file specific settings"
 set modeline
 
-" Force 256 color
-set term=screen-256color
-set t_Co=256
-set t_ut=
+if !has('nvim')
+  " Force 256 color
+  set term=screen-256color
+  set t_Co=256
+  set t_ut=
+endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface

@@ -30,8 +30,8 @@ function append_to_path()
 }
 
 # set PATH so it includes user's private bin directories first
-prepend_to_path "$HOME/.local/bin"
-prepend_to_path "$HOME/bin"
+prepend_to_path "${HOME}/.local/bin"
+prepend_to_path "${HOME}/bin"
 
 append_to_path "/opt/bin/"
 
@@ -40,6 +40,7 @@ append_to_path "${HOME}/.poetry/bin"
 
 # golang
 append_to_path "/usr/local/go/bin"
+append_to_path "${HOME}/go/bin"
 export GO111MODULE=on
 
 # rust
@@ -57,7 +58,7 @@ append_to_path "$HOME/.poetry/bin"
 prepend_to_path "$HOME/devbin"
 
 # java
-#
+append_to_path "${HOME}/lang-tools/java/jdk-16.0.1/bin"
 
 function source_script()
 {

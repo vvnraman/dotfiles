@@ -41,7 +41,6 @@ append_to_path "${HOME}/.poetry/bin"
 # golang
 append_to_path "/usr/local/go/bin"
 append_to_path "${HOME}/go/bin"
-export GO111MODULE=on
 
 # rust
 append_to_path "${HOME}/.cargo/bin"

@@ -30,6 +30,7 @@ Plug 'tpope/vim-markdown'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-ragtag'
 Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-obsession'
 
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'tomtom/tlib_vim'
@@ -40,7 +41,7 @@ Plug 'SirVer/ultisnips'
 " Uses the sign column to indicate added, modified and removed lines in a file
 " under version control
 " - async execution
-Plug 'mhinz/vim-signify'
+" Plug 'mhinz/vim-signify'
 
 Plug 'scrooloose/nerdcommenter'
 Plug 'kien/rainbow_parentheses.vim'

@@ -58,9 +58,6 @@ export PYTHON_CONFIGURE_OPTS="--enable-shared"
 
 if $(command -v pyenv 1>/dev/null 2>&1); then
   eval "$(pyenv init -)"
-  #eval "$(pyenv virtualenv-init -)"
-else
-  echo "pyenv is not installed"
 fi
 #------------------------------------------------------------------------------
 

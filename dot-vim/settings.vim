@@ -113,6 +113,7 @@ set textwidth=80
 set colorcolumn=+1,100
 set autoindent
 set smartindent
+set autoread
 
 " Commenting this out as it is not compatible with vi"
 " folding

@@ -85,6 +85,11 @@ if has('nvim')
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 endif
 
+" QFEnter
+" - Added 2022-03-27 to help with opening results from the quickfix window into
+"   a split/vsplit/tab
+Plug 'yssl/QFEnter'
+
 " Initialize plugin system
 call plug#end()
 
@@ -256,8 +261,10 @@ let g:tmuxline_preset={
 "_______________________________________________________________________________
 let g:grepper = {}
 
+let g:grepper.dir = 'repo,file'
+
 " This allows us to easily use any one of these
-let g:grepper.tools=['git', 'rg', 'grep']
+let g:grepper.tools=['rg', 'git', 'grep']
 " Use :GrepperGit or :GrepperRg or :GrepperGrep
 
 " search for current word
@@ -268,8 +275,8 @@ nmap gs <plug>(GrepperOperator)
 xmap gs <plug>(GrepperOperator)
 
 " oen grepper-prompt for a particular grep-alike tool
-nnoremap <Leader>g :Grepper -tool git<CR>
-nnoremap <Leader>G :Grepper -tool rg<CR>
+nnoremap <Leader>g :Grepper -tool rg<CR>
+nnoremap <Leader>G :Grepper -tool git<CR>
 
 " To inspect tool specific setting being used by grepper
 " :echo g:grepper.rg.grepprg

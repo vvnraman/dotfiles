@@ -84,6 +84,11 @@ if $(command -v pyenv 1>/dev/null 2>&1); then
   eval "$(pyenv init --path)"
 fi
 
+# Adds npm shims to path for fnm
+if $(command -v fnm 1>/dev/null 2>&1); then
+  eval "$(fnm env --use-on-cd)"
+fi
+
 log_stamp=$(date +"%G-week-%V")
 log_file="${HOME}/.bash-load/log-${log_stamp}.log"
 echo "`date` - profile" >> "${log_file}"

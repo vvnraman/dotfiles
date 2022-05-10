@@ -1,1 +1,6 @@
 Readme.rst
+dot_config/nvim/dot_git/
+dot_config/nvim/plugin/
+docs/
+pyproject.toml
+poetry.lock

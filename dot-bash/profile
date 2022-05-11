@@ -67,6 +67,7 @@ function source_script()
 
 # source_script "$HOME/.fzf.bash" # FZF adds itself to .bashrc
 source_script "$HOME/dot-bash/bashrc-custom"
+source_script "$HOME/dot-bash/bashrc-custom-machine"
 source_script "$HOME/dot-bash/bashrc-custom-git"
 source_script "$HOME/dot-bash/powerline-go"
 source_script "$HOME/cli-tools/goto/goto.sh"

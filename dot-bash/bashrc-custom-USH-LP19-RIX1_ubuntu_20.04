@@ -12,4 +12,4 @@ export DISPLAY="${WINDOWS_IP}:0"
 
 log_stamp=$(date +"%G-week-%V")
 log_file="${HOME}/.bash-load/log-${log_stamp}.log"
-echo "`date` - bashrc-wsl" >> "${log_file}"
+echo "`date` - bashrc-custom-USH-LP19-RIX1_ubuntu_20.04" >> "${log_file}"

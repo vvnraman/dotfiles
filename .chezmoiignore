@@ -6,3 +6,6 @@ pyproject.toml
 poetry.lock
 README.rst
 Makefile
+{{ if ne .chezmoi.hostname "USH-LP19-RIX1" }}
+.gitconfig_USH-LP19-RIX1
+{{ end }}

@@ -68,21 +68,28 @@ for latest info.
      chezmoi execute-template '{{ .chezmoi.os }}' / '{{ .chezmoi.arch }}'
 
 - The following is a json snapshot indicating the valid template fields as of
-  ``Sun Apr 12 15:07:57 2020 EST``
+  ``Tuesday, May 05 21:02:17 2022 EST``
 
   .. code-block:: json
 
      {
        "chezmoi": {
          "arch": "amd64",
-         "fullHostname": "USH-LP19-RIX1",
+         "args": [
+           "chezmoi",
+           "data"
+         ],
+         "cacheDir": "/home/vvnraman/.cache/chezmoi",
+         "configFile": "/home/vvnraman/.config/chezmoi/chezmoi.toml",
+         "executable": "/home/vvnraman/bin/chezmoi",
+         "fqdnHostname": "USH-LP19-RIX1.",
          "group": "vvnraman",
-         "homedir": "/home/vvnraman",
+         "homeDir": "/home/vvnraman",
          "hostname": "USH-LP19-RIX1",
          "kernel": {
-           "osrelease": "4.19.84-microsoft-standard",
+           "osrelease": "5.10.102.1-microsoft-standard-WSL2",
            "ostype": "Linux",
-           "version": "#1 SMP Wed Nov 13 11:44:37 UTC 2019"
+           "version": "#1 SMP Wed Mar 2 00:30:59 UTC 2022"
          },
          "os": "linux",
          "osRelease": {
@@ -91,16 +98,23 @@ for latest info.
            "id": "ubuntu",
            "idLike": "debian",
            "name": "Ubuntu",
-           "prettyName": "Ubuntu 18.04.4 LTS",
+           "prettyName": "Ubuntu 20.04.4 LTS",
            "privacyPolicyURL": "https://www.ubuntu.com/legal/terms-and-policies/privacy-policy",
            "supportURL": "https://help.ubuntu.com/",
-           "ubuntuCodename": "bionic",
-           "version": "18.04.4 LTS (Bionic Beaver)",
-           "versionCodename": "bionic",
-           "versionID": "18.04"
+           "ubuntuCodename": "focal",
+           "version": "20.04.4 LTS (Focal Fossa)",
+           "versionCodename": "focal",
+           "versionID": "20.04"
          },
          "sourceDir": "/home/vvnraman/.local/share/chezmoi",
-         "username": "vvnraman"
+         "username": "vvnraman",
+         "version": {
+           "builtBy": "goreleaser",
+           "commit": "462e547efc45432edd6fc9b13bd97a7e51e37f58",
+           "date": "2022-04-10T17:54:04Z",
+           "version": "2.15.1"
+         },
+         "workingTree": "/home/vvnraman/.local/share/chezmoi"
        }
      }
 

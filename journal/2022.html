@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2022 May &mdash; vvnraman&#39;s dotfiles 0.1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="How To Guides" href="../how-to/index.html" />
+    <link rel="prev" title="Journal" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> vvnraman's dotfiles
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro/index.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Journal</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">2022 May</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tuesday">2022-05-10 - Tuesday</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#monday">2022-05-09 - Monday</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sunday">2022-05-01 - Sunday</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#saturday">2022-04-16 - Saturday</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/index.html">How To Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explanation/index.html">Explanation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">vvnraman's dotfiles</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Journal</a> &raquo;</li>
+      <li>2022 May</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/journal/2022.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="may">
+<h1>2022 May<a class="headerlink" href="#may" title="Permalink to this headline"></a></h1>
+<section id="tuesday">
+<h2>2022-05-10 - Tuesday<a class="headerlink" href="#tuesday" title="Permalink to this headline"></a></h2>
+<ul>
+<li><p>Made vim to be provided by neovim</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>sudo update-alternatives --install /usr/bin/vim vim /home/vvnraman/bin/nvim <span class="m">100</span>
+</pre></div>
+</div>
+<p>Also set <code class="docutils literal notranslate"><span class="pre">$EDITOR</span></code> to <code class="docutils literal notranslate"><span class="pre">vim</span></code> in <code class="docutils literal notranslate"><span class="pre">.bashrc-custom</span></code> so that <strong class="program">git</strong>
+uses it. <strong class="program">vi</strong> is still provided <code class="docutils literal notranslate"><span class="pre">vim.gtk</span></code>.</p>
+</li>
+<li><p>Installed <strong class="program">gitui</strong></p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>mkdir ~/cli-tools/downloads/gitui <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ~/cli-tools/downloads/gitui
+mkdir v0.20.1 <span class="o">&amp;&amp;</span> <span class="nb">cd</span> v0.20.1
+curl --fail --location --remote-name <span class="se">\</span>
+   https://github.com/extrawurst/gitui/releases/download/v0.20.1/gitui-linux-musl.tar.gz
+tar --extract --file gitui-linux-musl.tar.gz
+ln -s <span class="k">$(</span>readlink -f ./gitui<span class="k">)</span> ~/bin/
+</pre></div>
+</div>
+</li>
+<li><p>Installed <strong class="program">nnn</strong></p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>mkdir ~/cli-tools/downloads/nnn/v4.5/
+<span class="nb">cd</span> ~/cli-tools/downloads/nnn/v4.5/
+curl --fail --location --remote-name <span class="se">\</span>
+   https://github.com/jarun/nnn/releases/download/v4.5/nnn-nerd-static-4.5.x86_64.tar.gz
+tar --extract --file nnn-nerd-static-4.5.x86_64.tar.gz
+ln -s <span class="k">$(</span>readlink -f ./nnn-nerd-static<span class="k">)</span> ~/bin/n
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="monday">
+<h2>2022-05-09 - Monday<a class="headerlink" href="#monday" title="Permalink to this headline"></a></h2>
+<p>Refactored standalong neovim configuration in lua to be more modular.</p>
+<p>Next step is to subsume it in the dotfiles repo managed by <strong class="program">chezmoi</strong>.
+I’ll most likely keep this repo alive as well.</p>
+<p>Installed a few more command line tools for <code class="docutils literal notranslate"><span class="pre">null-ls</span></code>.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pipx install black
+pipx install isort
+pipx install flake8
+</pre></div>
+</div>
+<p>There are a couple of command line tools left to be installed.</p>
+</section>
+<hr class="docutils" />
+<section id="sunday">
+<h2>2022-05-01 - Sunday<a class="headerlink" href="#sunday" title="Permalink to this headline"></a></h2>
+<ul>
+<li><p>I had setup <code class="docutils literal notranslate"><span class="pre">fnm</span></code> already from <a class="reference external" href="https://github.com/Schniz/fnm">https://github.com/Schniz/fnm</a>. This is
+a node version manager written in Rust.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>readlink -f <span class="k">$(</span>which fnm<span class="k">)</span>
+<span class="c1"># /home/vvnraman/cli-tools/downloads/fnm/fnm-v1.31.0/fnm</span>
+</pre></div>
+</div>
+<p>Installed the latest node using it</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>fnm install --lts
+<span class="gp"># </span>Installed Node v16.15.0
+</pre></div>
+</div>
+<p>We need node for a few language servers which will install using
+<code class="docutils literal notranslate"><span class="pre">nvim-lsp-installer</span></code></p>
+</li>
+<li><p>Installed mermaid cli, this is just for having mermaid diagrams in sphinx
+(which we are using for these docs), not related to <code class="docutils literal notranslate"><span class="pre">neovim</span></code></p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>npm install -g mermaid.cli
+</pre></div>
+</div>
+</li>
+<li><p>Installed <code class="docutils literal notranslate"><span class="pre">stylua</span></code> for formatting lua codebase (neovim config)</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>curl --fail --location --remote-name https://github.com/JohnnyMorganz/StyLua/releases/download/v0.13.1/stylua-linux.zip
+unzip stylua-linux.zip
+chmod +x stylua
+ln -s <span class="k">$(</span>readlink -f stylua<span class="k">)</span> ~/bin/stylua
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="saturday">
+<h2>2022-04-16 - Saturday<a class="headerlink" href="#saturday" title="Permalink to this headline"></a></h2>
+<p>Setting up neovim with my dotfiles</p>
+<ul>
+<li><p>For true colour support</p>
+<ul>
+<li><p>Removed the following from my <code class="docutils literal notranslate"><span class="pre">.bashrc</span></code></p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">TERM</span><span class="o">=</span><span class="s2">&quot;xterm-256color&quot;</span>
+</pre></div>
+</div>
+<p>This is not required as Windows Terminal already supports true colour by
+emulating the <code class="docutils literal notranslate"><span class="pre">xterm-256color</span></code> sequences.</p>
+</li>
+<li><p>Added the following in <code class="docutils literal notranslate"><span class="pre">.tmux.conf</span></code></p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>set-option -sa terminal-overrides <span class="s1">&#39;,xterm-256color:RGB&#39;</span>
+</pre></div>
+</div>
+<p>There was already the following line in there</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>set-option -g default-terminal <span class="s2">&quot;screen-256color&quot;</span>
+</pre></div>
+</div>
+<p>This tells tmux that the terminal outside it supports true colour. This is
+important as this sets the right term variable for programs running within
+<code class="docutils literal notranslate"><span class="pre">tmux</span></code>, notably our <code class="docutils literal notranslate"><span class="pre">neovim</span></code> instance.</p>
+</li>
+<li><p>Tell <code class="docutils literal notranslate"><span class="pre">neovim</span></code> that we do have true colour support</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>vim.opt.termguicolors <span class="o">=</span> <span class="nb">true</span>
+</pre></div>
+</div>
+</li>
+<li><p>Kill tmux server and restart for the changes to take effect.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Journal" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../how-to/index.html" class="btn btn-neutral float-right" title="How To Guides" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Prateek Raman.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

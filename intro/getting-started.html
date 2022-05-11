@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Getting Started &mdash; vvnraman&#39;s dotfiles 0.1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Pre-requisites" href="pre-requisites.html" />
+    <link rel="prev" title="vvnraman’s dotfiles" href="overview.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> vvnraman's dotfiles
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Introduction</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="overview.html">vvnraman’s dotfiles</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Getting Started</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#basic-overview">Basic overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#update-workflow">Update workflow</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pre-requisites.html">Pre-requisites</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../journal/index.html">Journal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/index.html">How To Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explanation/index.html">Explanation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">vvnraman's dotfiles</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Introduction</a> &raquo;</li>
+      <li>Getting Started</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/intro/getting-started.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="getting-started">
+<span id="id1"></span><h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline"></a></h1>
+<section id="basic-overview">
+<h2>Basic overview<a class="headerlink" href="#basic-overview" title="Permalink to this headline"></a></h2>
+<ul>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">git</span></code> to version files and directories present in <code class="docutils literal notranslate"><span class="pre">$HOME</span></code> folder,
+henceforth called <code class="docutils literal notranslate"><span class="pre">dotfiles</span></code>.</p></li>
+<li><p>Use <a class="reference external" href="https://github.com/twpayne/chezmoi">chezmoi</a> to manage all the workflows involved.</p>
+<p>Use <a class="reference external" href="#chezmoi-templates">chezmoi’s templates</a> to handle machine specific
+configuration.</p>
+</li>
+</ul>
+</section>
+<section id="update-workflow">
+<h2>Update workflow<a class="headerlink" href="#update-workflow" title="Permalink to this headline"></a></h2>
+<p>See the <a class="reference external" href="#chezmoi-terminology">chezmoi’s terms</a> section for explanations of
+any terms below.</p>
+<ul>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">$(chezmoi</span> <span class="pre">source-path)</span></code> to navigate to the <strong>source directory</strong>.</p>
+<p>This is currently <code class="docutils literal notranslate"><span class="pre">$HOME/.local/share/chezmoi</span></code>.</p>
+</li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">chezmoi</span> <span class="pre">edit</span> <span class="pre">$HOME/&lt;target&gt;</span></code> to edit the corresponding <code class="docutils literal notranslate"><span class="pre">&lt;target&gt;</span></code> as
+present in the <strong>source directory</strong>.</p></li>
+<li><p>Use a git branch for significant changes to <strong>source state</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">branch</span> <span class="pre">-b</span> <span class="pre">updates</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">chezmoi</span> <span class="pre">diff</span></code> to see what will change</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">chezmoi</span> <span class="pre">apply</span></code> to update <strong>destination state</strong> in <code class="docutils literal notranslate"><span class="pre">$HOME</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">checkout</span> <span class="pre">master</span></code> to reset everything back in case of disaster.</p></li>
+</ul>
+</li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">-n|--dry-run</span></code> and <code class="docutils literal notranslate"><span class="pre">-v|--verbose</span></code> after <code class="docutils literal notranslate"><span class="pre">chezmoi</span></code> in the above
+commands if scared.</p></li>
+<li><p>For any of the symlinks, <code class="docutils literal notranslate"><span class="pre">chezmoi</span> <span class="pre">dump</span> <span class="pre">~/&lt;target&gt;</span></code> to see what <code class="docutils literal notranslate"><span class="pre">chezmoi</span></code>
+is modelling it as. eg:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$ chezmoi dump ~/.bash_profile
+<span class="o">[</span>
+  <span class="o">{</span>
+    <span class="s2">&quot;type&quot;</span>: <span class="s2">&quot;symlink&quot;</span>,
+    <span class="s2">&quot;sourcePath&quot;</span>: <span class="s2">&quot;/home/vvnraman/.local/share/chezmoi/symlink_dot_bash_profile&quot;</span>,
+    <span class="s2">&quot;targetPath&quot;</span>: <span class="s2">&quot;.bash_profile&quot;</span>,
+    <span class="s2">&quot;template&quot;</span>: false,
+    <span class="s2">&quot;linkname&quot;</span>: <span class="s2">&quot;dot-bash/bash_profile&quot;</span>
+  <span class="o">}</span>
+<span class="o">]</span>
+</pre></div>
+</div>
+<p>Avoid using this for non-symlinks, as the output is either json or yaml and
+not human readable.</p>
+</li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="overview.html" class="btn btn-neutral float-left" title="vvnraman’s dotfiles" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pre-requisites.html" class="btn btn-neutral float-right" title="Pre-requisites" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Prateek Raman.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

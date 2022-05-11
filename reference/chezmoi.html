@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chezmoi concepts &mdash; vvnraman&#39;s dotfiles 0.1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Reference" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> vvnraman's dotfiles
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../journal/index.html">Journal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/index.html">How To Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explanation/index.html">Explanation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Chezmoi concepts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#chezmoi-misc">chezmoi misc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chezmoi-terminology">chezmoi terminology</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">vvnraman's dotfiles</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Reference</a> &raquo;</li>
+      <li>Chezmoi concepts</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/reference/chezmoi.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="chezmoi-concepts">
+<h1>Chezmoi concepts<a class="headerlink" href="#chezmoi-concepts" title="Permalink to this headline"></a></h1>
+<section id="chezmoi-misc">
+<h2>chezmoi misc<a class="headerlink" href="#chezmoi-misc" title="Permalink to this headline"></a></h2>
+<ul>
+<li><p>Version</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>chezmoi --version
+chezmoi version <span class="m">1</span>.7.19, commit c4dd79633ab5d7263146128847f2b429f0603c55, built at <span class="m">2020</span>-04-06T21:58:02Z, built by goreleaser
+</pre></div>
+</div>
+</li>
+<li><p>Upgrade</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>chezmoi upgrade
+</pre></div>
+</div>
+</li>
+<li><p>Completion script</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>chezmoi completion bash &gt; ~/chezmoi-completion.bash
+sudo mv ~/chezmoi-completion.bash /etc/bash_compltion.d/
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="chezmoi-terminology">
+<h2>chezmoi terminology<a class="headerlink" href="#chezmoi-terminology" title="Permalink to this headline"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">chezmoi</span></code>’s concepts -
+<a class="reference external" href="https://github.com/twpayne/chezmoi/blob/master/docs/REFERENCE.md#concepts">https://github.com/twpayne/chezmoi/blob/master/docs/REFERENCE.md#concepts</a></p>
+<ul>
+<li><p><strong>source state</strong> - declares the desired state of <code class="docutils literal notranslate"><span class="pre">$HOME</span></code>, including
+templates and machine-specific configuration.</p></li>
+<li><p><strong>source directory</strong> is where <code class="docutils literal notranslate"><span class="pre">chezmoi</span></code> stores the <strong>source state</strong>, by
+default <code class="docutils literal notranslate"><span class="pre">$HOME/.local/share/chezmoi</span></code></p>
+<p>Can be queried via <code class="docutils literal notranslate"><span class="pre">chezmoi</span> <span class="pre">source-path</span></code></p>
+</li>
+<li><p><strong>target state</strong> is the <strong>source state</strong> computed for the current machine.</p></li>
+<li><p><strong>destination directory</strong> is the directory that <code class="docutils literal notranslate"><span class="pre">chezmoi</span></code> manages, by
+default <code class="docutils literal notranslate"><span class="pre">$HOME</span></code>.</p></li>
+<li><p><strong>destination state</strong> is the state of all the <strong>targets</strong> in the
+<strong>destination directory</strong>.</p>
+<p>where <strong>targets</strong> = file, directory or symlink in <strong>destination directory</strong></p>
+</li>
+<li><p>machine-specific configuration is present in a config file at
+<code class="docutils literal notranslate"><span class="pre">$HOME/.config/chezmoi/chezmoi.toml</span></code></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Prateek Raman.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

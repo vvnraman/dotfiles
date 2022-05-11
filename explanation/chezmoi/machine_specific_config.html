@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Machine Specific dotfiles Config &mdash; vvnraman&#39;s dotfiles 0.1.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Neovim setup" href="../neovim/index.html" />
+    <link rel="prev" title="chezmoi templates" href="templates.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> vvnraman's dotfiles
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../intro/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../journal/index.html">Journal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../how-to/index.html">How To Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Explanation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Chezmoi setup</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="templates.html">chezmoi templates</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Machine Specific <code class="docutils literal notranslate"><span class="pre">dotfiles</span></code> Config</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../neovim/index.html">Neovim setup</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/index.html">Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">vvnraman's dotfiles</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Explanation</a> &raquo;</li>
+          <li><a href="index.html">Chezmoi setup</a> &raquo;</li>
+      <li>Machine Specific <code class="docutils literal notranslate"><span class="pre">dotfiles</span></code> Config</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/explanation/chezmoi/machine_specific_config.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="machine-specific-dotfiles-config">
+<h1>Machine Specific <code class="docutils literal notranslate"><span class="pre">dotfiles</span></code> Config<a class="headerlink" href="#machine-specific-dotfiles-config" title="Permalink to this headline"></a></h1>
+<p>Machine specific dotfiles config is configured via <a class="reference internal" href="templates.html#chezmoi-templates"><span class="std std-ref">chezmoi templates</span></a>. This
+currently only applies to bashrc files.</p>
+<p>We have a <code class="docutils literal notranslate"><span class="pre">dot-bash/symlink_bashrc-custom-machine.tmpl</span></code> template file in our
+source directory. This file will exist in the desitnation directory as
+a regular symlink named <code class="docutils literal notranslate"><span class="pre">dot-bash/bashrc-custom-machine</span></code>.</p>
+<p>This symlink is sourced in our <code class="docutils literal notranslate"><span class="pre">dot-bash/profile</span></code> as follows</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">dot-bash/profile</span><a class="headerlink" href="#id1" title="Permalink to this code"></a></div>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>source_script <span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/dot-bash/bashrc-custom-machine&quot;</span>
+</pre></div>
+</div>
+</div>
+<p>The content of this template file determines where it points to. Currently it
+contains the following template</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>bashrc-custom-<span class="o">{{</span> .chezmoi.hostname <span class="o">}}</span>_<span class="o">{{</span> .chezmoi.osRelease.id <span class="o">}}</span>_<span class="o">{{</span> .chezmoi.osRelease.versionID <span class="o">}}</span>
+</pre></div>
+</div>
+<p>The symlink in the destination directory points to the resolved file name based
+on the values of those template variables. On my personal laptop, inside WSL2
+Ubuntu 20.04, this resolves to the following name:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bashrc</span><span class="o">-</span><span class="n">custom</span><span class="o">-</span><span class="n">USH</span><span class="o">-</span><span class="n">LP19</span><span class="o">-</span><span class="n">RIX1_ubuntu_20</span><span class="mf">.04</span>
+</pre></div>
+</div>
+<p>This means that we have the following link available on my personal laptop</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ls -l dot-bash/bashrc-custom-machine
+<span class="go">lrwxrwxrwx 1 vvnraman vvnraman 40 May 10 22:04 dot-bash/bashrc-custom-machine -&gt; bashrc-custom-USH-LP19-RIX1_ubuntu_20.04</span>
+</pre></div>
+</div>
+<p>This allows us to have custom configuration in this file without affecting how
+the dotfiles affects the other machines where they get cloned.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="templates.html" class="btn btn-neutral float-left" title="chezmoi templates" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../neovim/index.html" class="btn btn-neutral float-right" title="Neovim setup" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Prateek Raman.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

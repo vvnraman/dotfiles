@@ -1,0 +1,138 @@
+********
+2022 May
+********
+
+2022-05-10 - Tuesday
+======================
+
+- Made vim to be provided by neovim
+
+  .. code-block:: sh
+
+     sudo update-alternatives --install /usr/bin/vim vim /home/vvnraman/bin/nvim 100
+
+  Also set ``$EDITOR`` to ``vim`` in ``.bashrc-custom`` so that :program:`git`
+  uses it. :program:`vi` is still provided ``vim.gtk``.
+
+- Installed :program:`gitui`
+
+  .. code-block:: sh
+
+     mkdir ~/cli-tools/downloads/gitui && cd ~/cli-tools/downloads/gitui
+     mkdir v0.20.1 && cd v0.20.1
+     curl --fail --location --remote-name \
+        https://github.com/extrawurst/gitui/releases/download/v0.20.1/gitui-linux-musl.tar.gz
+     tar --extract --file gitui-linux-musl.tar.gz
+     ln -s $(readlink -f ./gitui) ~/bin/
+
+- Installed :program:`nnn`
+
+  .. code-block:: sh
+
+     mkdir ~/cli-tools/downloads/nnn/v4.5/
+     cd ~/cli-tools/downloads/nnn/v4.5/
+     curl --fail --location --remote-name \
+        https://github.com/jarun/nnn/releases/download/v4.5/nnn-nerd-static-4.5.x86_64.tar.gz
+     tar --extract --file nnn-nerd-static-4.5.x86_64.tar.gz
+     ln -s $(readlink -f ./nnn-nerd-static) ~/bin/n
+
+----
+
+2022-05-09 - Monday
+======================
+
+Refactored standalong neovim configuration in lua to be more modular.
+
+Next step is to subsume it in the dotfiles repo managed by :program:`chezmoi`.
+I'll most likely keep this repo alive as well.
+
+Installed a few more command line tools for ``null-ls``.
+
+.. code-block:: sh
+
+   pipx install black
+   pipx install isort
+   pipx install flake8
+
+There are a couple of command line tools left to be installed.
+
+----
+
+2022-05-01 - Sunday
+======================
+
+- I had setup ``fnm`` already from https://github.com/Schniz/fnm. This is
+  a node version manager written in Rust.
+
+  .. code-block:: sh
+
+     readlink -f $(which fnm)
+     # /home/vvnraman/cli-tools/downloads/fnm/fnm-v1.31.0/fnm
+
+  Installed the latest node using it
+
+  .. code-block:: console
+
+     $ fnm install --lts
+     # Installed Node v16.15.0
+
+  We need node for a few language servers which will install using
+  ``nvim-lsp-installer``
+
+- Installed mermaid cli, this is just for having mermaid diagrams in sphinx
+  (which we are using for these docs), not related to ``neovim``
+
+  .. code-block:: sh
+
+     npm install -g mermaid.cli
+
+- Installed ``stylua`` for formatting lua codebase (neovim config)
+
+  .. code-block:: sh
+
+     curl --fail --location --remote-name https://github.com/JohnnyMorganz/StyLua/releases/download/v0.13.1/stylua-linux.zip
+     unzip stylua-linux.zip
+     chmod +x stylua
+     ln -s $(readlink -f stylua) ~/bin/stylua
+
+----
+
+2022-04-16 - Saturday
+=====================
+
+Setting up neovim with my dotfiles
+
+- For true colour support
+
+  - Removed the following from my ``.bashrc``
+
+    .. code-block:: sh
+
+       export TERM="xterm-256color"
+
+    This is not required as Windows Terminal already supports true colour by
+    emulating the ``xterm-256color`` sequences.
+
+  - Added the following in ``.tmux.conf``
+
+    .. code-block:: sh
+
+       set-option -sa terminal-overrides ',xterm-256color:RGB'
+
+    There was already the following line in there
+
+    .. code-block:: sh
+
+       set-option -g default-terminal "screen-256color"
+
+    This tells tmux that the terminal outside it supports true colour. This is
+    important as this sets the right term variable for programs running within
+    ``tmux``, notably our ``neovim`` instance.
+
+  - Tell ``neovim`` that we do have true colour support
+
+    .. code-block:: sh
+
+       vim.opt.termguicolors = true
+
+  - Kill tmux server and restart for the changes to take effect.

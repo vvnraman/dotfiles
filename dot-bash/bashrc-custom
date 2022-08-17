@@ -5,8 +5,6 @@
 # Set command line to vi mode
 set -o vi
 
-export EDITOR="vim"
-
 #-------------------------------------------------------------------------------
 
 # make =========================================================================
@@ -20,6 +18,14 @@ export FZF_DEFAULT_COMMAND="rg --files"
 # neovim =======================================================================
 export NVIMCONFIG="${HOME}/.config/nvim"
 export NVIMDATA="${HOME}/.local/share/nvim"
+if $(command -v nvim 1>/dev/null 2>&1); then
+  export VISUAL="nvim"
+  export EDITOR="nvim"
+else
+  export VISUAL="vim"
+  export EDITOR="vim"
+fi
+
 
 #-------------------------------------------------------------------------------
 

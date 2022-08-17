@@ -73,11 +73,6 @@ source_script "$HOME/dot-bash/powerline-go"
 source_script "$HOME/cli-tools/goto/goto.sh"
 source_script "$HOME/cli-tools/z/z.sh"
 
-# Load WSL2 specific bashrc if we're running in WSL2
-if [[ "$(uname -a)" =~ "microsoft" ]]; then
-  source_script "$HOME/dot-bash/bashrc-wsl"
-fi
-
 umask 002
 
 # Adds pyenv shims to path

@@ -6,6 +6,7 @@ pyproject.toml
 poetry.lock
 README.rst
 Makefile
+add_neovim_config.sh
 {{ if ne .chezmoi.hostname "USH-LP19-RIX1" }}
 .gitconfig_USH-LP19-RIX1
 {{ end }}

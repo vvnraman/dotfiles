@@ -156,6 +156,21 @@ quit_on_last_cancel: true
 # }
 
 ###############################################################
+# Syntax Theme
+#
+# You can choose any of the following syntaxic coloring themes for previewed
+# files:
+#
+# GitHub
+# SolarizedDark
+# SolarizedLight
+# EightiesDark
+# MochaDark
+# OceanDark
+# OceanLight
+syntax_theme: MochaDark
+
+###############################################################
 # Max file size for content search
 #
 # Bigger files are ignored when searching their content. You

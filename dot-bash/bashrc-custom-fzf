@@ -14,18 +14,20 @@ FZF_CAT_PREVIEW="cat {}"
 FZF_TREE_PREVIEW="tree -L 2 -C {} | head -100"
 FZF_BASIC_OPTS="--border --height 100% --layout reverse"
 FZF_PREVIEW_WINDOW="right,border-left"
-FZF_CHANGE_PREVIEW="down,border-horizontal|hidden|"
+FZF_BIND_CHANGE_PREVIEW="ctrl-/:change-preview-window(down,border-horizontal|hidden|)"
+FZF_BIND_OPEN_NVIM="ctrl-o:become(nvim {})"
 
 export FZF_DEFAULT_OPTS="
   ${FZF_BASIC_OPTS}
   --header 'CTRL-/: preview | CTRL-e: nvim'
-  --preview-window ${FZF_PREVIEW_WINDOW}
-  --bind 'ctrl-/:change-preview-window(${FZF_CHANGE_PREVIEW})'
+  --preview-window '${FZF_PREVIEW_WINDOW}'
   --preview '${FZF_CAT_PREVIEW}'
-  --bind 'ctrl-e:become(nvim {})'"
+  --bind '${FZF_BIND_CHANGE_PREVIEW}'
+  --bind '${FZF_BIND_OPEN_NVIM}'"
 
 if $(command -v fd 1>/dev/null 2>&1); then
-  FZF_FD_OPTS="--hidden --strip-cwd-prefix --exclude .git"
+  FZF_FD_OPTS="--hidden --exclude \".git\""
+  # FZF_FD_OPTS=""
   FZF_FD_FILES_COMMAND="fd --type file ${FZF_FD_OPTS}"
   FZF_FD_DIR_COMMAND="fd --type directory ${FZF_FD_OPTS}"
   FZF_BAT_PREVIEW="bat -n --color=always {}"
@@ -39,38 +41,38 @@ if $(command -v fd 1>/dev/null 2>&1); then
   fi
 
   export FZF_DEFAULT_OPTS="
-  ${FZF_BASIC_OPTS}
-  --prompt 'Files> '
-  --header 'CTRL-/: preview | CTRL-e: nvim'
-  --preview-window ${FZF_PREVIEW_WINDOW}
-  --bind 'ctrl-/:change-preview-window(${FZF_CHANGE_PREVIEW})'
-  --preview '${FZF_FILE_PREVIEW}'
-  --bind 'ctrl-e:become(nvim {})'"
+    ${FZF_BASIC_OPTS}
+    --prompt 'Files> '
+    --header 'CTRL-/: preview | CTRL-e: nvim'
+    --preview-window ${FZF_PREVIEW_WINDOW}
+    --preview '${FZF_FILE_PREVIEW}'
+    --bind '${FZF_BIND_CHANGE_PREVIEW}'
+    --bind '${FZF_BIND_OPEN_NVIM}'"
 
   FZF_TOGGLE_PROMPT="[[ ! {fzf:prompt} =~ Files ]] && echo \"change-prompt(Files> )+reload(${FZF_FD_FILES_COMMAND})\" ||
                      echo \"change-prompt(Directories> )+reload(${FZF_FD_DIR_COMMAND})\""
   FZF_TOGGLE_PREVIEW="[[ {fzf:prompt} =~ Files ]] && ${FZF_FILE_PREVIEW} || tree -C {}"
   export FZF_CTRL_T_OPTS="
-  ${FZF_BASIC_OPTS}
-  --prompt 'Files> '
-  --header 'CTRL-/: preview | CTRL-t: file/dir'
-  --preview-window ${FZF_PREVIEW_WINDOW}
-  --bind 'ctrl-/:change-preview-window(${FZF_CHANGE_PREVIEW})'
-  --preview '${FZF_TOGGLE_PREVIEW}'
-  --bind 'ctrl-t:transform:${FZF_TOGGLE_PROMPT}'"
+    ${FZF_BASIC_OPTS}
+    --prompt 'Files> '
+    --header 'CTRL-/: preview | CTRL-t: file/dir'
+    --preview-window ${FZF_PREVIEW_WINDOW}
+    --preview '${FZF_TOGGLE_PREVIEW}'
+    --bind '${FZF_BIND_CHANGE_PREVIEW}'
+    --bind 'ctrl-t:transform:${FZF_TOGGLE_PROMPT}'"
 
   # Use fd (https://github.com/sharkdp/fd) instead of the default find
   # command for listing path candidates.
   # - The first argument to the function ($1) is the base path to start traversal
   # - See the source code (completion.{bash,zsh}) for the details.
   _fzf_compgen_path() {
-    fd "${FZF_FD_OPTS}" . "$1"
+    fd ${FZF_FD_OPTS} . "$1"
   }
 
   # Use fd to generate the list for directory completion
   export FZF_ALT_C_COMMAND="${FZF_FD_DIR_COMMAND}"
   _fzf_compgen_dir() {
-    "${FZF_FD_DIR_COMMAND}" . "$1"
+    ${FZF_FD_DIR_COMMAND} . "$1"
   }
 fi
 

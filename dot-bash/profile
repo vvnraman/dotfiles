@@ -72,6 +72,9 @@ source_script "$HOME/dot-bash/bashrc-custom-git"
 source_script "$HOME/dot-bash/bashrc-custom-fzf"
 source_script "$HOME/dot-bash/powerline-go"
 
+# broot - https://github.com/Canop/broot
+source_script "$HOME/.config/broot/launcher/bash/br"
+
 umask 002
 
 # Adds pyenv shims to path

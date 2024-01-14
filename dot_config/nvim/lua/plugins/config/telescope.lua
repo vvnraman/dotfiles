@@ -4,6 +4,7 @@ M.setup = function()
   local telescope = require("telescope")
   local telescope_builtin = require("telescope.builtin")
   local which_key = require("which-key")
+  local trouble_telescope = require("trouble.providers.telescope")
 
   pcall(telescope.load_extension, "fzf")
   telescope.load_extension("luasnip")
@@ -14,8 +15,8 @@ M.setup = function()
   telescope.setup({
     defaults = {
       mappings = {
-        i = { ["<M-x>"] = require("trouble").open_with_trouble },
-        n = { ["<M-x>"] = require("trouble").open_with_trouble },
+        i = { ["<C-q>"] = trouble_telescope.open_with_trouble },
+        n = { ["<C-q>"] = trouble_telescope.open_with_trouble },
       },
     },
     extensions = {
@@ -77,6 +78,7 @@ M.setup = function()
     telescope_builtin.find_files({
       prompt_title = "Files " .. prompt_suffix,
       cwd = cwd,
+      hidden = true,
     })
   end
 
@@ -84,12 +86,14 @@ M.setup = function()
     telescope_builtin.find_files({
       prompt_title = "Current buffer directory",
       cwd = require("telescope.utils").buffer_dir(),
+      hidden = true,
     })
   end
 
   local find_files_under_git = function()
     telescope_builtin.git_files({
       show_untracked = true,
+      hidden = true,
     })
   end
 
@@ -99,6 +103,7 @@ M.setup = function()
     telescope_builtin.live_grep({
       prompt_title = "Live Grep " .. prompt_suffix,
       cwd = cwd,
+      hidden = true,
     })
   end
 
@@ -118,6 +123,7 @@ M.setup = function()
       prompt_title = "Browse Files " .. prompt_suffix,
       cwd = cwd,
       prompt_path = true,
+      hidden = true,
     })
   end
 
@@ -127,6 +133,7 @@ M.setup = function()
       prompt_title = "Browse Files in " .. prompt_suffix,
       cwd = cwd,
       prompt_path = true,
+      hidden = true,
     })
   end
 
@@ -158,6 +165,9 @@ M.setup = function()
     }))
   end, NOREMAP("Chose [c]o[l]ourschemes"))
 
+  vim.keymap.set({ "n" }, "\\s", function()
+    telescope_builtin.resume()
+  end, NOREMAP("Re[s]ume telescope"))
   ------------------------------------------------------------------------------
 
   --[[==========================================================================
@@ -171,7 +181,7 @@ M.setup = function()
 
   -- leader is set at prefix at the end, just to avoid additional indentation
   which_key.register({
-    ["<leader>b"] = {
+    ["b"] = {
       function()
         find_files_in_buffer_dir()
       end,
@@ -209,25 +219,70 @@ M.setup = function()
       b = { telescope_builtin.buffers, "[s]earch open [b]uffers" },
       o = { telescope_builtin.oldfiles, "[s]earch [o]ld files" },
       c = {
-        telescope_builtin.command_history,
+        function()
+          telescope_builtin.command_history(
+            require("telescope.themes").get_dropdown({
+              winblend = 20,
+              skip_empty_lines = true,
+            })
+          )
+        end,
         "[s]earch [c]ommands in history",
       },
-      s = { telescope_builtin.search_history, "[s]earch [s]search history" },
+      s = {
+        function()
+          telescope_builtin.search_history(
+            require("telescope.themes").get_dropdown({
+              winblend = 20,
+              skip_empty_lines = true,
+            })
+          )
+        end,
+        "[s]earch [s]search history",
+      },
       h = { telescope_builtin.help_tags, "[s]earch [h]elp tags" },
+      m = {
+        function()
+          telescope_builtin.marks(require("telescope.themes").get_ivy({
+            winblend = 30,
+            skip_empty_lines = true,
+          }))
+        end,
+        "[s]earch [m]arks",
+      },
+      r = {
+        function()
+          telescope_builtin.registers(require("telescope.themes").get_dropdown({
+            winblend = 20,
+            skip_empty_lines = true,
+          }))
+        end,
+        "[s]earch [r]egisters",
+      },
+      k = {
+        function()
+          telescope_builtin.keymaps(require("telescope.themes").get_dropdown({
+            winblend = 20,
+            skip_empty_lines = true,
+          }))
+        end,
+        "[s]earch [k]eymaps",
+      },
     },
-    f = {
-      name = "+File browser",
-      b = {
+    e = {
+      name = "+File [e]xplorer",
+      w = {
         function()
           browse_files_in_cwd()
         end,
-        "[f]ile [b]browser in CWD",
+        "browser files in c[w]d",
       },
-      d = {
+      e = {
         function()
           browse_files_in_buffer_dir()
         end,
-        "[f]ile browser in buffer [d]irectory",
+        -- `b` would have been better here but `ee` is quicker to type
+        "browse files in buff[e]r dir",
       },
     },
   }, { prefix = "<leader>" })
@@ -250,6 +305,7 @@ M.setup = function()
           telescope_builtin.find_files({
             prompt_title = "Neovim config fuzzy",
             cwd = "~/.config/nvim",
+            hidden = true,
           })
         end,
         "fu[z]zy find [n]eovim config",
@@ -259,6 +315,7 @@ M.setup = function()
           telescope_builtin.find_files({
             prompt_title = "Journal files fuzzy",
             cwd = "~/code/notes/journal/journal/",
+            hidden = true,
           })
         end,
         "fu[z]zy find in [j]ournal",
@@ -268,6 +325,7 @@ M.setup = function()
           telescope_builtin.find_files({
             prompt_title = "bash config fuzzy",
             cwd = "~/dot-bash/",
+            hidden = true,
           })
         end,
         "fu[z]zy find [b]ash config",
@@ -277,22 +335,24 @@ M.setup = function()
           telescope_builtin.find_files({
             prompt_title = "tmux config fuzzy",
             cwd = "~/dot-tmux/",
+            hidden = true,
           })
         end,
         "fu[z]zy find [t]mux config",
       },
     },
-    e = {
-      name = "+Favourite locations explore",
+    v = {
+      name = "+Fa[v]ourite locations explore",
       n = {
         function()
           file_browser.file_browser({
             prompt_title = "Explore Neovim config",
             cwd = "~/.config/nvim",
             prompt_path = true,
+            hidden = true,
           })
         end,
-        "[e]xplore [n]eovim config folder",
+        "fa[v]: [n]eovim config folder",
       },
       j = {
         function()
@@ -300,27 +360,30 @@ M.setup = function()
             prompt_title = "Explore Journal",
             cwd = "~/code/notes/journal/journal/",
             prompt_path = true,
+            hidden = true,
           })
         end,
-        "[e]xplore [j]ournal folder",
+        "fa[v]: [j]ournal folder",
       },
       b = {
         function()
           file_browser.file_browser({
             prompt_title = "Explore bash config",
             cwd = "~/dot-bash/",
+            hidden = true,
           })
         end,
-        "[e]xplore [b]ash config",
+        "fa[v]: [b]ash config",
       },
       t = {
         function()
           file_browser.file_browser({
             prompt_title = "Explore tmux config",
             cwd = "~/dot-tmux/",
+            hidden = true,
           })
         end,
-        "[e]xplore [t]mux config",
+        "fa[v]: [t]mux config",
       },
     },
   }, { prefix = "<leader>" })

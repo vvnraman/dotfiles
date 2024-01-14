@@ -24,6 +24,10 @@ local M = {
     event = "VeryLazy",
     ft = "markdown",
   },
+  {
+    -- https://github.com/farmergreg/vim-lastplace
+    "farmergreg/vim-lastplace",
+  },
 }
 
 return M

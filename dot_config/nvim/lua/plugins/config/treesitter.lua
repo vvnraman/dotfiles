@@ -63,14 +63,6 @@ local get_textobject_config = function()
         ["[]"] = "@class.outer",
       },
     },
-    lsp_interop = {
-      enable = true,
-      border = "none",
-      peek_definition_code = {
-        ["<leader>df"] = "@function.outer",
-        ["<leader>dF"] = "@class.outer",
-      },
-    },
   }
 end
 
@@ -99,14 +91,22 @@ local setup_treesitter = function()
     -- FIXME: - highlight is too slow in general
     --        - to test open `~/.config/nvim/lua/options.lua` and scroll
     --          down using `j` key, which `htop` running.
-    -- highlight = { enable = true },
+    highlight = {
+      enable = true,
+      -- disable = function(
+      --   _, --[[lang]]
+      --   bufnr
+      -- )
+      --   return vim.api.nvim_buf_line_count(bufnr) > 2500
+      -- end,
+    },
     incremental_selection = {
       enable = true,
       keymaps = {
-        init_selection = "<C-space>",
-        node_incremental = "<C-space>",
-        scope_incremental = "<C-s>",
-        node_decremental = "<M-space>",
+        init_selection = "<Enter>",
+        node_incremental = "<Enter>",
+        scope_incremental = "<C-Enter>",
+        node_decremental = "<BS>",
       },
     },
     indent = { enable = true },

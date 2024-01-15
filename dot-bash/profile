@@ -75,6 +75,10 @@ source_script "$HOME/dot-bash/powerline-go"
 # broot - https://github.com/Canop/broot
 source_script "$HOME/.config/broot/launcher/bash/br"
 
+# invoke - https://docs.pyinvoke.org/en/stable/index.html
+# script generated via `invoke --print-completion-script bash`
+source_script "$HOME/dot-bash/bashrc-custom-invoke"
+
 umask 002
 
 # Adds pyenv shims to path

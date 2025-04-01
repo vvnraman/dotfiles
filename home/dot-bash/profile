@@ -33,7 +33,7 @@ function append_to_path()
 prepend_to_path "${HOME}/.local/bin"
 prepend_to_path "${HOME}/bin"
 
-append_to_path "/opt/bin/"
+append_to_path "/opt/cmake/"
 
 # python
 append_to_path "${HOME}/.poetry/bin"
@@ -49,7 +49,6 @@ append_to_path "${HOME}/.cargo/bin"
 append_to_path "$HOME/.npm-packages/bin"
 
 
-export PYENV_ROOT="${HOME}/.pyenv"
 append_to_path "${PYENV_ROOT}/bin"
 append_to_path "$HOME/.poetry/bin"
 
@@ -79,18 +78,7 @@ source_script "$HOME/.config/broot/launcher/bash/br"
 # script generated via `invoke --print-completion-script bash`
 source_script "$HOME/dot-bash/bashrc-custom-invoke"
 
-umask 002
-
-# Adds pyenv shims to path
-if $(command -v pyenv 1>/dev/null 2>&1); then
-  eval "$(pyenv init --path)"
-fi
-
 # Adds npm shims to path for fnm
 if $(command -v fnm 1>/dev/null 2>&1); then
   eval "$(fnm env --use-on-cd)"
 fi
-
-log_stamp=$(date +"%G-week-%V")
-log_file="${HOME}/.bash-load/log-${log_stamp}.log"
-echo "`date` - profile" >> "${log_file}"

@@ -1,8 +1,38 @@
-Machine Specific ``dotfiles`` Config
-====================================
+Machine Specific Config
+=======================
 
 Machine specific dotfiles config is configured via :ref:`chezmoi-templates`. This
 currently only applies to bashrc files.
+
+Custom ``~./.gitconfig`` as the global config
+---------------------------------------------
+
+I use this to keep home and work config separate.
+
+* It is named ``symlink_dot_gitconfig.tmpl`` which indicates that it should by
+  a symlink.
+
+* The symlink destination is ``~/.gitconfig`` and the target comes from the
+  contents of the template file using the ``username`` variable.
+
+  .. code-block::
+
+     .gitconfig_{{ .chezmoi.username }}
+
+* So on my home PC, we get the following
+
+  .. code-block::
+
+     /home/vvnraman/.gitconfig -> .gitconfig_vvnraman
+
+* At work, I always have a separate branch exactly 1 commit ahead of ``origin``
+  which contains the the work specific gitconfig file, which ``~/.gitconfig``
+  points to.
+
+----
+
+Custom ``bashrc-custom`` config
+-------------------------------
 
 We have a ``dot-bash/symlink_bashrc-custom-machine.tmpl`` template file in our
 source directory. This file will exist in the desitnation directory as

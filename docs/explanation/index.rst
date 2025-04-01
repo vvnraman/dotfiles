@@ -7,4 +7,3 @@ Explanation
    :caption: Contents:
 
    chezmoi/index.rst
-   neovim/index.rst

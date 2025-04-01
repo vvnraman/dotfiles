@@ -1,4 +1,0 @@
-Neovim LSP Setup
-================
-
-TBD

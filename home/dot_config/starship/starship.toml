@@ -1,0 +1,165 @@
+# Get editor completions based on the config schema
+"$schema" = 'https://starship.rs/config-schema.json'
+
+add_newline = true
+
+format = """
+$os\
+$username\
+${env_var.spaces}\
+$hostname\
+$directory\
+($git_state)\
+($git_status)\
+[](fg:prev_bg)\
+$cmd_duration\
+$line_break\
+$character\
+$git_branch\
+$git_commit\
+($git_metrics)\
+[ ]()"""
+
+palette = 'vvnraman_catppuccin'
+
+# borrowed from catppuccin palettes
+[palettes.vvnraman_catppuccin]
+prompt_bg = '#363a4f'
+vim_fg = '#40a02b'
+vim_r_fg = '#24273a'
+vim_r_bg = '#f5a97f'
+vim_v_fg = '#d79921'
+custom_fg = '#f5bde6'
+custom_bg = '#494d64'
+user_fg = '#7dc4e4'
+root_fg = '#ed8796'
+host_fg = '#6e738d'
+host_bg = '#24273a'
+dir_fg = '#939ab7'
+dir_bg = '#24273a'
+time_bg = '#3c3836'
+peach = '#f5a97f'
+mauve = '#c6a0f6'
+red = '#cc241d'
+git_s_c = '#ee99a0'
+git_s_st = '#b7bdf8'
+git_s_d = '#ed8796'
+git_s_r = '#c6a0f6'
+git_s_m = '#8bd5ca'
+git_s_sg = '#eed49f'
+git_s_u = '#a5adcb'
+git_b_bg = '#7287fd'
+git_m_a_fg = '#a6da95'
+git_m_d_fg = '#ed8796'
+git_metrics_bg = '#363a4f'
+git_status_bg = "#363a4f"
+crust = '#11111b'
+
+#♪♫
+[character]
+format = '$symbol'
+success_symbol = '[[](fg:prompt_bg)[♪](fg:crust bg:prompt_bg)](fg:prompt_bg)'
+error_symbol = '[[✗](fg:prompt_bg bg:red)](fg:red)'
+vimcmd_symbol = '[[](fg:vim_fg bg:prompt_bg)](fg:prompt_bg)'
+vimcmd_replace_one_symbol = '[[](fg:vim_r_fg bg:vim_r_bg)](bold fg:vim_r_bg)'
+vimcmd_replace_symbol = '[[](fg:vim_r_fg bg:vim_r_bg)](bold fg:vim_r_bg)'
+vimcmd_visual_symbol = '[[](fg:prompt_bg bg:vim_v_fg)](bold fg:vim_v_fg)'
+
+[os]
+disabled = false
+style = "fg:crust bg:prev_fg"
+format = '[](fg:prompt_bg)[$symbol]($style)'
+
+[username]
+show_always = true
+style_user = "fg:user_fg bg:crust"
+style_root = "fg:root_fg bg:crust"
+format = '[](fg:prev_fg bg:prev_bg)[ $user ]($style)'
+
+[hostname]
+ssh_only=false
+trim_at = "."
+style='fg:host_fg bg:host_bg'
+format = '[](fg:host_bg bg:prev_bg)[ $ssh_symbol$hostname]($style)'
+
+# BUG: This doesn't work.
+[env_var.spaces]
+symbol = ''
+variable = "SPACES__ENV"
+format = '[](fg:host_bg bg:prev_bg)[ $symbol ](fg:host_fg bg:host_bg)'
+
+[directory]
+style = "fg:dir_fg bg:dir_bg"
+format = "[](bg:prev_bg fg:dir_bg)[$path ]($style)"
+home_symbol = '🏠'
+truncation_length = 8
+truncate_to_repo = false
+truncation_symbol = "…/"
+
+[git_state]
+style = "fg:peach bg:mauve"
+format = '[](bg:prev_bg fg:mauve)\([$state( $progress_current/$progress_total)]($style)\) '
+
+[git_status]
+style = "bg:git_status_bg"
+format = '[](fg:prev_bg bg:git_status_bg)[[($all_status$ahead_behind )](fg:prompt_bg bg:git_status_bg)]($style)'
+conflicted = '[ ${count}](fg:git_s_c bg:git_status_bg)'
+stashed = '[ ⚑${count}](fg:git_s_st bg:git_status_bg)'
+deleted = '[ ${count}](fg:git_s_d bg:git_status_bg)'
+renamed = '[ ${count}](fg:git_s_r bg:git_status_bg)'
+modified = '[ ●${count}](fg:git_s_m bg:git_status_bg)'
+staged = '[ ✓${count}](fg:git_s_sg bg:git_status_bg)'
+untracked = '[ ?${count}](fg:git_s_u bg:git_status_bg)'
+
+[git_branch]
+symbol = ""
+style = "bg:git_b_bg"
+format = '[](fg:git_b_bg)[[ $symbol $branch(:$remote_branch) ](fg:crust bg:git_b_bg)]($style)[](fg:git_b_bg bg:git_metrics_bg)'
+
+[git_metrics]
+added_style="fg:git_m_a_fg bg:git_metrics_bg"
+deleted_style="fg:git_m_d_fg bg:git_metrics_bg"
+format = '[](fg:prev_bg bg:git_metrics_bg)([$deleted]($deleted_style))([ $added]($added_style))[](fg:git_metrics_bg)'
+disabled = false
+
+[git_commit]
+style = "fg:crust bg:peach"
+format = '[](fg:peach)[\($hash$tag\)]($style)[](fg:peach) '
+tag_symbol = '  '
+
+[cmd_duration]
+format = '[⏱ $duration]($style)'
+min_time = 100 #milliseconds
+show_milliseconds = true
+
+[time]
+disabled = false
+time_format = "%R"
+style = "bg:time_bg"
+format = '[[  $time ](fg:prompt_bg bg:time_bg)]($style)'
+
+[line_break]
+disabled = false
+
+[os.symbols]
+Windows = "󰍲"
+Ubuntu = "󰕈"
+SUSE = ""
+Raspbian = "󰐿"
+Mint = "󰣭"
+Macos = "󰀵"
+Manjaro = ""
+Linux = "󰌽"
+Gentoo = "󰣨"
+Fedora = "󰣛"
+Alpine = ""
+Amazon = ""
+Android = ""
+Arch = "󰣇"
+Artix = "󰣇"
+EndeavourOS = ""
+CentOS = ""
+Debian = "󰣚"
+Redhat = "󱄛"
+RedHatEnterprise = "󱄛"
+Pop = ""

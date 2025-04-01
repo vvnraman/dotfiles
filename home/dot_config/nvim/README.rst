@@ -1,9 +1,13 @@
-**********************************
-Prateek's ``Neovim`` configuration
-**********************************
+***************************
+Prateek's ``Neovim`` config
+***************************
 
 These are kept in sync with my `dotfiles`_. The ``dotfiles`` are managed using
 `chezmoi`_.
+
+Visit the `generated-docs`_ page to learn more.
+
+.. _`generated-docs`: https://vvnraman.github.io/neovim-config/
 
 The ``Neovim`` configuration here is extracted out for trying it out on other
 platforms, without necesarily depending upon the rest of my ``dotfiles``.
@@ -13,78 +17,16 @@ platforms, without necesarily depending upon the rest of my ``dotfiles``.
 
 ----
 
-How to install Neovim AppImage on Linux
-=======================================
+Install Neovim AppImage on Linux
+================================
 
-Assumes github release link
-https://github.com/neovim/neovim/releases/download/v0.9.4/nvim.appimage
+Visit `install-neovim`_ to see how I do this.
 
-.. code-block:: sh
-
-   # download
-   mkdir -p ~/downloads/neovim/v0.9.4/
-   cd ~/downloads/neovim/v0.9.4/
-   curl --fail --location --remote-name https://github.com/neovim/neovim/releases/download/stable/nvim.appimage
-
-   # verify
-   sha256sum nvim.appimage
-   # compare the sha256 checksum by copying it and CTRL+F on the release page.
-
-   # install
-   chmod +x nvim.appimage
-   sudo cp nvim.appimage /usr/bin/nvim
-
-----
+.. _`install-neovim`: https://vvnraman.github.io/neovim-config/how-to/install-neovim.html
 
 How to try this config non-intrusively
 ======================================
 
-The instructions below apply to a **linux** environment. Using them will not
-interfere with an existing Neovim setup. Its uses the builtin ``Neovim``
-feature ``$NVIM_APPNAME``
-https://neovim.io/doc/user/starting.html#%24NVIM_APPNAME.
+Visit `isolated-install`_ page to see how to do this.
 
-Pre-requisites
---------------
-
-`ripgrep`_ and `fd`_ are installed on the system
-
-.. _ripgrep: https://github.com/BurntSushi/ripgrep
-.. _fd: https://github.com/sharkdp/fd
-
-Assumptions
------------
-
-1. ``~/.local/bin/`` already exists in user's $PATH
-2. Neovim executable is present at ``/usr/bin/nvim`` (see previous section)
-
-If these assumptions are not met, one can alter the instructions as needed.
-
-Steps
------
-
-1. Clone this repo at ``~/.config/pvim``
-
-   .. code-block:: sh
-
-      git clone https://github.com/vvnraman/neovim-config ~/.config/pvim
-
-2. Create a file ``~/.local/bin/pvim`` and mark it executable
-
-   .. code-block:: sh
-
-      mkdir -p ~/.local/bin/
-      touch ~/.local/bin/pvim
-      chmod +x ~/.local/bin/pvim
-
-3. Add the following contents to ``~/.local/bin/pvim``
- 
-   .. code-block:: sh
-
-      #/usr/bin/env bash
-      NVIM_APPNAME=pvim /usr/bin/nvim $@
-
-4. Run ``pvim``
-
-----
-
+.. _`isolated-install`: https://vvnraman.github.io/neovim-config/how-to/isolated-install.html

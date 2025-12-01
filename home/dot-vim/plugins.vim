@@ -1,6 +1,12 @@
 "===============================================================================
 " vim-plug plugin manager config.
 
+let data_dir = '~/.vim'
+if empty(glob(data_dir . '/autoload/plug.vim'))
+  silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
 " Specify a directory for plugins (for Neovim: ~/.local/share/nvim/plugged)
 call plug#begin('~/.vim/plugged')
 
@@ -12,7 +18,6 @@ Plug 'godlygeek/tabular'
 
 " Movements
 Plug 'Lokaltog/vim-easymotion'
-Plug 'terryma/vim-multiple-cursors'
 Plug 'justinmk/vim-sneak'
 
 " Zig
@@ -41,7 +46,7 @@ Plug 'SirVer/ultisnips'
 " Uses the sign column to indicate added, modified and removed lines in a file
 " under version control
 " - async execution
-" Plug 'mhinz/vim-signify'
+Plug 'mhinz/vim-signify'
 
 Plug 'scrooloose/nerdcommenter'
 Plug 'kien/rainbow_parentheses.vim'
@@ -51,44 +56,11 @@ Plug 'tmux-plugins/vim-tmux'
 Plug 'mzlogin/vim-markdown-toc'
 
 " fzf and others from the same author
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'junegunn/goyo.vim'
 
-" grep
-Plug 'mhinz/vim-grepper'
-
-" Save named macros
-Plug 'vvnraman/marvim'
-
-" Python
-Plug 'nvie/vim-flake8'
-
-" golang
-Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
-
-" Typescript Javascript
-Plug 'leafgarland/typescript-vim'
-Plug 'pangloss/vim-javascript'
-Plug 'yuezk/vim-js'
-Plug 'maxmellon/vim-jsx-pretty'
-Plug 'prettier/vim-prettier'
-
 " Linters
 Plug 'dense-analysis/ale'
-
-" YouCompleteMe.
-Plug 'ycm-core/YouCompleteMe'
-
-if has('nvim')
-  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-endif
-
-" QFEnter
-" - Added 2022-03-27 to help with opening results from the quickfix window into
-"   a split/vsplit/tab
-Plug 'yssl/QFEnter'
 
 " Initialize plugin system
 call plug#end()
@@ -104,63 +76,6 @@ call plug#end()
 "                                     and the pending changes
 " PlugSnapshot[!] [output path]       Generate script for restoring the current
 "                                     snapshot of the plugins
-"-------------------------------------------------------------------------------
-
-"===============================================================================
-" netrw - Built in file browser plugin
-"===============================================================================
-"Don't separate *.h from other files (as is done by default) in Explore
-let g:netrw_sort_sequence = "[\/]$,*,\.bak$,\.o$,\.info$,\.swp$,\.obj$"
-
-"-------------------------------------------------------------------------------
-
-"===============================================================================
-" octol/vim-cpp-enhanced-highlight options
-"===============================================================================
-let g:cpp_class_scope_highlight = 1
-let g_cpp_experimental_template_highlight = 1
-"-------------------------------------------------------------------------------
-
-"===============================================================================
-" YouCompleteMe options
-"===============================================================================
-
-nnoremap <F11> :YcmForceCompileAndDiagnostics <CR>
-
-let g:ycm_filetype_blacklist = {
-  \ 'md' : 1,
-  \ 'rst' : 1,
-  \ 'tagbar' : 1,
-  \ 'qf' : 1,
-  \ 'notes' : 1,
-  \ 'markdown' : 1,
-  \ 'unite' : 1,
-  \ 'text' : 1,
-  \ 'vimwiki' : 1,
-  \ 'pandoc' : 1,
-  \ 'infolog' : 1,
-  \ 'mail' : 1
-  \}
-
-let g:ycm_python_binary_path = 'python3'
-let g:ycm_python_interpreter_path = 'python3'
-let g:ycm_key_list_select_completion = []
-
-" Make the auto-complete window go away when we're done with it.
-let g:ycm_autoclose_window_after_completion=1
-
-"-------------------------------------------------------------------------------
-
-"===============================================================================
-" Syntastic options - Disabled 2017-03-14
-"===============================================================================
-
-"" " Jump to errors with ']'/'[' and lowercase 'L'
-"" let g:syntastic_always_populate_loc_list = 1
-"" 
-"" " C++
-"" let g:syntastic_cpp_check_header = 1
-"" let g:syntastic_cpp_checkers=['g++']
 "-------------------------------------------------------------------------------
 
 "===============================================================================
@@ -216,7 +131,7 @@ endif
 
 
 "Color schemes
-silent colorscheme molokai
+silent colorscheme 0x7A69_dark
 
 "===============================================================================
 " Airline
@@ -257,35 +172,6 @@ let g:tmuxline_preset={
 "-------------------------------------------------------------------------------
 
 "===============================================================================
-" vim-grepper setting
-"_______________________________________________________________________________
-let g:grepper = {}
-
-let g:grepper.dir = 'repo,file'
-
-" This allows us to easily use any one of these
-let g:grepper.tools=['rg', 'git', 'grep']
-" Use :GrepperGit or :GrepperRg or :GrepperGrep
-
-" search for current word
-nnoremap <Leader>* :Grepper -cword -noprompt<CR>
-
-" search for the current selection
-nmap gs <plug>(GrepperOperator)
-xmap gs <plug>(GrepperOperator)
-
-" oen grepper-prompt for a particular grep-alike tool
-nnoremap <Leader>g :Grepper -tool rg<CR>
-nnoremap <Leader>G :Grepper -tool git<CR>
-
-" To inspect tool specific setting being used by grepper
-" :echo g:grepper.rg.grepprg
-" :echo g:grepper.rg.grepformat
-" :echo g:grepper.rg.escape
-
-"-------------------------------------------------------------------------------
-
-"===============================================================================
 " snip setting
 " - 2021-05-23
 "   - 0 was the default, now deprecated. Setting to 1 (or 0) addresses the
@@ -294,21 +180,3 @@ nnoremap <Leader>G :Grepper -tool git<CR>
 let g:snipMate = { 'snippet_version' : 1 }
 
 "-------------------------------------------------------------------------------
-
-"===============================================================================
-" clangd setting
-"_______________________________________________________________________________
-
-" Let clangd fully control code completion
-let g:ycm_clangd_uses_ycmd_caching = 0
-
-" Use installed clangd, not YCM-bundled clangd which doesn't get updates.
-let g:ycm_clangd_binary_path = exepath("clangd")
-"-------------------------------------------------------------------------------
-
-"===============================================================================
-" Template: Plugin - Press 0fTcf> setting
-"_______________________________________________________________________________
-" TBD
-"-------------------------------------------------------------------------------
-

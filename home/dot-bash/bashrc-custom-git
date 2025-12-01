@@ -126,7 +126,3 @@ function git-worktree-existing-remote-branch()
       "${_base_dir}/${_project}_${_remote}_${_branch}" \
       "${_remote}_${_branch}"
 }
-
-log_stamp=$(date +"%G-week-%V")
-log_file="${HOME}/.bash-load/log-${log_stamp}.log"
-echo "`date` - bashrc-custom-git" >> "${log_file}"

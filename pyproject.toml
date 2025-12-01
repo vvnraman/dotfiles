@@ -1,20 +1,41 @@
-[tool.poetry]
+[project]
 name = "dotfiles"
-version = "0.1.0"
-description = "My dotfiles"
-authors = ["Your Name <you@example.com>"]
-license = "BSD 2 Clause"
+version = "1.0"
+description = "Prateek's dotfiles"
+readme = "README.rst"
+authors = [
+    { name = "Prateek Raman", email = "vvnraman at gmail dot com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "pydata-sphinx-theme>=0.16.1",
+    "sphinx>=8.2.3",
+    "sphinx-autobuild>=2025.8.25",
+    "sphinx-tabs>=3.4.7",
+    "sphinxcontrib-mermaid>=1.0.0",
+    "sphinxemoji>=0.3.1",
+    "typer-slim>=0.20.0",
+]
 
-[tool.poetry.dependencies]
-python = "^3.9"
-Sphinx = "^4.5.0"
-sphinx-rtd-theme = "^1.0.0"
-sphinxemoji = "^0.2.0"
-sphinx-tabs = "^3.3.1"
-sphinxcontrib-mermaid = "^0.7.1"
-
-[tool.poetry.dev-dependencies]
+[project.scripts]
+dotfiles = "dotfiles.main:app"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["uv_build>=0.9.9,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.basedpyright]
+include = ["src", "docs"]
+exclude = [
+  "**/__pycache__",
+  "**/*.egg-info",
+  "docs/_build"
+]
+ignore = [
+  "home/",
+]
+
+reportMissingImports = "error"
+reportImplicitStringConcatenation = false
+reportUnannotatedClassAttribute  = false
+reportImplicitOverride = false

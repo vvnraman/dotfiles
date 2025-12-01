@@ -1,4 +1,0 @@
-Neovim Plugins
-==============
-
-TBD

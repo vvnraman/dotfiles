@@ -1,5 +1,0 @@
-Neovim Config
-=============
-
-TBD
-

@@ -22,22 +22,6 @@ augroup common
 "-------------------------------------------------------------------------------
 
 "===============================================================================
-" Python
-"_______________________________________________________________________________
-" Set python pep8 style
-augroup edit_python
-  autocmd!
-  autocmd BufNewFile,BufRead,BufEnter *.py
-      \ set tabstop=4                 |
-      \ set softtabstop=4             |
-      \ set shiftwidth=4              |
-      \ set colorcolumn=+1            |
-      \ let python_highlight_all=1    |
-augroup END
-"-------------------------------------------------------------------------------
-
-
-"===============================================================================
 " Triger `autoread` when files changes on disk
 " https://unix.stackexchange.com/questions/149209/refresh-changed-content-of-file-opened-in-vim/383044#383044
 "_______________________________________________________________________________

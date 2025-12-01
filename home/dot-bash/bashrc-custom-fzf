@@ -77,9 +77,4 @@ if $(command -v fd 1>/dev/null 2>&1); then
 fi
 
 export FZF_ALT_C_OPTS="--preview '${FZF_TREE_PREVIEW}'"
-
 #-------------------------------------------------------------------------------
-
-log_stamp=$(date +"%G-week-%V")
-log_file="${HOME}/.bash-load/log-${log_stamp}.log"
-echo "`date` - bashrc-custom-fzf" >> "${log_file}"

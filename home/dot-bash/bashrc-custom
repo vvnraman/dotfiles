@@ -50,6 +50,7 @@ export CMAKE_EXPORT_COMPILE_COMMANDS=1
 
 #===============================================================================
 # pyenv
+export PYENV_ROOT="${HOME}/.pyenv"
 mkdir -p "${PYENV_ROOT}/cache"
 export PYTHON_BUILD_CACHE_PATH="${PYENV_ROOT}/cache"
 
@@ -60,7 +61,3 @@ if $(command -v pyenv 1>/dev/null 2>&1); then
   eval "$(pyenv init -)"
 fi
 #------------------------------------------------------------------------------
-
-log_stamp=$(date +"%G-week-%V")
-log_file="${HOME}/.bash-load/log-${log_stamp}.log"
-echo "`date` - bashrc-custom" >> "${log_file}"

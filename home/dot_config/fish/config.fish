@@ -1,30 +1,7 @@
 set --global fish_greeting
 set --global fish_key_bindings fish_vi_key_bindings
 
-# The order in which paths are being added is important as they're being
-# prepended to the path. I would like the `~/bin` to come first.
-
-# mise
-if command -q mise
-  mise activate fish | source
-end
-
-# golang
-fish_add_path --path --prepend "/usr/local/go/bin"
-
-# python/pyenv
-set --universal --export PYENV_ROOT "$HOME/.pyenv"
-fish_add_path --path --prepend "$PYENV_ROOT/bin"
-pyenv init - fish | source
-
-# cmake
-fish_add_path --path --prepend "/opt/cmake/bin"
-
-# custom binaries in `bin`
-# Add other entries to path above.
-fish_add_path --path --prepend "$HOME/bin"
-
-if command -q nvim
+if command --query nvim
   set --universal --export EDITOR nvim
   set --universal --export VISUAL nvim
 
@@ -44,12 +21,37 @@ if command -q nvim
   end
 end
 
-if command -q fzf
+if command --query fzf
   fzf --fish | source
 end
 
+# The order in which paths are being added is important as they're being
+# prepended to the path. I would like the `~/bin` to come first.
+
+# python/pyenv
+set --universal --export PYENV_ROOT "$HOME/.pyenv"
+fish_add_path --path --prepend "$PYENV_ROOT/bin"
+if command --query "$PYENV_ROOT/bin/pyenv" then
+  pyenv init - fish | source
+end
+
+# cmake
+fish_add_path --path --prepend "/opt/cmake/bin"
+
+# mise
+if command --query mise
+  mise activate fish | source
+end
+
+# golang
+fish_add_path --path --prepend "/usr/local/go/bin"
+
+# custom binaries in `bin`
+# Add other entries to path above.
+fish_add_path --path --prepend "$HOME/bin"
+
 function l --wraps=ls --description 'List contents of directory using long format'
-  if command -q lsd
+  if command --query lsd
     lsd -al $argv
   else
     ls -lh $argv
@@ -57,7 +59,7 @@ function l --wraps=ls --description 'List contents of directory using long forma
 end
 
 # bat - https://github.com/sharkdp/bat
-if command -q bat
+if command --query bat
   # Use `bat` as the man pager for colorized man pages, if available.
   set --global --export MANPAGER "sh -c 'col -bx | bat -l man -p'"
 
@@ -80,7 +82,7 @@ abbr --add gd1 git diff HEAD^1 --name-status
 abbr --add cs chezmoi status
 abbr --add ca chezmoi add
 
-if command -q lazygit
+if command --query lazygit
   alias lg="lazygit"
 end
 
@@ -90,7 +92,7 @@ if status is-interactive
     # Commands to run in interactive sessions can go here
 
     # starship
-    if command -q starship
+    if command --query starship
       starship init fish | source
     end
 end

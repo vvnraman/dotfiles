@@ -1,0 +1,44 @@
+######################
+Docker harness scripts
+######################
+
+This page explains how the Python scripts in ``tool-scripts/`` drive tool installation behavior for the harness.
+
+Runtime model
+=============
+
+- The installer scripts are standalone files under ``tool-scripts/`` and are not packaged as part of the ``uv`` project.
+- Run them directly from the repository root (for example, ``python3 tool-scripts/install-tools-arch.py``).
+- Imports work from sibling files in ``tool-scripts/`` because each script is executed by file path.
+- The scripts intentionally depend only on Python stdlib modules so they can run on minimally bootstrapped systems.
+
+High-level behavior
+===================
+
+- ``install-tools-arch.py`` resolves selected tools for the ``arch`` target, batches ``pacman`` installs, then runs release-based installs.
+- ``install-tools-ubuntu.py`` resolves selected tools for the ``ubuntu`` target, runs ``apt-get update``, batches ``apt-get install``, then runs release-based installs.
+- ``install-tools-windows.py`` is a placeholder that exits non-zero until host-side Windows support is implemented.
+- Both Linux installers apply post-install actions (for example, symlink fixes) after tool installation.
+
+Shared library role
+===================
+
+- ``tools_schema.py`` defines the typed schema used to parse, validate, and write ``tools.toml``.
+- ``install_tools_lib.py`` normalizes selection logic (bundle and target resolution) so both installers resolve the same tool set.
+- ``install_tools_lib.py`` implements shared release installers for ``github_release`` and ``appimage_release`` methods.
+- ``install_tools_lib.py`` implements normalized action handling used by both installers.
+
+Installer execution flow
+========================
+
+- Parse ``--manifest``, ``--bundle``, and ``--tool`` CLI inputs.
+- Load and validate the manifest into typed structures.
+- Build a tool plan for the selected target.
+- Batch install package-manager tools in one command.
+- Install remaining tools through release-based methods.
+- Apply post-install actions in plan order.
+
+Relevant changelogs
+===================
+
+- :doc:`/reference/project/2026-03-mar-document-docker-harness-tool-workflow`

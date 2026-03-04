@@ -1,0 +1,40 @@
+####################
+Manage tool manifest
+####################
+
+This page explains how ``tool-scripts/manage-tools.py`` drives list, add, update, remove, and validation flows for ``tools.toml``.
+
+Execution model
+===============
+
+- ``tool-scripts/manage-tools.py`` is a standalone script and runs directly from repository root.
+- It is intentionally outside the packaged ``uv`` app so manifest maintenance works in bootstrap contexts.
+- It depends only on Python stdlib plus sibling ``docker/`` modules.
+
+Management workflow
+===================
+
+- The script always starts by loading ``tools.toml`` through ``tool-scripts/tools_schema.py`` and validating it against the typed manifest schema.
+- Read-only flow filters the in-memory model by tool, bundle, target, and install method, then prints matching tool names.
+- Mutation flow builds a per-target tool config from CLI input, applies defaults, and infers missing release fields from existing entries for the same tool and method.
+- Method-specific required fields are validated before write so invalid entries fail early.
+- Successful mutations rewrite ``tools.toml`` in normalized order through ``tool-scripts/tools_schema.py`` and then reload it to confirm the new file remains valid.
+- Remove flow supports deleting one target entry or an entire tool table, and uses the same write-then-revalidate path.
+
+Practical effect
+================
+
+- Tool entry edits follow one command path with shared validation rules.
+- Installers consume schema-validated data on every run.
+- Normalized output keeps diffs stable and easier to review.
+
+Relevant guides
+===============
+
+- :doc:`/how-to/update-tools-manifest`
+- :doc:`/how-to/run-docker-workflow`
+
+Relevant changelogs
+===================
+
+- :doc:`/reference/project/2026-03-mar-document-docker-harness-tool-workflow`

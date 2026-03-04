@@ -1,0 +1,57 @@
+#####################################
+Run the harness workflow with Docker
+#####################################
+
+Use ``docker/run-workflow.sh`` to run smoke tests or open an interactive harness shell.
+
+Prerequisites
+=============
+
+- Docker is installed and running.
+- Run commands from the repository root.
+
+Run a smoke test
+================
+
+.. code-block:: sh
+
+   ./docker/run-workflow.sh --workflow=smoke-test --os=arch --profile=standard
+
+- Builds the ``arch-smoke`` service image.
+- Runs the smoke harness and exits with the smoke result.
+
+Run Ubuntu smoke test
+=====================
+
+.. code-block:: sh
+
+   ./docker/run-workflow.sh --workflow=smoke-test --os=ubuntu --profile=standard
+
+Open an interactive harness shell
+=================================
+
+.. code-block:: sh
+
+   ./docker/run-workflow.sh --workflow=shell --os=arch
+
+- Builds and starts the ``arch-shell`` service.
+- Opens ``/usr/bin/bash --login -i`` in the running container.
+
+Reuse an existing shell container
+=================================
+
+.. code-block:: sh
+
+   ./docker/run-workflow.sh --workflow=shell --os=arch --existing
+
+Useful flags
+============
+
+- ``--no-cache`` forces a no-cache image build.
+- ``--environment=<NAME>`` sets ``VVN_DOTFILES_ENVIRONMENT``.
+- ``--dry-run`` prints build/run commands without executing them.
+
+Related explanation
+===================
+
+- :doc:`/explanation/docker-harness-scripts`

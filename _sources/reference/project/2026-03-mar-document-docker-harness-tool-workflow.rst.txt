@@ -1,0 +1,22 @@
+2026-03-01 - document docker harness tool workflow
+==================================================
+
+2026-03-01 - Sunday
+-------------------
+
+Document docker harness script flow and tools manifest management workflow.
+
+Change summary
+--------------
+
+- Added explanation docs for harness installer scripts and typed tools manifest management.
+- Added how-to guides for running harness workflows and editing ``tools.toml`` through ``manage-tools.py``.
+- Linked project changelog to the new explanation and how-to pages.
+
+Related docs
+------------
+
+- :doc:`/explanation/docker-harness-scripts`
+- :doc:`/explanation/tool-manifest-schema`
+- :doc:`/how-to/run-docker-workflow`
+- :doc:`/how-to/update-tools-manifest`

@@ -1,0 +1,152 @@
+#####################
+Tools manifest schema
+#####################
+
+This page explains how ``tools.toml`` and ``tool-scripts/tools_schema.py`` define the manifest structure used by installers.
+
+Execution model
+===============
+
+- ``tool-scripts/tools_schema.py`` and related installer scripts are standalone and are executed directly from repository root.
+- They are intentionally not packaged into the ``uv`` project, so bootstrap does not depend on project packaging.
+- They use Python stdlib only (for TOML parsing, subprocess execution, downloads, and archive extraction).
+- This keeps early bootstrap requirements minimal: once Python is present, the tool installers can run.
+
+Manifest intent
+===============
+
+- ``tools.toml`` is the single source of truth for tool definitions across targets.
+- ``bundles`` defines grouped tool sets such as ``base_os`` and ``dotfiles_tools``.
+- ``targets`` maps each target to default bundles.
+- ``tools.<name>.<target>`` defines install method, method-specific fields, and optional post-install actions.
+
+Package-manager install on Arch (pacman)
+----------------------------------------
+
+``method = "pacman"`` reads ``packages`` and contributes those packages to the batched ``pacman`` install call.
+
+.. code-block:: toml
+   :emphasize-lines: 2,3
+
+   [tools.fish.arch]
+   method = "pacman"
+   packages = ["fish"]
+
+Package-manager install on Ubuntu (apt)
+---------------------------------------
+
+``method = "apt"`` reads ``packages`` and contributes those packages to the batched ``apt-get install`` call.
+
+.. code-block:: toml
+   :emphasize-lines: 2,3
+
+   [tools.ripgrep.ubuntu]
+   method = "apt"
+   packages = ["ripgrep"]
+
+GitHub release install
+----------------------
+
+``method = "github_release"`` resolves the release, formats the ``asset`` name, downloads it, and installs the requested binary path.
+
+.. code-block:: toml
+   :emphasize-lines: 2,4,6,8
+
+   [tools.fzf.ubuntu]
+   method = "github_release"
+   repo = "junegunn/fzf"
+   version = "0.68.0"
+   asset = "fzf-{version}-linux_{arch}.tar.gz"
+   archive = "tar.gz"
+   binary = "fzf"
+   install_path = "/usr/local/bin/fzf"
+   tag = "v{version}"
+   arch_map = { x86_64 = "amd64", aarch64 = "arm64" }
+
+AppImage release install
+------------------------
+
+``method = "appimage_release"`` resolves the AppImage asset and installs it as an executable at ``install_path``.
+
+.. code-block:: toml
+   :emphasize-lines: 2,4,5
+
+   [tools.neovim.ubuntu]
+   method = "appimage_release"
+   repo = "neovim/neovim"
+   version = "0.11.6"
+   asset = "nvim-linux-{arch}.appimage"
+   binary = "nvim"
+   install_path = "/usr/local/bin/nvim"
+   tag = "v{version}"
+   arch_map = { x86_64 = "x86_64", aarch64 = "arm64" }
+
+Windows package-manager install (winget)
+----------------------------------------
+
+``method = "winget"`` reads ``id`` and maps that target entry to a Winget package id.
+
+.. code-block:: toml
+   :emphasize-lines: 2,3
+
+   [tools.neovim.windows]
+   method = "winget"
+   id = "Neovim.Neovim"
+
+Schema enforcement
+==================
+
+- ``tools_schema.py`` defines the typed schema for manifest sections and per-tool config values.
+- ``load_tools_manifest`` validates parsed TOML and rejects invalid shape or missing required fields.
+
+Typed schema definitions
+------------------------
+
+.. code-block:: python
+   :emphasize-lines: 1,2,15,24
+
+   TargetOS = Literal["arch", "ubuntu", "windows"]
+   InstallMethod = Literal["pacman", "apt", "winget", "github_release", "appimage_release"]
+
+   class ToolAction(TypedDict):
+       type: str
+       source: str
+       target: str
+
+    class ToolConfig(TypedDict, total=False):
+        method: InstallMethod
+        packages: list[str]
+        id: str
+        repo: str
+        version: str
+        asset: str
+        archive: str
+        binary: str
+        install_path: str
+        tag: str
+        arch_map: dict[str, str]
+        actions: list[ToolAction]
+
+   class ManifestSchema(TypedDict):
+       meta: ManifestMeta
+       bundles: dict[str, list[str]]
+       targets: dict[str, ManifestTarget]
+       tools: dict[str, dict[TargetOS, ToolConfig]]
+
+Validation path
+---------------
+
+.. code-block:: python
+   :emphasize-lines: 1,2,4
+
+   def load_tools_manifest(manifest_path: Path) -> ManifestSchema:
+       raw = tomllib.load(f)
+       ...
+       return ManifestSchema(...)
+
+Related docs
+============
+
+- :doc:`/explanation/manage-tool-manifest`
+- :doc:`/how-to/update-tools-manifest`
+- :doc:`/reference/project/2026-03-mar-document-docker-harness-tool-workflow`

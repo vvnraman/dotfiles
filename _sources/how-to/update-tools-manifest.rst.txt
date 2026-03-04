@@ -1,0 +1,207 @@
+#############################
+Update tools manifest entries
+#############################
+
+Use ``tool-scripts/manage-tools.py`` to validate or mutate ``tools.toml`` entries.
+
+Validate manifest schema
+========================
+
+.. code-block:: sh
+
+   python3 tool-scripts/manage-tools.py --validate-tools
+
+List current entries
+====================
+
+- Default list:
+
+  .. code-block:: sh
+
+      python3 tool-scripts/manage-tools.py list
+
+- By default, ``list`` uses the current host target (for example, ``arch`` on an Arch host).
+
+- Filter by target:
+
+  .. code-block:: sh
+
+      python3 tool-scripts/manage-tools.py list --target ubuntu
+
+- Show all targets explicitly:
+
+  .. code-block:: sh
+
+      python3 tool-scripts/manage-tools.py list --target all
+
+- Filter by bundle:
+
+  .. code-block:: sh
+
+      python3 tool-scripts/manage-tools.py list --bundle dotfiles_tools
+
+- Filter by install method:
+
+  .. code-block:: sh
+
+      python3 tool-scripts/manage-tools.py list --method github_release
+
+- Filter by tool:
+
+  .. code-block:: sh
+
+      python3 tool-scripts/manage-tools.py list --tool fzf
+
+Add a tool target entry
+=======================
+
+.. tab-set::
+
+   .. tab-item:: pacman
+
+      .. code-block:: sh
+
+         python3 tool-scripts/manage-tools.py add \
+           --tool starship \
+           --target arch \
+           --method pacman \
+           --packages starship
+
+   .. tab-item:: apt
+
+      .. code-block:: sh
+
+         python3 tool-scripts/manage-tools.py add \
+           --tool starship \
+           --target ubuntu \
+           --method apt \
+           --packages starship
+
+   .. tab-item:: github_release
+
+      .. code-block:: sh
+
+         python3 tool-scripts/manage-tools.py add \
+           --tool jq \
+           --target ubuntu \
+           --method github_release \
+           --repo jqlang/jq \
+           --version 1.8.1 \
+           --asset 'jq-linux-{arch}' \
+           --install-path /usr/local/bin/jq \
+           --tag 'jq-{version}' \
+           --arch-map 'x86_64=amd64,aarch64=arm64'
+
+   .. tab-item:: appimage_release
+
+      .. code-block:: sh
+
+         python3 tool-scripts/manage-tools.py add \
+            --tool myapp \
+            --target ubuntu \
+            --method appimage_release \
+            --repo owner/myapp \
+            --version 1.2.3 \
+            --asset 'myapp-{arch}.appimage' \
+            --install-path /usr/local/bin/myapp \
+            --tag 'v{version}' \
+            --arch-map 'x86_64=x86_64,aarch64=arm64'
+
+Update a tool target entry
+==========================
+
+.. tab-set::
+
+   .. tab-item:: pacman
+
+      .. code-block:: sh
+
+         python3 tool-scripts/manage-tools.py update \
+           --tool fish \
+           --target arch \
+           --method pacman \
+           --packages fish
+
+   .. tab-item:: apt
+
+      .. code-block:: sh
+
+         python3 tool-scripts/manage-tools.py update \
+           --tool fish \
+           --target ubuntu \
+           --method apt \
+           --packages fish
+
+   .. tab-item:: github_release
+
+      .. code-block:: sh
+
+         python3 tool-scripts/manage-tools.py update \
+           --tool fzf \
+           --target ubuntu \
+           --method github_release \
+           --repo junegunn/fzf \
+           --version 0.68.0 \
+           --asset 'fzf-{version}-linux_{arch}.tar.gz' \
+           --archive tar.gz \
+           --binary fzf \
+           --install-path /usr/local/bin/fzf \
+           --tag 'v{version}' \
+           --arch-map 'x86_64=amd64,aarch64=arm64'
+
+   .. tab-item:: appimage_release
+
+      .. code-block:: sh
+
+         python3 tool-scripts/manage-tools.py update \
+            --tool neovim \
+            --target ubuntu \
+            --method appimage_release \
+            --repo neovim/neovim \
+            --version 0.11.6 \
+            --asset 'nvim-linux-{arch}.appimage' \
+            --install-path /usr/local/bin/nvim \
+            --tag 'v{version}' \
+            --arch-map 'x86_64=x86_64,aarch64=arm64'
+
+Remove a tool target entry
+==========================
+
+- Remove one target entry:
+
+  .. code-block:: sh
+
+     python3 tool-scripts/manage-tools.py remove --tool starship --target ubuntu
+
+- Remove the entire tool entry:
+
+  .. code-block:: sh
+
+     python3 tool-scripts/manage-tools.py remove --tool starship
+
+Notes
+=====
+
+- ``add`` and ``update`` default ``--target`` to the detected host target when omitted.
+- ``add`` and ``update`` default ``--method`` to the host package manager when omitted.
+- ``github_release`` and ``appimage_release`` default ``--binary`` to the tool name when omitted.
+- ``github_release`` and ``appimage_release`` default ``--install-path`` to ``/usr/local/bin/<binary>``.
+- Release-based commands infer ``repo``, ``asset``, ``tag``, and ``arch-map`` from existing ``tools.toml`` entries when available.
+- Mutating commands rewrite ``tools.toml`` in normalized order.
+- Mutating commands always re-validate after write.
+- Invalid method-specific fields fail with an error.
+
+Schema module usage
+===================
+
+- ``tool-scripts/tools_schema.py`` is the shared schema module for manifest structure, validation, and normalized TOML writing.
+- ``tool-scripts/manage-tools.py`` uses this module to load and validate ``tools.toml`` before every command.
+- ``tool-scripts/manage-tools.py`` also uses this module to write normalized output, then re-loads to confirm schema validity.
+- ``tool-scripts/install-tools-arch.py`` and ``tool-scripts/install-tools-ubuntu.py`` use ``tool-scripts/tools_schema.py`` for manifest loading, then pass validated data into installer runtime helpers.
+- ``tool-scripts/install_tools_lib.py`` now focuses on installation/runtime behavior and no longer owns TOML parse/validate/write responsibilities.
+
+Related explanation
+===================
+
+- :doc:`/explanation/tool-manifest-schema`
+- :doc:`/explanation/manage-tool-manifest`

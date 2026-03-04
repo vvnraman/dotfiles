@@ -1,0 +1,18 @@
+$ lsd --almost-all --tree /home/vvnraman/.local/share/chezmoi/home/dot_config/fish
+fish
+├── completions
+│   └── .keep
+├── conf.d
+│   ├── fzf-config.fish
+│   └── git-config.fish
+├── config.fish
+├── functions
+│   └── .keep
+├── generated
+│   └── fzf-fragments.fish.tmpl
+├── linux-arch-config.fish
+├── linux-config.fish
+├── linux-ubuntu-config.fish
+├── symlink_os-config.fish.tmpl
+├── symlink_user-config.fish.tmpl
+└── vvnraman-config.fish

@@ -1,0 +1,8 @@
+{{- /* vim: set ft=gotmpl: */ -}}
+{{- if eq .chezmoi.os "linux" -}}
+{{ template "linux-config.tmpl" . }}
+{{- else if eq .chezmoi.os "windows" -}}
+windows
+{{- else -}}
+uncharted
+{{- end -}}

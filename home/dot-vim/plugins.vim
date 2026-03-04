@@ -20,9 +20,6 @@ Plug 'godlygeek/tabular'
 Plug 'Lokaltog/vim-easymotion'
 Plug 'justinmk/vim-sneak'
 
-" Zig
-Plug 'ziglang/zig.vim'
-
 " Status
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -39,9 +36,6 @@ Plug 'tpope/vim-obsession'
 
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'tomtom/tlib_vim'
-Plug 'garbas/vim-snipmate'
-Plug 'honza/vim-snippets'
-Plug 'SirVer/ultisnips'
 
 " Uses the sign column to indicate added, modified and removed lines in a file
 " under version control
@@ -59,8 +53,6 @@ Plug 'mzlogin/vim-markdown-toc'
 Plug 'junegunn/vim-easy-align'
 Plug 'junegunn/goyo.vim'
 
-" Linters
-Plug 'dense-analysis/ale'
 
 " Initialize plugin system
 call plug#end()
@@ -121,15 +113,6 @@ if exists(":Tabularize")
 endif
 "-------------------------------------------------------------------------------
 
-"Font
-if os == "windows"
-  " set guifont=Consolas:h12:cANSI
-  silent! set guifont=Inconsolata:h12:cANSI
-else
-  silent! set guifont=Monospace\ 10
-endif
-
-
 "Color schemes
 silent colorscheme 0x7A69_dark
 
@@ -169,14 +152,4 @@ let g:tmuxline_preset={
 " ale settings
 "_______________________________________________________________________________
 " TBD
-"-------------------------------------------------------------------------------
-
-"===============================================================================
-" snip setting
-" - 2021-05-23
-"   - 0 was the default, now deprecated. Setting to 1 (or 0) addresses the
-"     deprecation warning
-"_______________________________________________________________________________
-let g:snipMate = { 'snippet_version' : 1 }
-
 "-------------------------------------------------------------------------------

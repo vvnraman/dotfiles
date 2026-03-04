@@ -1,0 +1,10 @@
+{{- /* vim: set ft=gotmpl: */ -}}
+{{- if and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "arch") -}}
+linux-arch
+{{- else if and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "ubuntu") -}}
+linux-ubuntu
+{{- else if and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "redhat") -}}
+linux-redhat
+{{- else -}}
+linux
+{{- end -}}

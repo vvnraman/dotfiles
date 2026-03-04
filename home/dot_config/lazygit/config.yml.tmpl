@@ -1,0 +1,54 @@
+gui:
+  sidePanelWidth: 0.2
+  nerdFontsVersion: "3"
+  theme:
+    activeBorderColor:
+      - "#ff9e64"
+      - "bold"
+    inactiveBorderColor:
+      - "#27a1b9"
+    searchingActiveBorderColor:
+      - "#ff9e64"
+      - "bold"
+    optionsTextColor:
+      - "#7aa2f7"
+    selectedLineBgColor:
+      - "#283457"
+    cherryPickedCommitFgColor:
+      - "#7aa2f7"
+    cherryPickedCommitBgColor:
+      - "#bb9af7"
+    markedBaseCommitFgColor:
+      - "#7aa2f7"
+    markedBaseCommitBgColor:
+      - "#e0af68"
+    unstagedChangesColor:
+      - "#db4b4b"
+    defaultFgColor:
+      - "#c0caf5"
+git:
+  pagers:
+{{- if lookPath "delta" }}
+    - pager: >-
+        delta
+        --dark
+        --paging=never
+    - pager: >-
+        delta
+        --dark
+        --paging=never
+        --line-numbers
+        --side-by-side
+        --diff-highlight
+
+#    - pager: >-
+#        delta
+#        --dark
+#        --paging=never
+#        --line-numbers
+#        --hyperlinks
+#        --hyperlinks-file-link-format="lazygit-edit://{path}:{line}"
+{{- else }}
+    - colorArg: always
+      pager: ""
+{{- end }}

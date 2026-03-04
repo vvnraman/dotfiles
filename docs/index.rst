@@ -14,7 +14,6 @@ basic usage.
    :caption: Contents:
 
    intro/index
-   journal/index
    how-to/index
    tutorials/index
    explanation/index

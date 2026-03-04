@@ -1,0 +1,96 @@
+# Run `ghostty +show-config --default --docs` to view a list of
+# all available config options and their default values.
+#
+# Additionally, each config option is also explained in detail
+# on Ghostty's website, at https://ghostty.org/docs/config.
+#
+# Ghostty can reload the configuration while running by using the menu
+# options or the bound key
+# - Control + Shift + comma
+
+#######
+# Shell
+#######
+command = fish --login --interactive
+shell-integration = none
+
+#######
+# fonts
+#######
+
+# Default is "JetBrains Mono"
+font-family = MesloLGS Nerd Font Mono
+font-size = 11
+
+#######
+# theme
+#######
+# theme = Spacedust
+theme = TokyoNight Night
+
+# Shortlisted themes, copy (not cut/delete) and paste above
+#--------
+# Darkest
+#--------
+# theme = Arthur
+# theme = Catppuccin Macchiato
+# theme = Gruvbox Material
+# theme = Matte Black
+# theme = Night Owl
+# theme = Nocturnal Winter
+# theme = Sea Shells
+# theme = Spacedust
+#
+#-------
+# Darker
+#-------
+# theme = Nvim Dark
+# theme = Oxocarbon
+# theme = Rapture
+# theme = Rose Pine
+# theme = Seti
+# theme = Snazzy
+# theme = Synthwave
+# theme = Srcery
+# theme = Terafox
+# theme = TokyoNight Night
+# theme = Tomorrow Night
+# theme = Tomorrow Night Bright
+# theme = Vercel
+# theme = Ultra Dark
+# theme = Under The Sea
+#
+#-----
+# Dark
+#-----
+# theme = Oceanic Next
+#
+
+############
+# Copy paste
+############
+
+clipboard-read = allow
+clipboard-write = allow
+# Default is true anyways
+copy-on-select = true
+selection-clear-on-copy = true
+keybind = performable:ctrl+shift+c=copy_to_clipboard
+
+#######
+# mouse
+#######
+
+mouse-hide-while-typing = true
+mouse-scroll-multiplier = 1
+focus-follows-mouse = true
+
+# for systemd integration, but I'll have it run in the background
+# quit-after-last-window-closed = true
+# quit-after-last-window-closed-delay = 10m
+
+########################
+# URLs, links, hyprlinks
+########################
+
+link-url = true

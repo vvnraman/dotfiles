@@ -1,0 +1,10 @@
+[Unit]
+Description=Command line user session
+Documentation=man:systemd.special(7)
+RefuseManualStart=no
+StopWhenUnneeded=no
+After=ssh-agent.service
+Wants=ssh-agent.service
+
+[Install]
+WantedBy=default.target

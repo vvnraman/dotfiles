@@ -1,0 +1,14 @@
+{{- /* vim: set ft=gotmpl: */ -}}
+{{- $home := .chezmoi.homeDir -}}
+{{- $source_config := joinPath .chezmoi.sourceDir "dot_config" -}}
+{{- $version_file := joinPath $home ".config/vvnraman/arch/hyprland_version" -}}
+{{- $version_candidate := "" -}}
+{{- if stat $version_file -}}
+  {{- $version := output "cat" $version_file | trim -}}
+  {{- $version_candidate = print "hypr-" $version -}}
+{{- end -}}
+{{- if and $version_candidate (stat (joinPath $source_config $version_candidate)) -}}
+{{ $version_candidate }}
+{{- else -}}
+hyprland
+{{- end -}}

@@ -1,0 +1,278 @@
+// -*- mode: jsonc -*-
+{
+    "layer": "top",
+    "position": "top", // top|bottom|left|right
+    "spacing": 2,
+    // Choose the order of the modules
+    "modules-left": [
+        "mpd",
+        "hyprland/workspaces",
+    ],
+    "modules-center": [
+        "hyprland/windowcount",
+        "hyprland/window",
+    ],
+    "modules-right": [
+        "network",
+        "cpu",
+        "memory",
+        "temperature",
+        // "backlight",
+        "battery",
+        "battery#bat2",
+        "clock",
+        "idle_inhibitor",
+        "bluetooth",
+        "tray",
+        "pulseaudio",
+        "power-profiles-daemon",
+        "custom/power",
+    ],
+    // Module configuration below
+    "user": {
+        "format": "↑{work_d}d {work_h}h",
+    },
+    "hyprland/workspaces": {
+        "all-outputs": true,
+        // "format": "<sub>{icon} {name}</sub>\n{windows}",
+        "format": "{icon} {name}\n{windows}",
+        "format-icons": {
+            "active": "",
+            "default": "",
+            "empty": "∅",
+            "special": "",
+        },
+        "format-window-separator": " ⦙ ",
+        "persistent-workspaces": {
+            "*": 5
+        },
+        "persistent-only": false,
+        "workspace-taskbar": {
+            "enable": true,
+            "update-active-window": true,
+            "icon-size": 14,
+        },
+        "show-special": true,
+        "on-scroll-up": "hyprctl dispatch workspace m+1",
+        "on-scroll-down": "hyprctl dispatch workspace m-1",
+        "cursor": true
+    },
+    "hyprland/windowcount": {
+        "format": "󱂬 {}",
+        "format-empty": "󱂬 ∅",
+        "separate-outputs": true
+    },
+    "hyprland/window": {
+        "format": "{title}",
+        "max-length": 40,
+        "separate-outputs": true,
+        "icon": true,
+    },
+    "network": {
+        "format": "{ifname}",
+        "format-wifi": " 󰲝  ",
+        "format-ethernet": " 󰲝  ",
+        "format-disconnected": " 󰌙  ",
+        "format-linked": "{ifname} (No IP) ",
+        "format-alt": "{ifname}: {ipaddr}/{cidr}",
+        "tooltip-format": "{ifname} via {gwaddr} 󰊗",
+        "tooltip-format-wifi": "{essid} ({signalStrength}%) ",
+        "tooltip-format-ethernet": "{ifname}/{cidr} ",
+        "tooltip-format-disconnected": "Disconnected",
+        "tooltip-format": "{ifname} via {gwaddr} ",
+        "max-length": 16,
+    },
+    "mpd": {
+        "format": "{stateIcon} {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}{artist} - {album} - {title} ({elapsedTime:%M:%S}/{totalTime:%M:%S}) ⸨{songPosition}|{queueLength}⸩ {volume}% ",
+        "format-disconnected": "Disconnected ",
+        "format-stopped": "{consumeIcon}{randomIcon}{repeatIcon}{singleIcon}Stopped ",
+        "unknown-tag": "N/A",
+        "interval": 5,
+        "consume-icons": {
+            "on": " "
+        },
+        "random-icons": {
+            "off": "<span color=\"#f53c3c\"></span> ",
+            "on": " "
+        },
+        "repeat-icons": {
+            "on": " "
+        },
+        "single-icons": {
+            "on": "1 "
+        },
+        "state-icons": {
+            "paused": "",
+            "playing": ""
+        },
+        "tooltip-format": "MPD (connected)",
+        "tooltip-format-disconnected": "MPD (disconnected)"
+    },
+    "cpu": {
+        "format": "{load}󱌀 ",
+        "tooltip": true,
+    },
+    "memory": {
+        "format": "{}% ",
+        "tooltip-format": "{used:0.1f}G/{total:0.1f}G ",
+    },
+    "temperature": {
+        // "thermal-zone": 2,
+        // "hwmon-path": "/sys/class/hwmon/hwmon2/temp1_input",
+        "critical-threshold": 80,
+        // "format-critical": "{temperatureC}°C {icon}",
+        "format": "{temperatureC}°C {icon}",
+        "format-icons": [
+            "",
+            "",
+            ""
+        ]
+    },
+    "backlight": {
+        // "device": "acpi_video1",
+        "format": "{percent}% {icon}",
+        "format-icons": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+        ]
+    },
+    "keyboard-state": {
+        "numlock": true,
+        "capslock": true,
+        "format": "{name} {icon}",
+        "format-icons": {
+            "locked": "",
+            "unlocked": ""
+        }
+    },
+    "battery": {
+        "states": {
+            // "good": 95,
+            "warning": 30,
+            "critical": 15
+        },
+        "format": "{capacity}% {icon}",
+        "format-full": "{capacity}% {icon}",
+        "format-charging": "{capacity}% ",
+        "format-plugged": "{capacity}% ",
+        "format-alt": "{time} {icon}",
+        // "format-good": "", // An empty format will hide the module
+        "format-icons": [
+            "",
+            "",
+            "",
+            "",
+            ""
+        ]
+    },
+    "battery#bat2": {
+        "bat": "BAT2"
+    },
+    "clock": {
+        "format": "{:%a, %b %d %H:%M}",
+        "format-alt": "{:%Y-%m-%d %H:%M:%S %Z}",
+        //"tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+        "tooltip-format": "{tz_list}",
+        "timezones": [
+            "America/New_York",
+            "Asia/Kolkata",
+            "Europe/London",
+            "America/Los_Angeles"
+        ]
+    },
+    "idle_inhibitor": {
+        "format": "{icon}",
+        "format-icons": {
+            "activated": "",
+            "deactivated": ""
+        }
+    },
+    "bluetooth": {
+        "format": " {status}",
+        "format-connected": "  ",
+        "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
+        "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
+        "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+        "tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_address}\t{device_battery_percentage}%"
+    },
+    "tray": {
+        // "icon-size": 21,
+        "spacing": 10,
+        // "icons": {
+        //   "blueman": "bluetooth",
+        //   "TelegramDesktop": "$HOME/.local/share/icons/hicolor/16x16/apps/telegram.png"
+        // }
+    },
+    "pulseaudio": {
+        "scroll-step": 2,
+        "format": "{volume}% {icon} {format_source}",
+        "format-bluetooth": "{volume}% {icon} {format_source}",
+        "format-bluetooth-muted": " {icon} {format_source}",
+        "format-muted": " {format_source}",
+        "format-source": "{volume}% ",
+        "format-source-muted": "",
+        "format-icons": {
+            // names from `pactl list sinks`, but they don't work
+            // "alsa_output.pci-0000_c2_00.6.HiFi__Headphones__sink": "💻",
+            // "alsa_output.usb-CalDigit_Inc._CalDigit_TS4_Audio_-_Rear-00.analog-stereo": "󰀱🔈",
+            // "alsa_output.usb-Shure_Inc_Shure_MV7-00.analog-stereo": "🎙️",
+            // "alsa_output.pci-0000_c2_00.1.HiFi__HDMI1__sink": "󰡁",
+            // "alsa_output.pci-0000_c2_00.1.HiFi__HDMI2__sink": "󰡁",
+            // "alsa_output.pci-0000_c2_00.1.HiFi__HDMI3__sink": "󰡁",
+            // "alsa_output.pci-0000_c2_00.1.HiFi__HDMI4__sink": "󰡁",
+            // names from `pactl list sources` with `input` in them, but they dont' work
+            // "alsa_input.pci-0000_c2_00.6.HiFi__Mic1__source": "💻",
+            // "alsa_input.pci-0000_c2_00.6.HiFi__Mic2__source": "💻",
+            // "alsa_input.usb-CalDigit_Inc._CalDigit_TS4_Audio_-_Rear-00.analog-stereo": "󰀱",
+            // "Name: alsa_input.usb-Shure_Inc_Shure_MV7-00.mono-fallback": "🎙️",
+            // default config
+            "headphone": "",
+            "hands-free": "",
+            "headset": "",
+            "phone": "",
+            "phone-muted": "",
+            "portable": "",
+            "car": "",
+            "default": [
+                "",
+                "",
+                ""
+            ]
+        },
+        "tooltip": true,
+        "on-click": "pavucontrol"
+    },
+    "power-profiles-daemon": {
+        "format": "{icon}",
+        "tooltip-format": "Power profile: {profile}\nDriver: {driver}",
+        "tooltip": true,
+        "format-icons": {
+            "default": "",
+            "performance": "",
+            "balanced": "",
+            "power-saver": ""
+        }
+    },
+    "custom/power": {
+        "format": "⏻ ",
+        "tooltip": true,
+        "menu": "on-click",
+        "menu-file": "$HOME/.config/waybar/power_menu.xml",
+        // `id` for `GtkObject` in `power_menu.xml` must match keys below
+        "menu-actions": {
+            "lock": "hyprlock",
+            "suspend": "systemctl suspend",
+            "logout": "~/.local/bin/vvnraman/hyprland_logout.sh",
+            "hibernate": "systemctl hibernate",
+            "reboot": "reboot",
+            "shutdown": "shutdown",
+        }
+    }
+}

@@ -1,0 +1,31 @@
+# Ignore the git setup for Neovim, and other project related files.
+.config/nvim/.git
+.config/nvim/.git/
+.config/nvim/LICENSE
+.config/nvim/Makefile
+.config/nvim/README.rst
+.config/nvim/docker/
+.config/nvim/docs/
+.config/nvim/pyproject.toml
+.config/nvim/src/
+.config/nvim/uv.lock
+
+# Ignore fish default `conf.d` files
+.config/fish/conf.d/fish_frozen_theme.fish
+.config/fish/conf.d/fish_frozen_key_bindings.fish
+
+{{ if ne .chezmoi.username "vvnraman" }}
+.local/bin/vvnraman/
+{{ end }}
+
+{{ if not (and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "arch")) }}
+.config/brave-flags.conf
+.config/chromium-flags.conf
+.config/hypr
+.config/hypr*
+.config/hypr/
+.config/mako/
+.config/systemd/
+.config/uwsm/
+.config/waybar/
+{{ end }}

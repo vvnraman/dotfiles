@@ -1,0 +1,22 @@
+$ lsd --almost-all --tree /home/vvnraman/.local/share/chezmoi/home/dot-bash
+dot-bash
+├── bash_profile
+├── bashrc
+├── bashrc-lib.sh
+├── bashrc.d
+│   ├── bashrc-fzf.sh
+│   └── bashrc-git.sh
+├── generated
+│   └── fzf-fragments.sh.tmpl
+├── overlays
+│   ├── bashrc-linwin.sh
+│   ├── bashrc-os-linux-arch.sh
+│   ├── bashrc-os-linux-ubuntu.sh
+│   ├── bashrc-os-linux.sh
+│   ├── bashrc-os-uncharted.sh
+│   ├── bashrc-os-windows.sh
+│   ├── bashrc-user-vvnraman.sh
+│   ├── bashrc-wsl2.sh
+│   ├── symlink_bashrc-os-config.sh.tmpl
+│   └── symlink_bashrc-user-config.sh.tmpl
+└── profile

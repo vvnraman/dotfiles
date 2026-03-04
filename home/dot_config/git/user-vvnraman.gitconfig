@@ -1,0 +1,6 @@
+# vim: ft=gitconfig
+[user]
+    name = Prateek Raman
+    email = vvnraman@gmail.com
+[init]
+    defaultBranch = master

@@ -1,0 +1,7 @@
+$ lsd --almost-all --tree /home/vvnraman/.local/share/chezmoi/home/dot_config/lazygit
+lazygit
+├── config.yml.tmpl
+├── tokyonight_day.yml
+├── tokyonight_moon.yml
+├── tokyonight_night.yml
+└── tokyonight_storm.yml

@@ -1,9 +1,61 @@
-local rg_cmd = { "rg", "--files", "--hidden", "--glob", "!**/.git/*" }
-local fd_cmd = { "fd", "--type", "file", "--hidden", "--exclude", ".git/" }
-local fd_cmd_dir = { "fd", "--type", "directory", "--hidden", "--exclude", ".git/" }
-local fd_cmd_d1 = fd_cmd
-table.insert(fd_cmd_d1, "--max-depth")
-table.insert(fd_cmd_d1, "1")
+local relative_to_dir = function(parent_dir, abs_path)
+  local escape_lua_pattern = function(s)
+    return (s:gsub("([^%w])", "%%%1"))
+  end
+
+  return abs_path:gsub("^" .. escape_lua_pattern(parent_dir) .. "/", "")
+end
+
+local get_rg_glob_exclusions = function()
+  local home = vim.fn.expand("~")
+  local obsidian_root = vim.fn.expand("~/obsidian")
+  local dropbox_root = vim.fn.expand("~/Dropbox")
+  local obsidian_rel = relative_to_dir(home, obsidian_root)
+  local dropbox_rel = relative_to_dir(home, dropbox_root)
+
+  return {
+    "--glob",
+    "!**/.git/*",
+    "--glob",
+    "!" .. obsidian_rel .. "/.obsidian/*",
+    "--glob",
+    "!.obsidian/*",
+    "--glob",
+    "!" .. dropbox_rel .. "/.dropbox.cache/*",
+    "--glob",
+    "!.dropbox.cache/*",
+    "--glob",
+    "!" .. dropbox_rel .. "/.dropbox/*",
+    "--glob",
+    "!.dropbox/*",
+  }
+end
+
+local rg_glob_exclusions = get_rg_glob_exclusions()
+local rg_cmd =
+  vim.list_extend({ "rg", "--files", "--hidden" }, vim.deepcopy(rg_glob_exclusions))
+
+local fd_exclusions = {
+  "--exclude",
+  ".git/",
+  "--exclude",
+  "obsidian/.obsidian/",
+  "--exclude",
+  ".obsidian/",
+  "--exclude",
+  "Dropbox/.dropbox.cache/",
+  "--exclude",
+  ".dropbox.cache/",
+  "--exclude",
+  "Dropbox/.dropbox/",
+  "--exclude",
+  ".dropbox/",
+}
+local fd_cmd =
+  vim.list_extend({ "fd", "--type", "file", "--hidden" }, vim.deepcopy(fd_exclusions))
+local fd_cmd_dir =
+  vim.list_extend({ "fd", "--type", "directory", "--hidden" }, vim.deepcopy(fd_exclusions))
+local fd_cmd_d1 = vim.list_extend(vim.deepcopy(fd_cmd), { "--max-depth", "1" })
 
 --[[==========================================================================
   Find project root directory
@@ -79,10 +131,10 @@ local telescope_setup = function()
 
   -- Show hidden files, but ignore git files always
   -- Clone default telescope vimgrep config
-  local vimgrep_arguments = { unpack(telescope_config.values.vimgrep_arguments) }
-  table.insert(vimgrep_arguments, "--hidden")
-  table.insert(vimgrep_arguments, "--glob")
-  table.insert(vimgrep_arguments, "!**/.git/*")
+  local vimgrep_arguments = vim.list_extend(
+    vim.deepcopy(telescope_config.values.vimgrep_arguments),
+    vim.list_extend({ "--hidden" }, vim.deepcopy(rg_glob_exclusions))
+  )
 
   -- Open a floating oil window at the location of the current selection.
   local open_oil = function(prompt_bufnr)
@@ -284,31 +336,58 @@ local telescope_setup = function()
   which_key.add({ "z", group = "+Live grep config" })
 
   local favourite_edit_grep = function(key, path, prompt_part, desc_part)
+    local expanded_path = vim.fn.expand(path)
+    if not vim.fn.isdirectory(expanded_path) then
+      return
+    end
+
     vim.keymap.set("n", "<leader>e" .. key, function()
       telescope_builtin.find_files({
-        prompt_title = "Search " .. prompt_part .. " config",
-        cwd = path,
+        prompt_title = "Search " .. prompt_part .. " files",
+        cwd = expanded_path,
       })
-    end, { desc = "[e]dit " .. desc_part .. " config" })
+    end, { desc = "[e]dit " .. desc_part .. " files" })
 
     vim.keymap.set("n", "<leader>z" .. key, function()
       telescope_builtin.live_grep({
-        prompt_title = "Live grep " .. prompt_part .. " config",
-        cwd = path,
+        prompt_title = "Live grep " .. prompt_part .. " files",
+        cwd = expanded_path,
       })
-    end, { desc = "[z]ive grep " .. desc_part .. " config" })
+    end, { desc = "[z]ive grep " .. desc_part .. " files" })
   end
 
-  -- <leader>en, <leader>zn
-  favourite_edit_grep("n", vim.fn.stdpath("config"), "Neovim", "[n]vim")
-  -- <leader>ec, <leader>zc
-  favourite_edit_grep("c", "~/.local/share/chezmoi/", "Chezmoi", "[c]hezmoi")
-  -- <leader>ef, <leader>zf
-  favourite_edit_grep("f", "~/.config/fish/", "Fish", "[f]ish")
+  -- <leader>ea, <leader>za
+  favourite_edit_grep("a", "~/.config/alacritty/", "Alacritty", "[a]lacritty")
   -- <leader>eb, <leader>zb
   favourite_edit_grep("b", "~/dot-bash/", "bash", "[b]ash")
+  -- <leader>ec, <leader>zc
+  favourite_edit_grep("c", "~/.local/share/chezmoi/", "Chezmoi", "[c]hezmoi")
+
+  -- <leader>df, <leader>zd
+  favourite_edit_grep("d", "~/Dropbox", "Dropbox", "[d]ropbox")
+
+  -- <leader>ef, <leader>zf
+  favourite_edit_grep("f", "~/.config/fish/", "Fish", "[f]ish")
+  -- <leader>eg, <leader>zg
+  favourite_edit_grep("g", "~/.config/ghostty/", "Ghostty", "[g]hostty")
+  -- <leader>eh, <leader>zh
+  favourite_edit_grep("h", "~/.config/hypr/", "Hyprland", "[h]yprland")
+  -- <leader>el, <leader>zl
+  favourite_edit_grep("l", "~/.config/lazygit/", "LayzGit", "[l]azygit")
+  -- <leader>en, <leader>zn
+  favourite_edit_grep("n", vim.fn.stdpath("config"), "Neovim", "[n]vim")
+  -- <leader>em, <leader>zm
+  favourite_edit_grep("m", "~/code/mine/", "My code", "[m]y code")
+
+  -- <leader>eo, <leader>zo
+  favourite_edit_grep("o", "~/obsidian/", "Obsidian", "[o]bsidian")
+
   -- <leader>et, <leader>zt
   favourite_edit_grep("t", "~/dot-tmux/", "tmux", "[t]mux")
+  -- <leader>ev, <leader>zv
+  favourite_edit_grep("v", "~/.config/vvnraman/", "vvnraman config", "[v]vnraman config")
+  -- <leader>ew, <leader>zw
+  favourite_edit_grep("w", "~/.config/waybar/", "Waybar", "[w]aybar")
 end
 
 local M = {
@@ -316,7 +395,6 @@ local M = {
     -- https://github.com/nvim-telescope/telescope.nvim
     "nvim-telescope/telescope.nvim",
     event = "VeryLazy",
-    branch = "0.1.x",
     -- this keeps in the indentation in check in the config.
     config = telescope_setup,
     dependencies = {

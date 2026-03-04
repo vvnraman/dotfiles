@@ -1,0 +1,7 @@
+{{- /* vim: set ft=gotmpl: */ -}}
+{{- $profile := lower (env "VVN_DOTFILES_PROFILE") -}}
+{{- if or (eq $profile "minimal") (eq $profile "standard") -}}
+{{ $profile }}
+{{- else -}}
+standard
+{{- end -}}

@@ -1,0 +1,7 @@
+export XCURSOR_SIZE=24
+
+export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
+export STARSHIP_CONFIG="$HOME/.config/starship/starship.toml"
+
+export QT_AUTO_SCREEN_SCALE_FACTOR=1
+export QT_QPA_PLATFORM=wayland;xcb

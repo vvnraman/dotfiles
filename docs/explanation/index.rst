@@ -7,3 +7,8 @@ Explanation
    :caption: Contents:
 
    chezmoi/index.rst
+   bash
+   fish
+   tmux
+   git
+   lazygit

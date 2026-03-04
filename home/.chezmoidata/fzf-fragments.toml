@@ -1,0 +1,103 @@
+[[fzf_fragments]]
+name = 'basic_opts'
+value = '--border --height 100% --layout reverse'
+
+[[fzf_fragments]]
+name = 'preview_window'
+value = 'right,border-left'
+
+[[fzf_fragments]]
+name = 'preview_file_cat'
+value = 'cat {}'
+
+[[fzf_fragments]]
+name = 'preview_file_bat'
+value = 'bat -n --color=always {}'
+
+[[fzf_fragments]]
+name = 'preview_tree'
+value = 'tree -L 2 -C {} | head -100'
+
+[[fzf_fragments]]
+name = 'bind_change_preview'
+value = 'ctrl-/:change-preview-window(down,border-horizontal|hidden|)'
+
+[[fzf_fragments]]
+name = 'bind_open_nvim'
+value = 'ctrl-o:become(nvim {})'
+
+[[fzf_fragments]]
+name = 'prompt_files'
+value = 'Files> '
+
+[[fzf_fragments]]
+name = 'prompt_dirs'
+value = 'Directories> '
+
+[[fzf_fragments]]
+name = 'header_default'
+value = 'CTRL-/: preview | CTRL-e: nvim'
+
+[[fzf_fragments]]
+name = 'header_ctrl_t'
+value = 'CTRL-/: preview | CTRL-t: file/dir'
+
+[[fzf_fragments]]
+name = 'fd_opts'
+value = '--hidden --exclude .git'
+
+[[fzf_fragments]]
+name = 'ctrl_r_header'
+value = 'CTRL-y: Copy to clipboard | CTRL-/: toggle preview'
+
+[[fzf_fragments]]
+name = 'ctrl_r_copy_bind'
+value = 'ctrl-y:execute-silent(echo -n {2..} | xsel --clipboard)+abort'
+
+[[fzf_fragments]]
+name = 'ctrl_r_preview'
+value = 'echo {}'
+
+[[fzf_fragments]]
+name = 'ctrl_r_preview_window'
+value = 'up:3:wrap'
+
+[[fzf_fragments]]
+name = 'ctrl_r_color'
+value = 'header:italic'
+
+[[fzf_fragments]]
+name = 'rg_prefix'
+value = 'rg --column --line-number --no-heading --color=always --smart-case'
+
+[[fzf_fragments]]
+name = 'rg_prompt_ripgrep'
+value = '1. ripgrep> '
+
+[[fzf_fragments]]
+name = 'rg_prompt_fzf'
+value = '2. fzf> '
+
+[[fzf_fragments]]
+name = 'rg_header_toggle'
+value = 'CTRL-F: toggle ripgrep/fzf mode'
+
+[[fzf_fragments]]
+name = 'rg_color'
+value = 'hl:-1:underline,hl+:-1:underline:reverse'
+
+[[fzf_fragments]]
+name = 'rg_preview_bat'
+value = 'bat --color=always {1} --highlight-line {2}'
+
+[[fzf_fragments]]
+name = 'rg_preview_fallback'
+value = "sed -n '{2}p' {1}"
+
+[[fzf_fragments]]
+name = 'rg_preview_window'
+value = 'up,60%,border-bottom,+{2}+3/3,~3'
+
+[[fzf_fragments]]
+name = 'rg_reload_debounce'
+value = 'sleep 0.1;'

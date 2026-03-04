@@ -1,0 +1,6 @@
+$ lsd --almost-all --tree /home/vvnraman/.local/share/chezmoi/home/dot-tmux
+dot-tmux
+├── symlink_terminal-colors-config.conf.tmpl
+├── terminal-colors-linux.conf
+├── tmux.conf
+└── tmuxline.conf

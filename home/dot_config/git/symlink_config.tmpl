@@ -1,0 +1,5 @@
+{{- if eq .chezmoi.os "windows" -}}
+windows.gitconfig
+{{- else -}}
+linux.gitconfig
+{{- end -}}

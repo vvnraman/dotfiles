@@ -1,0 +1,5 @@
+{{- /* vim: set ft=gotmpl: */ -}}
+# shellcheck disable=SC2034
+{{- range .fzf_fragments }}
+fzf_{{ .name }}='{{ .value }}'
+{{- end }}

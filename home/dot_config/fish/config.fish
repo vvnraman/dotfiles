@@ -1,90 +1,19 @@
 set --global fish_greeting
 set --global fish_key_bindings fish_vi_key_bindings
 
-if command --query nvim
-  set --universal --export EDITOR nvim
-  set --universal --export VISUAL nvim
-
-  function ovim
-    # Use the master branch of my config with the older version
-    NVIM_APPNAME="neovim-config.git/master" /usr/bin/nvim_0.10.4 $argv
-  end
-
-  function mvim
-    # Use the master branch of my config with the current version
-    NVIM_APPNAME="neovim-config.git/master" /usr/bin/nvim $argv
-  end
-
-  function kvim
-    # Use the minimal `kickstart.nvim` distro with the latest stable version
-    NVIM_APPNAME="kickstart.nvim" /usr/bin/nvim_0.11.5 $argv
+function source_script
+  if test -f "$argv[1]"
+    source "$argv[1]"
   end
 end
-
-if command --query fzf
-  fzf --fish | source
-end
-
-# The order in which paths are being added is important as they're being
-# prepended to the path. I would like the `~/bin` to come first.
-
-# python/pyenv
-set --universal --export PYENV_ROOT "$HOME/.pyenv"
-fish_add_path --path --prepend "$PYENV_ROOT/bin"
-if command --query "$PYENV_ROOT/bin/pyenv" then
-  pyenv init - fish | source
-end
-
-# cmake
-fish_add_path --path --prepend "/opt/cmake/bin"
-
-# mise
-if command --query mise
-  mise activate fish | source
-end
-
-# golang
-fish_add_path --path --prepend "/usr/local/go/bin"
 
 # custom binaries in `bin`
 # Add other entries to path above.
+fish_add_path --path --prepend "$HOME/.local/bin"
 fish_add_path --path --prepend "$HOME/bin"
 
-function l --wraps=ls --description 'List contents of directory using long format'
-  if command --query lsd
-    lsd -al $argv
-  else
-    ls -lh $argv
-  end
-end
-
-# bat - https://github.com/sharkdp/bat
-if command --query bat
-  # Use `bat` as the man pager for colorized man pages, if available.
-  set --global --export MANPAGER "sh -c 'col -bx | bat -l man -p'"
-
-  # https://github.com/sharkdp/bat/issues/652
-  set --global --export MANROFFOPT "-c"
-
-  # highlight `--help` messages
-  abbr --add --position anywhere -- --help '--help | bat -plhelp'
-
-  # `-h` may not always be for help.
-  # abbr --add --position anywhere -- -h '-h | bat -plhelp'
-end
-
-abbr --add gl git log -1
-abbr --add glm git log -10 --pretty=oneline
-abbr --add gs git status
-abbr --add gd git diff --name-status
-abbr --add gdm git diff main --name-status
-abbr --add gd1 git diff HEAD^1 --name-status
-abbr --add cs chezmoi status
-abbr --add ca chezmoi add
-
-if command --query lazygit
-  alias lg="lazygit"
-end
+source_script ~/.config/fish/os-config.fish
+source_script ~/.config/fish/user-config.fish
 
 # This is intentionally unconditional.
 set --universal --export STARSHIP_CONFIG ~/.config/starship/starship.toml
@@ -96,4 +25,3 @@ if status is-interactive
       starship init fish | source
     end
 end
-

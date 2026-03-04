@@ -1,0 +1,13 @@
+[font]
+normal.family = "MesloLGS Nerd Font Mono"
+size = 11.0
+
+[terminal]
+osc52 = "CopyPaste"
+
+[terminal.shell]
+program = "fish"
+args = ["--login"]
+
+[general]
+import = ["~/.config/alacritty/catppuccin_macchiato.toml"]

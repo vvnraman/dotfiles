@@ -1,0 +1,7 @@
+{{- /* vim: set ft=gotmpl: */ -}}
+{{- $environment := lower (env "VVN_DOTFILES_ENVIRONMENT") -}}
+{{- if ne $environment "" -}}
+terminal-colors-linux_{{ $environment }}.conf
+{{- else -}}
+terminal-colors-linux.conf
+{{- end -}}

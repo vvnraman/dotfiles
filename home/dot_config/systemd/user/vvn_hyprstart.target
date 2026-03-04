@@ -1,0 +1,17 @@
+[Unit]
+Description=Hyprland DE dependencies
+Documentation=man:systemd.special(7)
+RefuseManualStart=no
+StopWhenUnneeded=no
+After=waybar.service \
+      hyprpolkitagent.service \
+      hyprpaper.service \
+      hypridle.service \
+      dropbox.service \
+      blueman-applet.service
+Wants=waybar.service \
+      hyprpolkitagent.service \
+      hyprpaper.service \
+      hypridle.service \
+      dropbox.service \
+      blueman-applet.service

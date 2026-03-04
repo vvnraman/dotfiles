@@ -1,0 +1,15 @@
+# vim: ft=gitconfig
+[include]
+    path = ~/.config/git/user-{{ template "user-config.tmpl" . }}.gitconfig
+{{ if findExecutable "delta" (list "C:\\Users\\vvnra\\AppData\\Local\\Microsoft\\WinGet\\Links") }}
+    path = ~/.config/git/tool-delta.gitconfig
+{{ end }}
+{{ if findExecutable "kdiff3" (list "C:\\Users\\vvnra\\AppData\\Local\\Programs\\KDiff3\\bin") }}
+    path = ~/.config/git/tool-kdiff3.gitconfig
+{{ end }}
+
+[push]
+    default = simple
+
+[core]
+    excludesfile = ~/.config/git/global.gitignore

@@ -7,6 +7,7 @@ format = """
 $os\
 $username\
 ${env_var.spaces}\
+$shell\
 $hostname\
 $directory\
 ($git_state)\
@@ -75,6 +76,13 @@ show_always = true
 style_user = "fg:user_fg bg:crust"
 style_root = "fg:root_fg bg:crust"
 format = '[](fg:prev_fg bg:prev_bg)[ $user ]($style)'
+
+[shell]
+style = "fg:user_fg bg:crust"
+format = '[](fg:crust bg:crust)[$indicator]($style)'
+fish_indicator = '󰈺 '
+bash_indicator = '_'
+disabled = false
 
 [hostname]
 ssh_only=false

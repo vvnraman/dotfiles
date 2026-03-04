@@ -85,7 +85,9 @@ def docs():
 @app.command()
 def live():
     print(f"{A} Building livedocs for {PROJECT_NAME}")
-    args = ["sphinx-autobuild", "--port", "0", str(DOCS_DIR), str(HTML_DIR)]
+    args = ["sphinx-autobuild", "--port", "0", 
+            "--open-browser",
+            str(DOCS_DIR), str(HTML_DIR)]
     _ = subprocess.run(args)
 
 
@@ -245,9 +247,7 @@ def nvim(
 ):
     print(f"{A} Syncing with neovim config")
 
-    nvim_cfg_dir = NVIM_CONFIG_DIR
-    if nvim_config_dir is not None:
-        nvim_cfg_dir = Path(nvim_config_dir)
+    nvim_cfg_dir = Path(nvim_config_dir)
 
     if not is_git_clean(str(nvim_cfg_dir)):
         print(
@@ -285,14 +285,18 @@ def nvim(
     )
 
     print(f"{B} Removing dotfiles copy from '{chezmoi_nvim_dir}'")
-    nvim_cfg_dirs = ["lua/"]
+    nvim_cfg_dirs = ["lua/", "after/"]
     nvim_cfg_files = ["init.lua", "lazy-lock.json", "README.rst", "stylua.toml"]
 
     for cfg_dir in nvim_cfg_dirs:
         dst_dir_path = chezmoi_nvim_dir / cfg_dir
         print(f"{B} Removing '{dst_dir_path.relative_to(PROJECT_DIR)}'")
         if not dry_run:
-            shutil.rmtree(dst_dir_path)
+            try:
+                shutil.rmtree(dst_dir_path)
+            except FileNotFoundError as e:
+                print(f"Failed to remove {dst_dir_path}. Continuing...")
+                continue
 
     for cfg_file in nvim_cfg_files:
         dst_file_path = chezmoi_nvim_dir / cfg_file

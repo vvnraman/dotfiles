@@ -1,0 +1,6 @@
+# vim: ft=gitconfig
+[merge]
+    tool = kdiff3
+
+[diff]
+    guitool = kdiff3

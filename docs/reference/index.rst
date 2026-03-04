@@ -7,3 +7,4 @@ Reference
    :caption: Contents:
 
    chezmoi
+   project/index

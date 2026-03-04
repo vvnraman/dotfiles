@@ -22,7 +22,8 @@ vim.g.maplocalleader = " "
 
 -- https://github.com/folke/lazy.nvim?tab=readme-ov-file#-installation
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
+local uv = vim.uv or vim.loop
+if not uv.fs_stat(lazypath) then
   vim.fn.system({
     "git",
     "clone",
@@ -34,23 +35,31 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
-  require("plugins.dev"),
-  require("plugins.pde.cmp"),
-  require("plugins.pde.lsp"),
-  require("plugins.pde.nifty"),
-  require("plugins.persona.outfit"),
-  require("plugins.persona.theme"),
-  require("plugins.persona.concierge"),
-  require("plugins.persona.physique"),
-  require("plugins.author"),
-  require("plugins.git"),
-  require("plugins.hotkeys"),
-  require("plugins.expedition.cardio"),
-  require("plugins.expedition.rucking"),
-  require("plugins.expedition.telescope"),
-  require("plugins.treesitter.config"),
-  require("plugins.quagmire.trouble"),
-  require("plugins.quagmire.quicker"),
+  spec = {
+    { import = "plugins.dev" },
+    { import = "plugins.pde.cmp" },
+    { import = "plugins.pde.lsp" },
+    { import = "plugins.pde.nifty" },
+    { import = "plugins.persona.outfit" },
+    { import = "plugins.persona.theme" },
+    { import = "plugins.persona.concierge" },
+    { import = "plugins.persona.physique" },
+    { import = "plugins.author" },
+    { import = "plugins.git" },
+    { import = "plugins.hotkeys" },
+    { import = "plugins.expedition.cardio" },
+    { import = "plugins.expedition.rucking" },
+    { import = "plugins.expedition.telescope" },
+    { import = "plugins.treesitter.config" },
+    { import = "plugins.quagmire.trouble" },
+    { import = "plugins.quagmire.quicker" },
+    { import = "plugins.os-config" },
+    { import = "plugins.user-config" },
+    { import = "plugins.session" },
+  },
+  defaults = {
+    version = "*",
+  },
 })
 -------------------------------------------------------------------------------
 
@@ -58,4 +67,5 @@ require("lazy").setup({
 require("options")
 require("keymaps")
 require("autocommands")
+require("vvn.yank").setup()
 -------------------------------------------------------------------------------

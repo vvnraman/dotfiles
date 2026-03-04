@@ -1,0 +1,4 @@
+# vim: ft=fish
+{{- range .fzf_fragments }}
+set --global fzf_{{ .name }} "{{ .value }}"
+{{- end }}

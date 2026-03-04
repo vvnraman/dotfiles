@@ -34,7 +34,14 @@ extensions = [
     "sphinx.ext.graphviz",
     "sphinxcontrib.mermaid",
     "sphinxemoji.sphinxemoji",
+    "sphinx_design",
 ]
+
+extensions.extend(
+    [
+        "dotfiles.sphinxext.layout_generator",
+    ]
+)
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]

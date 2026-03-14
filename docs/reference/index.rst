@@ -7,4 +7,5 @@ Reference
    :caption: Contents:
 
    chezmoi
+   python/index
    project/index

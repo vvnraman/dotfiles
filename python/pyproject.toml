@@ -26,17 +26,25 @@ requires = ["uv_build>=0.9.9,<0.10.0"]
 build-backend = "uv_build"
 
 [tool.basedpyright]
-include = ["src", "docs"]
+include = ["src", "../docs"]
 exclude = [
   "**/__pycache__",
   "**/*.egg-info",
-  "docs/_build",
+  "../docs/_build",
 ]
 ignore = [
-  "home/",
+  "../home/",
 ]
 
 reportMissingImports = "error"
 reportImplicitStringConcatenation = false
 reportUnannotatedClassAttribute  = false
 reportImplicitOverride = false
+
+[dependency-groups]
+dev = [
+    "basedpyright>=1.38.2",
+    "black>=26.3.0",
+    "isort>=8.0.1",
+    "pytest>=8.4.2",
+]

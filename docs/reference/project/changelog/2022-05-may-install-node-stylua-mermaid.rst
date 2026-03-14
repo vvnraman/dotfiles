@@ -1,5 +1,7 @@
-2022-05-01 - install node stylua mermaid
-========================================
+.. _changelog-2022-05-may-install-node-stylua-mermaid:
+
+2022-05 may - install node stylua mermaid
+=========================================
 
 2022-05-01 - Sunday
 -------------------

@@ -1,5 +1,7 @@
-2022-04-16 - setup neovim dotfiles
-==================================
+.. _changelog-2022-04-apr-setup-neovim-dotfiles:
+
+2022-04 apr - setup neovim dotfiles
+===================================
 
 2022-04-16 - Saturday
 ---------------------

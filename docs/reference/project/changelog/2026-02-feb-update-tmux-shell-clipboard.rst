@@ -1,5 +1,7 @@
-2026-02-28 - update tmux shell clipboard
-========================================
+.. _changelog-2026-02-feb-update-tmux-shell-clipboard:
+
+2026-02 feb - update tmux shell clipboard
+=========================================
 
 2026-02-28 - Saturday
 ---------------------
@@ -16,4 +18,4 @@ Change summary
 Related explanation
 -------------------
 
-- :doc:`/explanation/tmux`
+- :ref:`Tmux configuration <explanation-tmux-configuration>`

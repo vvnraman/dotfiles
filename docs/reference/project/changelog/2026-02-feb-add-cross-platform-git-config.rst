@@ -1,5 +1,7 @@
-2026-02-28 - add cross platform git config
-===========================================
+.. _changelog-2026-02-feb-add-cross-platform-git-config:
+
+2026-02 feb - add cross platform git config
+============================================
 
 2026-02-28 - Saturday
 ---------------------
@@ -16,4 +18,4 @@ Change summary
 Related explanation
 -------------------
 
-- :doc:`/explanation/git`
+- :ref:`Git configuration <explanation-git-configuration>`

@@ -1,3 +1,5 @@
+.. _explanation-bash-configuration:
+
 Bash configuration
 ==================
 
@@ -90,4 +92,4 @@ Explicit order inside ``bashrc``
 Relevant changelogs
 -------------------
 
-- :doc:`2026-02-feb - restructure bash config modules </reference/project/2026-02-feb-restructure-bash-config-modules>`
+- :ref:`2026-02-feb - restructure bash config modules <changelog-2026-02-feb-restructure-bash-config-modules>`

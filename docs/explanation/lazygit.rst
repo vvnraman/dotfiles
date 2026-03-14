@@ -1,3 +1,5 @@
+.. _explanation-lazygit-configuration:
+
 Lazygit configuration
 =====================
 
@@ -24,4 +26,4 @@ This would need to be updated to get it work in Windows as well.
 Relevant changelogs
 -------------------
 
-- :doc:`2026-02-feb - add lazygit theme pagers </reference/project/2026-02-feb-add-lazygit-theme-pagers>`
+- :ref:`2026-02-feb - add lazygit theme pagers <changelog-2026-02-feb-add-lazygit-theme-pagers>`

@@ -1,5 +1,7 @@
-2022-05-10 - configure vim install tools
-========================================
+.. _changelog-2022-05-may-configure-vim-install-tools:
+
+2022-05 may - configure vim install tools
+=========================================
 
 2022-05-10 - Tuesday
 --------------------

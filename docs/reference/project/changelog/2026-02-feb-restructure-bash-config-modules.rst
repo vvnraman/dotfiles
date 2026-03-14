@@ -1,5 +1,7 @@
-2026-02-28 - restructure bash config modules
-============================================
+.. _changelog-2026-02-feb-restructure-bash-config-modules:
+
+2026-02 feb - restructure bash config modules
+=============================================
 
 2026-02-28 - Saturday
 ---------------------
@@ -18,4 +20,4 @@ Change summary
 Related explanation
 -------------------
 
-- :doc:`/explanation/bash`
+- :ref:`Bash configuration <explanation-bash-configuration>`

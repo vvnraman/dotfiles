@@ -1,3 +1,5 @@
+.. _explanation-git-configuration:
+
 Git configuration
 =================
 
@@ -72,4 +74,4 @@ Load order
 Relevant changelogs
 -------------------
 
-- :doc:`2026-02-feb - add cross platform git config </reference/project/2026-02-feb-add-cross-platform-git-config>`
+- :ref:`2026-02-feb - add cross platform git config <changelog-2026-02-feb-add-cross-platform-git-config>`

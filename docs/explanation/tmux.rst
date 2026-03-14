@@ -1,3 +1,5 @@
+.. _explanation-tmux-configuration:
+
 Tmux configuration
 ==================
 
@@ -41,4 +43,4 @@ By default we use ``terminal-colors-linux.conf``, otherwise we switch as per the
 Relevant changelogs
 -------------------
 
-- :doc:`2026-02-feb - update tmux shell clipboard </reference/project/2026-02-feb-update-tmux-shell-clipboard>`
+- :ref:`2026-02-feb - update tmux shell clipboard <changelog-2026-02-feb-update-tmux-shell-clipboard>`

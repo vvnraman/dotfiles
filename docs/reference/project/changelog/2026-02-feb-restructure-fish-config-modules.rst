@@ -1,5 +1,7 @@
-2026-02-28 - restructure fish config modules
-============================================
+.. _changelog-2026-02-feb-restructure-fish-config-modules:
+
+2026-02 feb - restructure fish config modules
+=============================================
 
 2026-02-28 - Saturday
 ---------------------
@@ -16,4 +18,4 @@ Change summary
 Related explanation
 -------------------
 
-- :doc:`/explanation/fish`
+- :ref:`Fish configuration <explanation-fish-configuration>`

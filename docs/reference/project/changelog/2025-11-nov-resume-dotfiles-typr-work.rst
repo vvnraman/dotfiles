@@ -1,5 +1,7 @@
-2025-11-15 - resume dotfiles typr work
-======================================
+.. _changelog-2025-11-nov-resume-dotfiles-typr-work:
+
+2025-11 nov - resume dotfiles typr work
+=======================================
 
 2025-11-15 - Saturday
 ---------------------

@@ -12,3 +12,4 @@ Explanation
    tmux
    git
    lazygit
+   python/index

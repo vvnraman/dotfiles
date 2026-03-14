@@ -1,3 +1,5 @@
+.. _explanation-fish-configuration:
+
 Fish configuration
 ==================
 
@@ -62,4 +64,4 @@ Implicit Fish startup behavior
 Relevant changelogs
 -------------------
 
-- :doc:`2026-02-feb - restructure fish config modules </reference/project/2026-02-feb-restructure-fish-config-modules>`
+- :ref:`2026-02-feb - restructure fish config modules <changelog-2026-02-feb-restructure-fish-config-modules>`

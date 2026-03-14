@@ -5,16 +5,16 @@ Guidance for coding agents working in this repository.
 ## 1) Repository model
 This project has two roles:
 1. Chezmoi-managed dotfiles state (`home/`) for Linux + Windows.
-2. A Python CLI (`src/dotfiles/main.py`) that drives docs and sync workflows.
+2. A Python CLI (`python/src/dotfiles/main.py`) that drives docs and sync workflows.
 
 Interpretation rule:
 - `home/` is declarative desired state for `$HOME`.
-- `src/` is imperative automation.
+- `python/src/` is imperative automation.
 
 Key top-level files:
 - `.chezmoiroot` -> `home`
-- `pyproject.toml` -> packaging + script entrypoint
-- `Makefile` -> wrappers for `uv run dotfiles ...`
+- `python/pyproject.toml` -> packaging + script entrypoint
+- `Makefile` -> wrappers for `uv run --project "python" dotfiles ...`
 - `docs/` -> Sphinx documentation sources
 - `README.rst` -> user-facing workflow notes
 
@@ -27,25 +27,25 @@ Generated artifacts (do not edit unless explicitly asked):
 Run from repo root: `/home/vvnraman/.local/share/chezmoi`.
 
 ### Environment setup
-- `uv sync` - install/update dependencies.
+- `uv sync --project python` - install/update dependencies.
 
 ### Build and package
-- `uv build` - build wheel/sdist into `dist/`.
-- `uv run dotfiles info` - quick CLI sanity check.
+- `uv build --project python` - build wheel/sdist into `dist/`.
+- `uv run --project python dotfiles info` - quick CLI sanity check.
 
 ### Docs build and preview
-- `make docs` or `uv run dotfiles docs` - build HTML docs.
-- `make live` or `uv run dotfiles live` - live docs server.
-- `make clean` or `uv run dotfiles clean` - clean docs outputs.
-- `uv run dotfiles publish --dry-run` - preview docs publish commands.
+- `make docs` or `uv run --project python dotfiles docs` - build HTML docs.
+- `make live` or `uv run --project python dotfiles live` - live docs server.
+- `make clean` or `uv run --project python dotfiles clean` - clean docs outputs.
+- `uv run --project python dotfiles publish --dry-run` - preview docs publish commands.
 
 ### Lint/type checks
-Configured tooling in `pyproject.toml`:
+Configured tooling in `python/pyproject.toml`:
 - BasedPyright config is present under `[tool.basedpyright]`.
 
 Commands:
-- `uv run basedpyright` - run type checks for configured include/exclude.
-- `uv run basedpyright src docs` - targeted check.
+- `uv run --project python basedpyright` - run type checks for configured include/exclude.
+- `uv run --project python basedpyright src ../docs` - targeted check.
 
 Note:
 - No dedicated `ruff`, `black`, `isort`, or `flake8` config is present currently.
@@ -55,14 +55,14 @@ Current state:
 - No committed automated test suite (`tests/` not present).
 
 Practical verification commands:
-- `uv run dotfiles --help`
-- `uv run dotfiles info`
-- `uv run dotfiles docs`
+- `uv run --project python dotfiles --help`
+- `uv run --project python dotfiles info`
+- `uv run --project python dotfiles docs`
 
 If pytest tests are added later, use:
-- All tests: `uv run pytest`
-- Single test file: `uv run pytest tests/test_x.py`
-- Single test: `uv run pytest tests/test_x.py::test_name`
+- All tests: `uv run --project python pytest`
+- Single test file: `uv run --project python pytest tests/test_x.py`
+- Single test: `uv run --project python pytest tests/test_x.py::test_name`
 
 ### Chezmoi verification
 - `chezmoi status` - show managed target drift.
@@ -92,7 +92,7 @@ Examples:
 - Git OS selector: `home/dot_config/git/symlink_config.tmpl`
 
 ## 4) Python style guidelines
-Scope: primarily `src/dotfiles/main.py`.
+Scope: primarily `python/src/dotfiles/main.py`.
 
 ### Imports
 - Group stdlib imports first, then third-party imports.
@@ -140,14 +140,23 @@ Scope: primarily `src/dotfiles/main.py`.
 - Keep project changelog entries concise (3-5 word summaries) and linked to dated files.
 - Do not hand-edit files under `docs/_build/`.
 
-### 6.1 Project changelog file conventions (`docs/reference/project/`)
+### 6.0 How-to and reference writing preferences
+- Prefer task-first runbook style: show runnable commands first, then short context.
+- Keep pages concise and scannable: short sections, direct headings, minimal prose.
+- Include operational guardrails explicitly (dry-run vs destructive behavior, branch/worktree preconditions).
+- Include practical defaults and real-world usage notes when they affect command choice.
+- For CLI reference pages, prefer generated command output snapshots under `docs/generated/` and include them with `literalinclude`.
+- Exclude non-essential narrative (long rationale, abstract architecture, generic commentary) from how-to/reference pages.
+
+### 6.1 Project changelog file conventions (`docs/reference/project/changelog/`)
 - Use dated filename format: `YYYY-MM-mmm-<slug>.rst` (example: `2026-02-feb-restructure-bash-config-modules.rst`).
 - In `changelog.rst`, visible labels must use month-key style (`YYYY-MM-mmm - ...`), not full day dates.
 - In each dated changelog page:
-  - Title remains `YYYY-MM-DD - <summary>`.
+  - Title remains `YYYY-MM mmm - <summary>`.
   - First subsection heading must be `YYYY-MM-DD - Day`.
   - Immediately after that heading, add exactly one plain sentence line (no `Summary:` prefix).
   - Use section heading `Change summary` (never `What changed in this commit`).
+  - Use `:ref:` links to connect changelog entries to explanation pages and explanation pages back to changelog entries.
 
 ### 6.2 Explanation docs: mandatory writing style (`docs/explanation/`)
 Write explanation pages as operational runbooks for maintainers.
@@ -190,7 +199,7 @@ Each such snippet must include:
 Additional rules:
 - Keep snippet ranges tight; include only lines needed to demonstrate the behavior.
 - Ensure emphasized line numbers match the displayed snippet range.
-- Rebuild docs after edits (`uv run dotfiles docs`) and resolve warnings before finishing.
+- Rebuild docs after edits (`uv run --project python dotfiles docs`) and resolve warnings before finishing.
 
 ### 6.5 Explanation docs: layout generation and section conventions
 Preserve the current explanation-page layout workflow for tool pages.

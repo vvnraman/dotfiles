@@ -1,5 +1,7 @@
-2022-05-09 - refactor neovim lua config
-=======================================
+.. _changelog-2022-05-may-refactor-neovim-lua-config:
+
+2022-05 may - refactor neovim lua config
+========================================
 
 2022-05-09 - Monday
 -------------------

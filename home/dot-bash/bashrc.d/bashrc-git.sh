@@ -10,80 +10,72 @@ alias cs="chezmoi status"
 alias ca="chezmoi add"
 alias cr="chezmoi re-add"
 
-if $(command -v lazygit 1>/dev/null 2>&1); then
+if command -v lazygit 1>/dev/null 2>&1; then
   alias lg="lazygit"
 fi
 
-function git-update-commit-date()
-{
-  local _date_str=`date`
-  GIT_COMMITTER_DATE="${_date_str}" \
-    git commit --amend --no-edit --date "${_date_str}"
+function git-update-commit-date() {
+  local date_str
+  date_str="$(date)"
+  GIT_COMMITTER_DATE="${date_str}" \
+    git commit --amend --no-edit --date "${date_str}"
 }
 
-function git-sync-origin-with-usptream()
-{
-  local _origin_str="`git remote get-url origin`"
-  local _upstream_str="`git remote get-url upstream`"
+function git-sync-origin-with-usptream() {
+  local _origin_str="$(git remote get-url origin)"
+  local _upstream_str="$(git remote get-url upstream)"
   echo "Syncing ${_origin_str}/master with ${_upstream_str}/master"
   git push origin upstream/master:master
 }
 
-function git-init-with-empty-commit()
-{
-  git init . && \
+function git-init-with-empty-commit() {
+  git init . &&
     git commit --allow-empty --message "Initial commit."
 }
 
-function git-top()
-{
+function git-top() {
   git rev-parse --show-toplevel || true
 }
 
-function git-clone()
-{
+function git-clone() {
   if [[ $# -ne 2 ]]; then
     echo "Usage: git-clone <org> <repo>"
     return
   fi
   local _org="${1}"
   local _repo="${2}"
-  if [[ -z "${_org//}" || -z "${_repo//}" ]]; then
+  if [[ -z "${_org///}" || -z "${_repo///}" ]]; then
     echo "<org> or <repo> is not valid."
     return
   fi
-  mkdir "${_repo}" \
-    && cd "${_repo}" \
-    && git clone "github:${_org}/${_repo}" "${_reop}"
+  mkdir "${_repo}" &&
+    cd "${_repo}" &&
+    git clone "github:${_org}/${_repo}" "${_reop}"
 }
 
-function git-pull-all-branches()
-{
-  git branch -r | \
-    grep -v '\->' | \
-    while read remote; do \
-      git branch --track "${remote#origin/}" "${remote}"; \
+function git-pull-all-branches() {
+  git branch -r |
+    grep -v '\->' |
+    while read remote; do
+      git branch --track "${remote#origin/}" "${remote}"
     done
 }
 
-function git-show-ignored()
-{
+function git-show-ignored() {
   git ls-files . --ignored --exclude-standard --others
 }
 
-function git-show-untracked()
-{
+function git-show-untracked() {
   git ls-files . --exclude-standard --others
 }
 
-function git-worktree-new-branch()
-{
+function git-worktree-new-branch() {
   if [[ $# -ne 1 ]]; then
     echo "Usage: git-worktree-new-branch <branch>"
     return
   fi
   local _branch="${1}"
-  if [[ -z "${_branch//}" ]]; then
+  if [[ -z "${_branch///}" ]]; then
     echo "<branch> name is not valid."
     return
   fi
@@ -95,15 +87,14 @@ function git-worktree-new-branch()
   git worktree add -b "${_branch}" "${_base_dir}/${_project}_${_branch}"
 }
 
-function git-worktree-new-remote-branch()
-{
+function git-worktree-new-remote-branch() {
   if [[ $# -ne 2 ]]; then
     echo "Usage: git-worktree-new-remote-branch <remote> <branch>"
     return
   fi
   local _remote="${1}"
   local _branch="${2}"
-  if [[ -z "${_remote//}" || -z "${_branch//}" ]]; then
+  if [[ -z "${_remote///}" || -z "${_branch///}" ]]; then
     echo "<remote> or <branch> name is not valid."
     return
   fi
@@ -112,22 +103,21 @@ function git-worktree-new-remote-branch()
   local _project="$(basename ${_source_dir})"
 
   echo "Branch = ${_branch}, Project = ${_project}"
-  git remote add "${_remote}" "github:${_remote}/${_project}" \
-    && git fetch --all \
-    && git worktree add --track -b "${_branch}" \
+  git remote add "${_remote}" "github:${_remote}/${_project}" &&
+    git fetch --all &&
+    git worktree add --track -b "${_branch}" \
       "${_base_dir}/${_project}_${_remote}_${_branch}" \
       "${_remote}_${_branch}"
 }
 
-function git-worktree-existing-remote-branch()
-{
+function git-worktree-existing-remote-branch() {
   if [[ $# -ne 2 ]]; then
     echo "Usage: git-worktree-new-remote-branch <remote> <branch>"
     return
   fi
   local _remote="${1}"
   local _branch="${2}"
-  if [[ -z "${_remote//}" || -z "${_branch//}" ]]; then
+  if [[ -z "${_remote///}" || -z "${_branch///}" ]]; then
     echo "<remote> or <branch> name is not valid."
     return
   fi
@@ -137,6 +127,6 @@ function git-worktree-existing-remote-branch()
 
   echo "Branch = ${_branch}, Project = ${_project}"
   git worktree add --track -b "${_branch}" \
-      "${_base_dir}/${_project}_${_remote}_${_branch}" \
-      "${_remote}_${_branch}"
+    "${_base_dir}/${_project}_${_remote}_${_branch}" \
+    "${_remote}_${_branch}"
 }

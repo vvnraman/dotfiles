@@ -1,5 +1,7 @@
-2026-02-28 - add lazygit theme pagers
-======================================
+.. _changelog-2026-02-feb-add-lazygit-theme-pagers:
+
+2026-02 feb - add lazygit theme pagers
+=======================================
 
 2026-02-28 - Saturday
 ---------------------
@@ -16,4 +18,4 @@ Change summary
 Related explanation
 -------------------
 
-- :doc:`/explanation/lazygit`
+- :ref:`Lazygit configuration <explanation-lazygit-configuration>`

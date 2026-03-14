@@ -1,0 +1,11 @@
+$ dotfiles publish --help
+Usage: python -m dotfiles.main publish [OPTIONS]
+
+Options:
+  --dry-run / --no-dry-run  [default: dry-run]
+  --override-branch TEXT
+  --remote-name TEXT
+  --dotfiles-repo TEXT
+  --github-url TEXT
+  --publish-host TEXT
+  --help                    Show this message and exit.

@@ -1,3 +1,4 @@
+import logging
 import shlex
 import shutil
 import subprocess
@@ -6,15 +7,19 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Protocol
 
-from dotfiles.paths import resolve_project_dir
+from dotfiles.paths import SourceRootResolutionError, resolve_project_dir
 
 
 class SphinxApp(Protocol):
     def connect(self, event: str, callback: Callable[[object], None]) -> int: ...
 
 
-def _project_dir() -> Path:
-    return resolve_project_dir(Path.cwd(), Path(__file__))
+def _project_dir() -> Path | None:
+    try:
+        return resolve_project_dir()
+    except SourceRootResolutionError as error:
+        logging.warning(f"Skipping directory layout generation: {error}")
+        return None
 
 
 def _generated_dir(project_dir: Path) -> Path:
@@ -104,6 +109,8 @@ def _render_layout(
 
 def _generate_directory_layouts(_: object) -> None:
     project_dir = _project_dir()
+    if project_dir is None:
+        return
     generated_dir = _generated_dir(project_dir)
     layout_targets = _layout_targets()
     layout_tool = _resolve_layout_tool()

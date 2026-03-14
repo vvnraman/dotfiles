@@ -1,7 +1,11 @@
 $ dotfiles --help
-Usage: dotfiles [OPTIONS] COMMAND [ARGS]...
+Usage: python -m dotfiles.main [OPTIONS] COMMAND [ARGS]...
 
 Options:
+  --source-root TEXT              Dotfiles git root containing
+                                  .chezmoiroot/.git
+  --show-source-discovery         Resolve and show source root discovery
+                                  steps, then exit
   --install-completion [bash|zsh|fish|powershell|pwsh]
                                   Install completion for the specified shell.
   --show-completion [bash|zsh|fish|powershell|pwsh]
@@ -15,6 +19,5 @@ Commands:
   live
   clean
   publish
-  install-tool
   init-docs
-  nvim          Neovim config sync and info commands
+  nvim       Neovim config sync and info commands

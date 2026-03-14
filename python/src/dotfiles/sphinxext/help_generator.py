@@ -1,37 +1,58 @@
+import logging
 import subprocess
+import sys
 from collections.abc import Callable
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Protocol
 
-from dotfiles.paths import resolve_project_dir
+from dotfiles.paths import SourceRootResolutionError, resolve_project_dir
 
 
 class SphinxApp(Protocol):
     def connect(self, event: str, callback: Callable[[object], None]) -> int: ...
 
 
-def _project_dir() -> Path:
-    return resolve_project_dir(Path.cwd(), Path(__file__))
+def _project_dir() -> Path | None:
+    try:
+        return resolve_project_dir()
+    except SourceRootResolutionError as error:
+        logging.warning(f"Skipping CLI help generation: {error}")
+        return None
 
 
 def _generated_dir(project_dir: Path) -> Path:
     return project_dir / "docs" / "generated"
 
 
-def _help_targets(generated_dir: Path) -> dict[Path, list[str]]:
+@dataclass(frozen=True)
+class HelpTarget:
+    display_command: list[str]
+    execute_command: list[str]
+
+
+def _dotfiles_module_command(*args: str) -> list[str]:
+    return [sys.executable, "-m", "dotfiles.main", *args]
+
+
+def _help_targets(generated_dir: Path) -> dict[Path, HelpTarget]:
     return {
         generated_dir
-        / "dotfiles-cli-help.txt": [
-            "dotfiles",
-            "--help",
-        ],
+        / "dotfiles-cli-help.txt": HelpTarget(
+            display_command=["dotfiles", "--help"],
+            execute_command=_dotfiles_module_command("--help"),
+        ),
         generated_dir
-        / "dotfiles-cli-nvim-help.txt": [
-            "dotfiles",
-            "nvim",
-            "--help",
-        ],
+        / "dotfiles-cli-nvim-help.txt": HelpTarget(
+            display_command=["dotfiles", "nvim", "--help"],
+            execute_command=_dotfiles_module_command("nvim", "--help"),
+        ),
+        generated_dir
+        / "dotfiles-cli-publish-help.txt": HelpTarget(
+            display_command=["dotfiles", "publish", "--help"],
+            execute_command=_dotfiles_module_command("publish", "--help"),
+        ),
     }
 
 
@@ -53,12 +74,12 @@ def _mark_stale(content: str, stale_help_prefix: str) -> str:
 
 def _render_help(
     project_dir: Path,
-    command: list[str],
+    target: HelpTarget,
     stale_help_prefix: str,
     existing_content: str | None = None,
 ) -> str:
     proc = subprocess.run(
-        command,
+        target.execute_command,
         cwd=project_dir,
         capture_output=True,
         text=True,
@@ -67,14 +88,14 @@ def _render_help(
 
     if proc.returncode == 0:
         body = proc.stdout.rstrip()
-        return "\n".join([f"$ {' '.join(command)}", body, ""])
+        return "\n".join([f"$ {' '.join(target.display_command)}", body, ""])
 
     if existing_content:
         return _mark_stale(existing_content, stale_help_prefix)
 
     fallback = "\n".join(
         [
-            f"$ {' '.join(command)}",
+            f"$ {' '.join(target.display_command)}",
             "CLI help generation failed; snapshot unavailable.",
             "",
         ]
@@ -84,16 +105,18 @@ def _render_help(
 
 def _generate_cli_help(_: object) -> None:
     project_dir = _project_dir()
+    if project_dir is None:
+        return
     generated_dir = _generated_dir(project_dir)
     help_targets = _help_targets(generated_dir)
     stale_help_prefix = "Stale - generation failed on "
 
     generated_dir.mkdir(parents=True, exist_ok=True)
-    for output_path, command in help_targets.items():
+    for output_path, target in help_targets.items():
         existing_content = output_path.read_text() if output_path.exists() else None
         rendered = _render_help(
             project_dir,
-            command,
+            target,
             stale_help_prefix,
             existing_content,
         )

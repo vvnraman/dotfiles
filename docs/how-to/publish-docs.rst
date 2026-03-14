@@ -30,7 +30,7 @@ Generate & publish commands
       uv run --project python dotfiles publish --dry-run --dotfiles-repo=vvnraman/dotfiles
       uv run --project python dotfiles publish --dry-run --github-url=https://github.example.com
 
-If flags are not provided, publish uses ``python/dotfiles-config.ini`` defaults,
+If flags are not provided, publish uses ``python/src/dotfiles/dotfiles-config.ini`` defaults,
 then ``*_OVERRIDE`` environment variables.
 
 Publish from current branch

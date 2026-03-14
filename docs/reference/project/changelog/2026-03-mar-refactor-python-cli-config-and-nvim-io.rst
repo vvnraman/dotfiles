@@ -18,7 +18,7 @@ Change summary
   and ``python/src/dotfiles/publish.py`` with CLI flags, ini defaults, and ``*_OVERRIDE``
   environment fallbacks.
 
-- Added repo-level publish defaults in ``python/dotfiles-config.ini`` for remote name, dotfiles
+- Added repo-level publish defaults in ``python/src/dotfiles/dotfiles-config.ini`` for remote name, dotfiles
   repo, and github base URL.
 
 - Updated CLI help snapshot generation in ``python/src/dotfiles/sphinxext/help_generator.py`` to

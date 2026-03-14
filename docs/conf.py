@@ -36,7 +36,7 @@ def _project_root() -> Path:
 
 
 def _publish_config_path() -> Path:
-    return _project_root() / "python" / "dotfiles-config.ini"
+    return _project_root() / "python" / "src" / "dotfiles" / "dotfiles-config.ini"
 
 
 def _load_publish_host() -> str:

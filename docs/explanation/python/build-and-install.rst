@@ -7,6 +7,17 @@ Build and install standalone
 This runbook explains how to install stable and editable ``dotfiles`` CLI
 entrypoints.
 
+Repo installer entrypoint
+=========================
+
+Install orchestration is repo-only and is not exposed as a ``dotfiles``
+subcommand.
+
+- Preferred entrypoints are ``make install`` and ``make install-dev``.
+- The underlying script is ``python/scripts/install_tool.py``.
+- This avoids self-reinstall behavior from an already-installed ``dotfiles``
+  executable.
+
 Build artifacts
 ===============
 
@@ -65,3 +76,19 @@ Install mode behavior
 - default mode uses ``--dry-run`` unless ``--no-dry-run``
 - ``--dev`` skips clean-worktree and branch checks
 - ``--dev`` defaults to ``--no-dry-run``
+
+Custom install path isolation
+=============================
+
+When the repo installer uses a custom non-default install path (with
+``--dirty-install-path``), the tool install also uses an
+isolated uv data directory.
+
+That uv data directory is derived from a short SHA digest of the normalized
+install path, so each custom install path gets a stable, unique uv tool home and does
+not overwrite the default ``~/.local/share/uv/tools`` environment.
+
+Relevant changelogs
+-------------------
+
+- :ref:`2026-03-mar - rework python installer and cli discovery <changelog-2026-03-mar-rework-python-installer-and-cli-discovery>`

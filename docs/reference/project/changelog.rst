@@ -5,6 +5,7 @@ Changelog
 2026
 ====
 
+- :ref:`2026-03-mar - rework python installer and cli discovery <changelog-2026-03-mar-rework-python-installer-and-cli-discovery>`
 - :ref:`2026-03-mar - refactor python cli config and nvim io <changelog-2026-03-mar-refactor-python-cli-config-and-nvim-io>`
 - :ref:`2026-02-feb - restructure bash config modules <changelog-2026-02-feb-restructure-bash-config-modules>`
 - :ref:`2026-02-feb - restructure fish config modules <changelog-2026-02-feb-restructure-fish-config-modules>`
@@ -28,6 +29,7 @@ Changelog
 .. toctree::
    :hidden:
 
+   changelog/2026-03-mar-rework-python-installer-and-cli-discovery
    changelog/2026-03-mar-refactor-python-cli-config-and-nvim-io
    changelog/2026-02-feb-restructure-bash-config-modules
    changelog/2026-02-feb-restructure-fish-config-modules

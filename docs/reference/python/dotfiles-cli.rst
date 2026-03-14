@@ -26,3 +26,21 @@ The following snapshot is generated from:
 .. literalinclude:: ../../generated/dotfiles-cli-nvim-help.txt
    :language: console
    :caption: dotfiles nvim --help
+
+publish subcommand
+==================
+
+The following snapshot is generated from:
+
+.. code-block:: sh
+
+   dotfiles publish --help
+
+.. literalinclude:: ../../generated/dotfiles-cli-publish-help.txt
+   :language: console
+   :caption: dotfiles publish --help
+
+Related changelogs
+==================
+
+- :ref:`2026-03-mar - rework python installer and cli discovery <changelog-2026-03-mar-rework-python-installer-and-cli-discovery>`

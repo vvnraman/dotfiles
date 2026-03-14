@@ -1,15 +1,13 @@
 import configparser
 import logging
 import os
-import subprocess
-import sys
-import traceback
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 
 from dotfiles.git import GIT, git_branch, is_git_clean
-from dotfiles.run_command import Command, run_live
+from dotfiles.paths import package_config_path
+from dotfiles.run_command import Command, run_live, run_only, run_output
 from dotfiles.util import L
 
 # Publish config precedence is: CLI flag -> environment override ->
@@ -62,8 +60,8 @@ def _docs_html_dir(project_dir: Path) -> Path:
     return _docs_build_dir(project_dir) / "html"
 
 
-def _publish_config_path(project_dir: Path) -> Path:
-    return project_dir / "python" / "dotfiles-config.ini"
+def _publish_config_path() -> Path:
+    return package_config_path()
 
 
 def _load_publish_defaults(config_path: Path) -> PublishConfig:
@@ -105,7 +103,8 @@ def _load_publish_defaults(config_path: Path) -> PublishConfig:
 
 
 def load_publish_defaults_for_project(project_dir: Path) -> PublishConfig:
-    return _load_publish_defaults(_publish_config_path(project_dir))
+    _ = project_dir
+    return _load_publish_defaults(_publish_config_path())
 
 
 def _resolve_publish_value(
@@ -147,35 +146,19 @@ def _build_docs(project_dir: Path) -> None:
     docs_dir = project_dir / "docs"
     build_dir = _docs_build_dir(project_dir)
     args = ["sphinx-build", "--builder", "html", str(docs_dir), str(build_dir)]
-    _ = subprocess.run(args)
+    run_only(args)
 
 
 def _get_publish_upstream_remote_url(remote_name: str) -> str:
-    upstream_url = subprocess.run(
-        [GIT, "remote", "get-url", remote_name],
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-    return upstream_url.stdout.strip()
+    return run_output([GIT, "remote", "get-url", remote_name])
 
 
 def _get_publish_commit_messages(dotfiles_repo: str, github_url: str) -> list[str]:
     timestamp_str = datetime.now().isoformat(timespec="seconds").replace("T", "-")
 
-    commit_sha = subprocess.run(
-        [GIT, "rev-parse", "--short", "HEAD"],
-        capture_output=True,
-        text=True,
-        check=True,
-    ).stdout.strip()
+    commit_sha = run_output([GIT, "rev-parse", "--short", "HEAD"])
 
-    commit_sha_long = subprocess.run(
-        [GIT, "rev-parse", "HEAD"],
-        capture_output=True,
-        text=True,
-        check=True,
-    ).stdout.strip()
+    commit_sha_long = run_output([GIT, "rev-parse", "HEAD"])
 
     return [
         "-m",
@@ -239,17 +222,12 @@ def publish_docs(
         ),
     ]
 
-    try:
-        for cmd in publish_cmds:
-            run_live(cmd, dry_run)
-    except subprocess.CalledProcessError:
-        traceback.print_exc()
-    except KeyboardInterrupt:
-        sys.exit(0)
+    for cmd in publish_cmds:
+        run_live(cmd, dry_run)
 
 
 def publish_with_config(args: PublishArgs) -> None:
-    config_path = _publish_config_path(args.project_dir)
+    config_path = _publish_config_path()
     defaults = _load_publish_defaults(config_path)
     publish_config = _resolve_publish_config(args, defaults)
 

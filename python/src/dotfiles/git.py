@@ -1,4 +1,4 @@
-import subprocess
+from dotfiles.run_command import run_output
 
 # Not cross-platform
 GIT = "/usr/bin/git"
@@ -11,8 +11,7 @@ def is_git_clean(git_path: str | None = None) -> bool:
 
     cmd += ["status", "--porcelain"]
 
-    git_clean_result = subprocess.run(cmd, capture_output=True, text=True, check=False)
-    return 0 == len(git_clean_result.stdout.strip())
+    return run_output(cmd) == ""
 
 
 def git_branch(git_path: str | None = None) -> str:
@@ -22,5 +21,4 @@ def git_branch(git_path: str | None = None) -> str:
 
     cmd += ["branch", "--show-current"]
 
-    git_branch_result = subprocess.run(cmd, capture_output=True, text=True, check=False)
-    return git_branch_result.stdout.strip()
+    return run_output(cmd)

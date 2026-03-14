@@ -1,12 +1,18 @@
 PROJECT   := dotfiles
 PYTHON_PROJECT_DIR := python
 UV_RUN := uv run --project "$(PYTHON_PROJECT_DIR)"
+dotfiles := $(UV_RUN) $(PROJECT)
 
 .DEFAULT: help
 
 .PHONY: help
 help: ## Show this help
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST) | sort
+
+.PHONY: dotfiles
+dotfiles: ## Run dotfiles CLI
+dotfiles:
+	$(dotfiles) $(args)
 
 .PHONY: info
 info: ## Show project info
@@ -44,14 +50,14 @@ pytest:
 	$(UV_RUN) --group dev pytest python/tests
 
 .PHONY: install
-install: ## Install dotfiles tool from clean master
+install: ## Install dotfiles tool; example: make install args='--dirty-install-path /tmp/dotfiles-bin --no-dry-run'
 install:
-	$(UV_RUN) $(PROJECT) install-tool --no-dry-run
+	$(UV_RUN) python/scripts/install_tool.py $(args)
 
 .PHONY: install-dev
 install-dev: ## Install editable dotfiles-dev from current branch
 install-dev:
-	$(UV_RUN) $(PROJECT) install-tool --dev --no-dry-run
+	$(UV_RUN) python/scripts/install_tool.py --dev --no-dry-run $(args)
 
 .PHONY: build
 build: ## Build python package artifacts

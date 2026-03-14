@@ -9,8 +9,26 @@ Useful docs links:
 - `overview <../docs/intro/overview.rst>`_
 - `getting-started <../docs/intro/getting-started.rst>`_
 
-The docs publish host is configured via ``python/dotfiles-config.ini``
+The docs publish host is configured via ``python/src/dotfiles/dotfiles-config.ini``
 (``[publish].publish_host``) with builtin fallbacks.
+
+Source root resolution
+======================
+
+Global options on ``dotfiles``:
+
+- ``--source-root``: explicit dotfiles git root override.
+- ``--show-source-discovery``: print source-root resolution steps and exit.
+
+Resolution precedence:
+
+1. ``--source-root``
+2. ``[paths].git_root`` from ``python/src/dotfiles/dotfiles-config.ini``
+3. ``chezmoi source-path`` walk-up to ``.chezmoiroot`` / ``.git``
+4. ``CHEZMOI_DOTFILES_PATH_OVERRIDE``
+
+If ``--source-root`` is provided and invalid, resolution stops and exits with an
+error.
 
 - Install dependencies:
 
@@ -41,9 +59,12 @@ The docs publish host is configured via ``python/dotfiles-config.ini``
 
 - Install uv tool entrypoints with branch/worktree mode detection:
 
+  The installer is repo-only (``python/scripts/install_tool.py``) and is not
+  exposed as a ``dotfiles`` subcommand.
+
   .. code-block:: console
 
-     $ uv run --project "python" dotfiles install-tool
+     $ make install
 
   Install ``dotfiles`` behavior (default):
 
@@ -51,12 +72,17 @@ The docs publish host is configured via ``python/dotfiles-config.ini``
   - requires a clean git worktree
   - requires branch ``master``
   - defaults to ``--dry-run``; pass ``--no-dry-run`` to execute
+  - optional dirty custom path mode:
+
+    .. code-block:: console
+
+       $ make install args='--dirty-install-path /tmp/dotfiles-bin --no-dry-run'
 
   Install ``dotfiles-dev`` behavior:
 
   .. code-block:: console
 
-     $ uv run --project "python" dotfiles install-tool --dev
+     $ make install-dev
 
   - installs editable via ``uv tool install . --editable``
   - defaults to ``--no-dry-run``

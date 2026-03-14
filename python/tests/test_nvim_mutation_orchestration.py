@@ -69,6 +69,18 @@ class MockDiskAccessor(DiskAccessor):
 
 
 def test_remove_explicit_sync_targets_removes_only_non_lua_directories() -> None:
+    """Remove explicit sync targets except the Lua root directory.
+
+    GIVEN
+    Explicit runtime-to-local dir pairs for lua and after directories.
+
+    WHEN
+    Explicit sync targets are removed.
+
+    Then
+    Only the non-lua local directory is removed.
+    """
+
     local_nvim_dir = Path("/local/nvim")
     lua_local = local_nvim_dir / "lua"
     after_local = local_nvim_dir / "after"
@@ -92,6 +104,18 @@ def test_remove_explicit_sync_targets_removes_only_non_lua_directories() -> None
 
 
 def test_prune_missing_runtime_entries_removes_missing_file_and_dir() -> None:
+    """Prune local Lua entries that no longer exist in runtime.
+
+    GIVEN
+    Local/runtime Lua manifests with one missing file and one missing dir.
+
+    WHEN
+    Missing runtime entries are pruned from local state.
+
+    Then
+    The stale local file is unlinked and stale local directory is removed.
+    """
+
     local_nvim_dir = Path("/local/nvim")
     runtime_nvim_dir = Path("/runtime/nvim")
 
@@ -126,6 +150,18 @@ def test_prune_missing_runtime_entries_removes_missing_file_and_dir() -> None:
 
 
 def test_prune_missing_runtime_entries_skips_when_runtime_drift_detected() -> None:
+    """Skip destructive pruning when runtime drift is detected.
+
+    GIVEN
+    Paths that still exist in runtime despite manifest differences.
+
+    WHEN
+    Prune logic evaluates missing runtime entries.
+
+    Then
+    No delete operations are issued.
+    """
+
     local_nvim_dir = Path("/local/nvim")
     runtime_nvim_dir = Path("/runtime/nvim")
 
@@ -162,6 +198,18 @@ def test_prune_missing_runtime_entries_skips_when_runtime_drift_detected() -> No
 
 
 def test_copy_from_runtime_to_local_copies_base_and_changed_top_level_files() -> None:
+    """Copy runtime directories and changed top-level files to local.
+
+    GIVEN
+    Runtime/local path pairs and file-diff outcomes for top-level files.
+
+    WHEN
+    Runtime-to-local copy orchestration runs.
+
+    Then
+    It copies existing non-lua dirs and only changed top-level files.
+    """
+
     local_nvim_dir = Path("/local/nvim")
     runtime_nvim_dir = Path("/runtime/nvim")
 
@@ -232,6 +280,18 @@ def test_copy_from_runtime_to_local_copies_base_and_changed_top_level_files() ->
 
 
 def test_copy_lua_subdir_manifest_copies_changed_and_ensures_parent_dir() -> None:
+    """Copy changed Lua files while ensuring parent directories first.
+
+    GIVEN
+    A Lua manifest with changed, unchanged, and protected template files.
+
+    WHEN
+    Lua subdir manifest copy logic executes.
+
+    Then
+    It ensures parent dirs and copies only changed non-protected files.
+    """
+
     local_nvim_dir = Path("/local/nvim")
     runtime_nvim_dir = Path("/runtime/nvim")
 

@@ -14,7 +14,7 @@ High-level structure
    publish.py
    |-- PublishArgs request model
    |-- config resolution
-   |   |-- dotfiles-config.ini defaults
+   |   |-- python/src/dotfiles/dotfiles-config.ini defaults
    |   |-- *_OVERRIDE environment overrides
    |   `-- CLI flag overrides
    `-- publish execution
@@ -32,7 +32,8 @@ Execution order
 ---------------
 
 1. ``main.publish`` builds a ``PublishArgs`` request from CLI flags.
-2. ``publish_with_config`` resolves precedence: flag, env, ini default.
+2. ``publish_with_config`` resolves precedence: flag, env, ini default from
+   ``python/src/dotfiles/dotfiles-config.ini``.
 3. ``publish_with_config`` verifies clean worktree and branch policy.
 4. For non-dry-run, docs are built before publish command execution.
 5. ``publish_docs`` commits HTML output and pushes ``gh-pages``.

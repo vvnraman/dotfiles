@@ -1,5 +1,5 @@
 $ dotfiles nvim --help
-Usage: dotfiles nvim [OPTIONS] COMMAND [ARGS]...
+Usage: python -m dotfiles.main nvim [OPTIONS] COMMAND [ARGS]...
 
   Neovim config sync and info commands
 
@@ -8,4 +8,4 @@ Options:
 
 Commands:
   sync  Sync neovim config directory into chezmoi source state.
-  info  Show sync impact counts for runtime/local nvim configs.
+  info

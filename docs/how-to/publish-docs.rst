@@ -7,20 +7,17 @@ Publish docs
 Generate & publish commands
 ===========================
 
-- Generate docs
-
-   .. code-block:: sh
-
-      make docs
-
-      # or manually
-      uv run --project python dotfiles docs
-
 - Publish docs (dry run)
 
    .. code-block:: sh
 
       uv run --project python dotfiles publish --dry-run
+
+- Publish docs (real run)
+
+   .. code-block:: sh
+
+      uv run --project python dotfiles publish --no-dry-run
 
 - Optional publish overrides
 

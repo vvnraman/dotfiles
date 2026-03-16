@@ -8,4 +8,4 @@ Options:
 
 Commands:
   sync  Sync neovim config directory into chezmoi source state.
-  info
+  info  Show sync impact counts for runtime/local nvim configs.

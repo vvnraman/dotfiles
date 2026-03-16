@@ -13,6 +13,8 @@ High-level structure
 
    main.py
    |-- app callback: logging + source-root context
+   |-- project path resolver
+   |   `-- ProjectPaths via _project_paths
    |-- top-level commands
    |   |-- info
    |   |-- docs
@@ -25,6 +27,8 @@ High-level structure
        `-- nvim info
 
 - Resolves repository paths lazily via ``resolve_project_dir`` during command execution.
+- Computes ``project_dir``/``docs``/``_build``/``html`` once via ``ProjectPaths``.
+- Prefers runtime package ancestry for checkout-local execution before configured canonical fallback.
 - Exposes docs lifecycle commands through ``sys.executable -m sphinx`` module invocations.
 - Exposes CLI entrypoint for publish and delegates execution to ``dotfiles.publish``.
 - Delegates Neovim sync/info behavior to ``dotfiles.nvim`` using request dataclasses.
@@ -37,9 +41,10 @@ Command routing
 2. ``nvim_app = typer.Typer(...)`` registers nested ``nvim`` commands.
 3. ``app.add_typer(nvim_app, name="nvim")`` binds nested routing.
 4. Callback wires ``--source-root`` override into path resolution context.
-5. ``publish`` resolves flags then calls ``dotfiles.publish`` functions.
-6. ``nvim`` commands build ``NvimSyncWithMimicArgs`` / ``NvimInfoArgs``.
-7. ``dotfiles.nvim`` resolves runtime/local paths and executes sync/info flow.
+5. Path resolution tries runtime package ancestry before config and chezmoi fallbacks.
+6. ``publish`` resolves flags then calls ``dotfiles.publish`` functions.
+7. ``nvim`` commands build ``NvimSyncWithMimicArgs`` / ``NvimInfoArgs``.
+8. ``dotfiles.nvim`` resolves runtime/local paths and executes sync/info flow.
 
 Safety checks
 -------------

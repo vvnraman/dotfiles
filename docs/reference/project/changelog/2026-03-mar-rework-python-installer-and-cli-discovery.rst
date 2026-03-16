@@ -21,8 +21,16 @@ Change summary
   ``sys.executable -m sphinx`` and related module invocations so installed entrypoints and ``uv run``
   flows resolve tooling from the active interpreter.
 
+- Updated docs build output paths in ``python/src/dotfiles/main.py`` and
+  ``python/src/dotfiles/publish.py`` to target ``docs/_build/html`` consistently so publish uses a
+  stable HTML directory.
+
 - Updated source discovery logging in ``python/src/dotfiles/paths.py`` to include the config file path
   when reading ``[paths].git_root``.
+
+- Added runtime package ancestry as a higher-priority source-root strategy in
+  ``python/src/dotfiles/paths.py`` so ``uv run --project python dotfiles`` resolves the active
+  checkout before configured canonical fallback.
 
 - Updated CLI help snapshot generation in ``python/src/dotfiles/sphinxext/help_generator.py`` to invoke
   help via ``python -m dotfiles.main`` while preserving displayed ``dotfiles ...`` commands.

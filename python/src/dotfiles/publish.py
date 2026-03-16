@@ -1,6 +1,7 @@
 import configparser
 import logging
 import os
+import sys
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -17,6 +18,7 @@ DEFAULT_DOTFILES_REPO = "vvnraman/dotfiles"
 DEFAULT_REMOTE_NAME = "public"
 DEFAULT_GITHUB_URL = "https://github.com"
 DEFAULT_PUBLISH_HOST = "https://vvnraman.github.io"
+MASTER_BRANCH = "master"
 
 DOTFILES_REPO_OVERRIDE_ENV = "DOTFILES_REPO_OVERRIDE"
 REMOTE_NAME_OVERRIDE_ENV = "REMOTE_NAME_OVERRIDE"
@@ -43,6 +45,13 @@ class PublishConfig:
     publish_host: str
 
 
+@dataclass(frozen=True)
+class DocsPaths:
+    docs_dir: Path
+    build_dir: Path
+    html_dir: Path
+
+
 def _builtin_publish_defaults() -> PublishConfig:
     return PublishConfig(
         dotfiles_repo=DEFAULT_DOTFILES_REPO,
@@ -52,12 +61,15 @@ def _builtin_publish_defaults() -> PublishConfig:
     )
 
 
-def _docs_build_dir(project_dir: Path) -> Path:
-    return project_dir / "docs" / "_build"
-
-
-def _docs_html_dir(project_dir: Path) -> Path:
-    return _docs_build_dir(project_dir) / "html"
+def _docs_paths(project_dir: Path) -> DocsPaths:
+    docs_dir = project_dir / "docs"
+    build_dir = docs_dir / "_build"
+    html_dir = build_dir / "html"
+    return DocsPaths(
+        docs_dir=docs_dir,
+        build_dir=build_dir,
+        html_dir=html_dir,
+    )
 
 
 def _publish_config_path() -> Path:
@@ -102,11 +114,6 @@ def _load_publish_defaults(config_path: Path) -> PublishConfig:
     )
 
 
-def load_publish_defaults_for_project(project_dir: Path) -> PublishConfig:
-    _ = project_dir
-    return _load_publish_defaults(_publish_config_path())
-
-
 def _resolve_publish_value(
     cli_value: str | None,
     env_name: str,
@@ -143,22 +150,35 @@ def _resolve_publish_config(
 
 
 def _build_docs(project_dir: Path) -> None:
-    docs_dir = project_dir / "docs"
-    build_dir = _docs_build_dir(project_dir)
-    args = ["sphinx-build", "--builder", "html", str(docs_dir), str(build_dir)]
-    run_only(args)
+    docs_paths = _docs_paths(project_dir)
+    command_args = [
+        sys.executable,
+        "-m",
+        "sphinx",
+        "--builder",
+        "html",
+        str(docs_paths.docs_dir),
+        str(docs_paths.html_dir),
+    ]
+    run_only(command_args)
 
 
-def _get_publish_upstream_remote_url(remote_name: str) -> str:
-    return run_output([GIT, "remote", "get-url", remote_name])
+def _get_publish_upstream_remote_url(project_dir: Path, remote_name: str) -> str:
+    return run_output([GIT, "-C", str(project_dir), "remote", "get-url", remote_name])
 
 
-def _get_publish_commit_messages(dotfiles_repo: str, github_url: str) -> list[str]:
+def _get_publish_commit_messages(
+    project_dir: Path,
+    dotfiles_repo: str,
+    github_url: str,
+) -> list[str]:
     timestamp_str = datetime.now().isoformat(timespec="seconds").replace("T", "-")
 
-    commit_sha = run_output([GIT, "rev-parse", "--short", "HEAD"])
+    commit_sha = run_output(
+        [GIT, "-C", str(project_dir), "rev-parse", "--short", "HEAD"]
+    )
 
-    commit_sha_long = run_output([GIT, "rev-parse", "HEAD"])
+    commit_sha_long = run_output([GIT, "-C", str(project_dir), "rev-parse", "HEAD"])
 
     return [
         "-m",
@@ -169,17 +189,22 @@ def _get_publish_commit_messages(dotfiles_repo: str, github_url: str) -> list[st
     ]
 
 
-def publish_docs(
+def _publish_docs(
     project_dir: Path,
     dry_run: bool,
     publish_config: PublishConfig,
 ) -> None:
+    docs_paths = _docs_paths(project_dir)
     commit_msg = _get_publish_commit_messages(
+        project_dir=project_dir,
         dotfiles_repo=publish_config.dotfiles_repo,
         github_url=publish_config.github_url,
     )
-    upstream_url = _get_publish_upstream_remote_url(publish_config.remote_name)
-    html_dir = _docs_html_dir(project_dir)
+    upstream_url = _get_publish_upstream_remote_url(
+        project_dir=project_dir,
+        remote_name=publish_config.remote_name,
+    )
+    html_dir = docs_paths.html_dir
 
     publish_cmds: list[Command] = [
         Command(
@@ -231,14 +256,14 @@ def publish_with_config(args: PublishArgs) -> None:
     defaults = _load_publish_defaults(config_path)
     publish_config = _resolve_publish_config(args, defaults)
 
-    if not is_git_clean():
+    if not is_git_clean(str(args.project_dir)):
         logging.warning(
             f"{L.E} There are un-committed changes. Please commit all changes first."
         )
         return
 
-    branch = git_branch()
-    if "master" != branch:
+    branch = git_branch(str(args.project_dir))
+    if branch != MASTER_BRANCH:
         if args.override_branch is not None:
             if branch == args.override_branch:
                 logging.info(f"{L.B} Running in branch '{args.override_branch}'")
@@ -250,7 +275,7 @@ def publish_with_config(args: PublishArgs) -> None:
                 return
         else:
             logging.warning(
-                f"{L.E} We must be on 'master' to publish docs. "
+                f"{L.E} We must be on '{MASTER_BRANCH}' to publish docs. "
                 "Pass '--override-branch=<branch-name>' to publish that branch."
             )
             return
@@ -259,7 +284,7 @@ def publish_with_config(args: PublishArgs) -> None:
     if not args.dry_run:
         _build_docs(args.project_dir)
 
-    publish_docs(
+    _publish_docs(
         project_dir=args.project_dir,
         dry_run=args.dry_run,
         publish_config=publish_config,

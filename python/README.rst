@@ -23,12 +23,17 @@ Global options on ``dotfiles``:
 Resolution precedence:
 
 1. ``--source-root``
-2. ``[paths].git_root`` from ``python/src/dotfiles/dotfiles-config.ini``
-3. ``chezmoi source-path`` walk-up to ``.chezmoiroot`` / ``.git``
-4. ``CHEZMOI_DOTFILES_PATH_OVERRIDE``
+2. runtime package path walk-up to ``.chezmoiroot`` / ``.git``
+3. ``[paths].git_root`` from ``python/src/dotfiles/dotfiles-config.ini``
+4. ``chezmoi source-path`` walk-up to ``.chezmoiroot`` / ``.git``
+5. ``CHEZMOI_DOTFILES_PATH_OVERRIDE``
 
 If ``--source-root`` is provided and invalid, resolution stops and exits with an
 error.
+
+This allows ``uv run --project python dotfiles ...`` to resolve the checkout
+where it is executed, while installed ``dotfiles`` can still fall back to
+configured canonical paths.
 
 - Install dependencies:
 

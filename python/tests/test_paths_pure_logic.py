@@ -21,6 +21,7 @@ class FakeSourceRootResolutionIO(SourceRootResolutionIO):
     def __init__(
         self,
         *,
+        expected_config_path: Path,
         existing_paths: set[Path],
         marker_roots: set[Path],
         config_lookup_result: ConfigLookupResult,
@@ -28,6 +29,7 @@ class FakeSourceRootResolutionIO(SourceRootResolutionIO):
         env_values: dict[str, str],
     ) -> None:
         # Paths considered to exist on the fake filesystem.
+        self._expected_config_path = expected_config_path
         self._existing_paths = existing_paths
         # Paths treated as valid git/source roots (contain project markers).
         self._marker_roots = marker_roots
@@ -54,7 +56,7 @@ class FakeSourceRootResolutionIO(SourceRootResolutionIO):
         section: str,
         key: str,
     ) -> ConfigLookupResult:
-        assert config_path == Path("/cfg/dotfiles-config.ini")
+        assert config_path == self._expected_config_path
         assert section == "paths"
         assert key == "git_root"
         return self._config_lookup_result
@@ -80,6 +82,7 @@ def test_resolve_project_dir_with_io_prefers_config_source_root() -> None:
     """
 
     io = FakeSourceRootResolutionIO(
+        expected_config_path=Path("/cfg/dotfiles-config.ini"),
         existing_paths={Path("/repo")},
         marker_roots={Path("/repo")},
         config_lookup_result=ConfigLookupResult(value="/repo"),
@@ -110,6 +113,7 @@ def test_resolve_project_dir_with_io_stops_on_invalid_cli_source_root() -> None:
     """
 
     io = FakeSourceRootResolutionIO(
+        expected_config_path=Path("/cfg/dotfiles-config.ini"),
         existing_paths={Path("/repo")},
         marker_roots={Path("/repo")},
         config_lookup_result=ConfigLookupResult(value="/repo"),
@@ -147,6 +151,7 @@ def test_resolve_project_dir_with_io_falls_back_to_chezmoi_source_path() -> None
     """
 
     io = FakeSourceRootResolutionIO(
+        expected_config_path=Path("/cfg/dotfiles-config.ini"),
         existing_paths={
             Path("/home/user/.local/share/chezmoi/home"),
             Path("/home/user/.local/share/chezmoi"),
@@ -168,3 +173,70 @@ def test_resolve_project_dir_with_io_falls_back_to_chezmoi_source_path() -> None
     )
 
     assert result == Path("/home/user/.local/share/chezmoi")
+
+
+def test_resolve_project_dir_prefers_runtime_package_root_before_config() -> None:
+    """Prefer repo root discovered from runtime package path.
+
+    GIVEN
+    A runtime package path inside a checkout and a conflicting config git_root.
+
+    WHEN
+    Resolution runs without CLI override.
+
+    Then
+    The resolver returns the checkout root from runtime package ancestry.
+    """
+
+    config_path = Path("/worktrees/master/python/src/dotfiles/dotfiles-config.ini")
+    io = FakeSourceRootResolutionIO(
+        expected_config_path=config_path,
+        existing_paths={
+            Path("/worktrees/master/python/src/dotfiles"),
+            Path("/canonical/chezmoi"),
+        },
+        marker_roots={Path("/worktrees/master")},
+        config_lookup_result=ConfigLookupResult(value="/canonical/chezmoi"),
+        chezmoi_result=ProcessResult(returncode=1, stdout="", stderr="missing"),
+        env_values={},
+    )
+
+    result = resolve_project_dir_with_io(
+        io=io,
+        source_root_override=None,
+        config_path=config_path,
+    )
+
+    assert result == Path("/worktrees/master")
+
+
+def test_resolve_project_dir_with_io_uses_config_when_runtime_path_not_repo() -> None:
+    """Fallback to config value when runtime package path is not a repo.
+
+    GIVEN
+    A package path outside a checkout and a valid config git_root.
+
+    WHEN
+    Resolution runs without CLI override.
+
+    Then
+    The resolver returns the configured git_root.
+    """
+
+    config_path = Path("/site-packages/dotfiles/dotfiles-config.ini")
+    io = FakeSourceRootResolutionIO(
+        expected_config_path=config_path,
+        existing_paths={Path("/site-packages/dotfiles"), Path("/canonical/chezmoi")},
+        marker_roots={Path("/canonical/chezmoi")},
+        config_lookup_result=ConfigLookupResult(value="/canonical/chezmoi"),
+        chezmoi_result=ProcessResult(returncode=1, stdout="", stderr="missing"),
+        env_values={},
+    )
+
+    result = resolve_project_dir_with_io(
+        io=io,
+        source_root_override=None,
+        config_path=config_path,
+    )
+
+    assert result == Path("/canonical/chezmoi")

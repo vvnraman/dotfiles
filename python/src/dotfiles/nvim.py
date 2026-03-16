@@ -11,6 +11,8 @@ from typing import NamedTuple, Protocol
 from dotfiles.git import git_branch, is_git_clean
 from dotfiles.util import L
 
+MASTER_BRANCH = "master"
+
 
 class NvimPathPair(NamedTuple):
     """Represents a path mapping from runtime config to local destination."""
@@ -59,6 +61,12 @@ class NvimSyncPlan(NamedTuple):
     local_lua_subdir_manifest: NvimLuaSubdirManifest
     runtime_base_manifests: dict[Path, NvimSubdirManifest]
     local_base_manifests: dict[Path, NvimSubdirManifest]
+
+
+@dataclass(frozen=True)
+class _NvimManagedSurfaceTotals:
+    dirs: int
+    files: int
 
 
 class ShellOp(Protocol):
@@ -112,6 +120,20 @@ def _resolve_disk_accessor(disk_accessor: DiskAccessor | None) -> DiskAccessor:
     return disk_accessor or RealDiskAccessor()
 
 
+def _resolve_nvim_paths(
+    project_dir: Path,
+    default_runtime_nvim_dir: Path,
+    nvim_config_dir: str | None,
+    local_nvim_dir_override: Path | None = None,
+    runtime_nvim_dir_override: Path | None = None,
+) -> tuple[Path, Path]:
+    runtime_nvim_dir = runtime_nvim_dir_override or Path(
+        nvim_config_dir or str(default_runtime_nvim_dir)
+    )
+    local_nvim_dir = local_nvim_dir_override or (project_dir / "home/dot_config/nvim")
+    return runtime_nvim_dir, local_nvim_dir
+
+
 @dataclass(frozen=True)
 class NvimSyncWithMimicArgs:
     dry_run: bool
@@ -157,19 +179,19 @@ class DryShellOp(ShellOp):
     dry_run = True
 
     def remove_tree(self, path: Path) -> None:
-        return
+        pass
 
     def copy_tree(self, src: Path, dst: Path) -> None:
-        return
+        pass
 
     def copy_file(self, src: Path, dst: Path) -> None:
-        return
+        pass
 
     def ensure_parent_dir(self, path: Path) -> None:
-        return
+        pass
 
     def unlink_file(self, path: Path) -> None:
-        return
+        pass
 
 
 def nvim_build_path_pairs(
@@ -461,6 +483,47 @@ def nvim_missing_parent_dirs(
     return missing_dirs
 
 
+def _nvim_count_existing_top_level_files(
+    file_pairs: list[NvimPathPair],
+    use_runtime_paths: bool,
+    disk_accessor: DiskAccessor,
+) -> int:
+    existing_file_count = 0
+
+    for path_pair in file_pairs:
+        candidate_path = (
+            path_pair.runtime_path if use_runtime_paths else path_pair.local_path
+        )
+        if disk_accessor.exists(candidate_path):
+            existing_file_count += 1
+
+    return existing_file_count
+
+
+def _nvim_collect_managed_surface_totals(
+    lua_subdir_manifest: NvimLuaSubdirManifest,
+    base_manifests: dict[Path, NvimSubdirManifest],
+    top_level_file_pairs: list[NvimPathPair],
+    use_runtime_paths: bool,
+    disk_accessor: DiskAccessor,
+) -> _NvimManagedSurfaceTotals:
+    base_dir_count = sum(
+        (1 if manifest.exists else 0) + len(manifest.dirs)
+        for manifest in base_manifests.values()
+    )
+    base_file_count = sum(len(manifest.files) for manifest in base_manifests.values())
+    top_level_file_count = _nvim_count_existing_top_level_files(
+        top_level_file_pairs,
+        use_runtime_paths=use_runtime_paths,
+        disk_accessor=disk_accessor,
+    )
+
+    return _NvimManagedSurfaceTotals(
+        dirs=len(lua_subdir_manifest.dirs) + base_dir_count,
+        files=len(lua_subdir_manifest.files) + base_file_count + top_level_file_count,
+    )
+
+
 def nvim_collect_sync_info_counts(
     local_nvim_dir: Path,
     runtime_nvim_dir: Path,
@@ -486,30 +549,19 @@ def nvim_collect_sync_info_counts(
         if path_pair.local_path.name != "lua"
     ]
 
-    runtime_total_dirs = len(plan.runtime_lua_subdir_manifest.dirs) + sum(
-        (1 if manifest.exists else 0) + len(manifest.dirs)
-        for manifest in plan.runtime_base_manifests.values()
+    runtime_totals = _nvim_collect_managed_surface_totals(
+        lua_subdir_manifest=plan.runtime_lua_subdir_manifest,
+        base_manifests=plan.runtime_base_manifests,
+        top_level_file_pairs=plan.runtime_to_local_file_pairs,
+        use_runtime_paths=True,
+        disk_accessor=disk,
     )
-    runtime_total_files = len(plan.runtime_lua_subdir_manifest.files) + sum(
-        len(manifest.files) for manifest in plan.runtime_base_manifests.values()
-    )
-    runtime_total_files += sum(
-        1
-        for path_pair in plan.runtime_to_local_file_pairs
-        if disk.exists(path_pair.runtime_path)
-    )
-
-    local_total_dirs = len(plan.local_lua_subdir_manifest.dirs) + sum(
-        (1 if manifest.exists else 0) + len(manifest.dirs)
-        for manifest in plan.local_base_manifests.values()
-    )
-    local_total_files = len(plan.local_lua_subdir_manifest.files) + sum(
-        len(manifest.files) for manifest in plan.local_base_manifests.values()
-    )
-    local_total_files += sum(
-        1
-        for path_pair in plan.runtime_to_local_file_pairs
-        if disk.exists(path_pair.local_path)
+    local_totals = _nvim_collect_managed_surface_totals(
+        lua_subdir_manifest=plan.local_lua_subdir_manifest,
+        base_manifests=plan.local_base_manifests,
+        top_level_file_pairs=plan.runtime_to_local_file_pairs,
+        use_runtime_paths=False,
+        disk_accessor=disk,
     )
 
     missing_runtime_files = nvim_missing_runtime_files(
@@ -574,10 +626,10 @@ def nvim_collect_sync_info_counts(
     dirs_to_update -= dirs_to_add
 
     return NvimSyncInfoCounts(
-        runtime_total_dirs=runtime_total_dirs,
-        runtime_total_files=runtime_total_files,
-        local_total_dirs=local_total_dirs,
-        local_total_files=local_total_files,
+        runtime_total_dirs=runtime_totals.dirs,
+        runtime_total_files=runtime_totals.files,
+        local_total_dirs=local_totals.dirs,
+        local_total_files=local_totals.files,
         remove_dirs=len(missing_runtime_dirs),
         remove_files=len(missing_runtime_files),
         add_dirs=len(dirs_to_add),
@@ -587,12 +639,12 @@ def nvim_collect_sync_info_counts(
     )
 
 
-def nvim_remove_explicit_sync_targets(
+def _nvim_remove_explicit_sync_targets(
     shell_op: ShellOp,
     local_nvim_dir: Path,
     runtime_to_local_dir_pairs: list[NvimPathPair],
     disk_accessor: DiskAccessor | None = None,
-):
+) -> None:
     """Remove explicit top-level sync targets while excluding lua subdir sync."""
     disk = _resolve_disk_accessor(disk_accessor)
     removable_dir_pairs = [
@@ -623,7 +675,7 @@ def nvim_remove_explicit_sync_targets(
             )
 
 
-def nvim_prune_missing_runtime_local_lua_subdir_entries(
+def _nvim_prune_missing_runtime_local_lua_subdir_entries(
     shell_op: ShellOp,
     local_nvim_dir: Path,
     runtime_nvim_dir: Path,
@@ -632,7 +684,7 @@ def nvim_prune_missing_runtime_local_lua_subdir_entries(
     runtime_lua_subdir_manifest: NvimLuaSubdirManifest,
     protected_rel_templates: set[Path],
     disk_accessor: DiskAccessor | None = None,
-):
+) -> None:
     """Prune missing runtime files and directories from the local lua subdir."""
     disk = _resolve_disk_accessor(disk_accessor)
 
@@ -697,7 +749,7 @@ def nvim_prune_missing_runtime_local_lua_subdir_entries(
             )
 
 
-def nvim_copy_from_runtime_to_local(
+def _nvim_copy_from_runtime_to_local(
     shell_op: ShellOp,
     local_nvim_dir: Path,
     runtime_nvim_dir: Path,
@@ -705,7 +757,7 @@ def nvim_copy_from_runtime_to_local(
     runtime_to_local_dir_pairs: list[NvimPathPair],
     runtime_to_local_file_pairs: list[NvimPathPair],
     disk_accessor: DiskAccessor | None = None,
-):
+) -> None:
     """Copy top-level sync targets not managed through lua subdir manifest."""
     disk = _resolve_disk_accessor(disk_accessor)
     logging.info(f"{L.B} Copying nvim config {runtime_nvim_dir} -> {local_nvim_dir}")
@@ -766,7 +818,7 @@ def nvim_copy_from_runtime_to_local(
             logging.info(f"{L.C} Skipping unchanged top-level file {local_path}")
 
 
-def nvim_copy_lua_subdir_manifest(
+def _nvim_copy_lua_subdir_manifest(
     shell_op: ShellOp,
     local_nvim_dir: Path,
     runtime_nvim_dir: Path,
@@ -774,7 +826,7 @@ def nvim_copy_lua_subdir_manifest(
     runtime_lua_subdir_manifest: NvimLuaSubdirManifest,
     protected_rel_templates: set[Path],
     disk_accessor: DiskAccessor | None = None,
-):
+) -> None:
     """Copy every non-template file in the Lua subdir manifest into local."""
     disk = _resolve_disk_accessor(disk_accessor)
     lua_file_pairs = nvim_runtime_lua_file_pairs(
@@ -820,14 +872,14 @@ def nvim_copy_lua_subdir_manifest(
             logging.info(f"{L.C} Skipping unchanged Lua subdir file {local_file_path}")
 
 
-def nvim_sync(
+def _nvim_sync(
     dry_run: bool,
     branch: str,
     local_nvim_dir: Path,
     runtime_nvim_dir: Path,
     log_unchanged_info: bool,
     disk_accessor: DiskAccessor | None = None,
-):
+) -> None:
     """Coordinate the full runtime-to-local Neovim sync process."""
     disk = _resolve_disk_accessor(disk_accessor)
     shell_op: ShellOp = DryShellOp() if dry_run else RealShellOp()
@@ -844,13 +896,13 @@ def nvim_sync(
         f" {runtime_nvim_dir} -> {local_nvim_dir}"
     )
 
-    nvim_remove_explicit_sync_targets(
+    _nvim_remove_explicit_sync_targets(
         shell_op=shell_op,
         local_nvim_dir=local_nvim_dir,
         runtime_to_local_dir_pairs=sync_plan.runtime_to_local_dir_pairs,
         disk_accessor=disk,
     )
-    nvim_prune_missing_runtime_local_lua_subdir_entries(
+    _nvim_prune_missing_runtime_local_lua_subdir_entries(
         shell_op=shell_op,
         local_nvim_dir=local_nvim_dir,
         runtime_nvim_dir=runtime_nvim_dir,
@@ -860,7 +912,7 @@ def nvim_sync(
         protected_rel_templates=sync_plan.protected_rel_templates,
         disk_accessor=disk,
     )
-    nvim_copy_from_runtime_to_local(
+    _nvim_copy_from_runtime_to_local(
         shell_op=shell_op,
         local_nvim_dir=local_nvim_dir,
         runtime_nvim_dir=runtime_nvim_dir,
@@ -869,7 +921,7 @@ def nvim_sync(
         runtime_to_local_file_pairs=sync_plan.runtime_to_local_file_pairs,
         disk_accessor=disk,
     )
-    nvim_copy_lua_subdir_manifest(
+    _nvim_copy_lua_subdir_manifest(
         shell_op=shell_op,
         local_nvim_dir=local_nvim_dir,
         runtime_nvim_dir=runtime_nvim_dir,
@@ -878,20 +930,6 @@ def nvim_sync(
         protected_rel_templates=sync_plan.protected_rel_templates,
         disk_accessor=disk,
     )
-
-
-def _resolve_nvim_paths(
-    project_dir: Path,
-    default_runtime_nvim_dir: Path,
-    nvim_config_dir: str | None,
-    local_nvim_dir_override: Path | None = None,
-    runtime_nvim_dir_override: Path | None = None,
-) -> tuple[Path, Path]:
-    runtime_nvim_dir = runtime_nvim_dir_override or Path(
-        nvim_config_dir or str(default_runtime_nvim_dir)
-    )
-    local_nvim_dir = local_nvim_dir_override or (project_dir / "home/dot_config/nvim")
-    return runtime_nvim_dir, local_nvim_dir
 
 
 def nvim_sync_with_mimic(args: NvimSyncWithMimicArgs) -> None:
@@ -911,7 +949,7 @@ def nvim_sync_with_mimic(args: NvimSyncWithMimicArgs) -> None:
         return
 
     branch = git_branch(str(runtime_nvim_dir))
-    if "master" != branch:
+    if branch != MASTER_BRANCH:
         if args.override_branch_name is not None:
             if branch == args.override_branch_name:
                 logging.info(
@@ -926,7 +964,7 @@ def nvim_sync_with_mimic(args: NvimSyncWithMimicArgs) -> None:
                 return
         else:
             logging.warning(
-                f"{L.E} nvim config branch must be 'master' to copy config (by default)."
+                f"{L.E} nvim config branch must be '{MASTER_BRANCH}' to copy config (by default)."
                 f" Pass '--override-branch-name={branch}' to copy from the current branch."
             )
             return
@@ -936,7 +974,7 @@ def nvim_sync_with_mimic(args: NvimSyncWithMimicArgs) -> None:
         return
 
     if not args.mimic:
-        nvim_sync(
+        _nvim_sync(
             dry_run=args.dry_run,
             branch=branch,
             local_nvim_dir=local_nvim_dir,
@@ -955,7 +993,7 @@ def nvim_sync_with_mimic(args: NvimSyncWithMimicArgs) -> None:
     )
 
     try:
-        nvim_sync(
+        _nvim_sync(
             dry_run=False,
             branch=branch,
             local_nvim_dir=mimicked_local_nvim_dir,
@@ -976,14 +1014,14 @@ def nvim_sync_with_mimic(args: NvimSyncWithMimicArgs) -> None:
             )
         )
         has_pending_changes = any(
-            [
-                0 != info_counts.remove_dirs,
-                0 != info_counts.remove_files,
-                0 != info_counts.add_dirs,
-                0 != info_counts.add_files,
-                0 != info_counts.update_dirs,
-                0 != info_counts.update_files,
-            ]
+            (
+                info_counts.remove_dirs != 0,
+                info_counts.remove_files != 0,
+                info_counts.add_dirs != 0,
+                info_counts.add_files != 0,
+                info_counts.update_dirs != 0,
+                info_counts.update_files != 0,
+            )
         )
         if has_pending_changes:
             logging.warning(

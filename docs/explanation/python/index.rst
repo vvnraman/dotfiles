@@ -10,6 +10,7 @@ Neovim sync workflows.
    :caption: Contents:
 
    cli-entry
+   source-root-resolution
    build-and-install
    publish-workflow
    nvim-sync

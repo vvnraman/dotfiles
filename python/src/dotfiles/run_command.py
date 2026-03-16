@@ -6,13 +6,13 @@ from pathlib import Path
 from dotfiles.util import L
 
 
+@dataclass(frozen=True)
 class Command:
-    def __init__(self, name: str, args: list[str]):
-        self.name: str = name
-        self.args: list[str] = args
+    name: str
+    args: list[str]
 
     def __str__(self) -> str:
-        return self.name + " \t= " + " ".join(self.args)
+        return f"{self.name} \t= {' '.join(self.args)}"
 
 
 @dataclass(frozen=True)
@@ -27,19 +27,19 @@ class ProcessResult:
 
 
 class RunOutputError(RuntimeError):
-    def __init__(self, args: list[str], result: ProcessResult):
-        self.command_args = args
+    def __init__(self, command_args: list[str], result: ProcessResult):
+        self.command_args = command_args
         self.result = result
         stderr = result.stderr.strip()
-        message = f"Command failed with rc={result.returncode}: {' '.join(args)}" + (
-            f" | stderr: {stderr}" if stderr else ""
-        )
+        message = (
+            f"Command failed with rc={result.returncode}: {' '.join(command_args)}"
+        ) + (f" | stderr: {stderr}" if stderr else "")
         super().__init__(message)
 
 
-def run_capture(args: list[str]) -> ProcessResult:
+def run_capture(command_args: list[str]) -> ProcessResult:
     proc = subprocess.run(
-        args,
+        command_args,
         capture_output=True,
         text=True,
         check=False,
@@ -51,20 +51,20 @@ def run_capture(args: list[str]) -> ProcessResult:
     )
 
 
-def run_output(args: list[str]) -> str:
-    result = run_capture(args)
+def run_output(command_args: list[str]) -> str:
+    result = run_capture(command_args)
     if result.returncode != 0:
-        raise RunOutputError(args, result)
+        raise RunOutputError(command_args, result)
     return result.stdout.strip()
 
 
 def run_only(
-    args: list[str],
+    command_args: list[str],
     cwd: Path | None = None,
     env: dict[str, str] | None = None,
 ) -> None:
     proc = subprocess.run(
-        args,
+        command_args,
         capture_output=False,
         text=True,
         check=False,
@@ -72,7 +72,10 @@ def run_only(
         env=env,
     )
     if proc.returncode != 0:
-        raise RunOutputError(args, ProcessResult.from_returncode(proc.returncode))
+        raise RunOutputError(
+            command_args,
+            ProcessResult.from_returncode(proc.returncode),
+        )
 
 
 def run_live(cmd: Command, dry_run: bool) -> None:
@@ -97,9 +100,9 @@ def run_live(cmd: Command, dry_run: bool) -> None:
         _ = proc.wait(timeout=5)
 
         rc = proc.returncode
-        if 0 == rc:
+        if rc == 0:
             logging.info(f"{L.C} {cmd.name} finished with rc={rc}")
         else:
             logging.warning(f"{L.E} {cmd.name} finished with rc={rc}")
-        if 0 != rc:
+        if rc != 0:
             raise RunOutputError(cmd.args, ProcessResult.from_returncode(rc))

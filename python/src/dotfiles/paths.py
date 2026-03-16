@@ -129,16 +129,6 @@ class SourceRootResolutionError(RuntimeError):
         super().__init__(message)
 
 
-def set_source_root_override(path: str | None) -> None:
-    global _source_root_override
-    _source_root_override = path
-    resolve_project_dir.cache_clear()
-
-
-def package_config_path() -> Path:
-    return Path(__file__).resolve().parent / "dotfiles-config.ini"
-
-
 def _find_project_root(start_path: Path, io: SourceRootResolutionIO) -> Path | None:
     candidates = [start_path, *start_path.parents]
     for candidate in candidates:
@@ -236,6 +226,26 @@ def _resolve_from_chezmoi_source_path(ctx: ResolverContext) -> Path | None:
     return resolved
 
 
+def _resolve_from_runtime_package_path(ctx: ResolverContext) -> Path | None:
+    package_dir = ctx.config_path.parent
+    if not ctx.io.path_exists(package_dir):
+        ctx.trace.add(f"runtime package path: '{package_dir}' does not exist")
+        return None
+
+    resolved_package_dir = ctx.io.resolve_path(package_dir)
+    ctx.trace.add(f"runtime package path: start at '{resolved_package_dir}'")
+    resolved = _find_project_root(resolved_package_dir, ctx.io)
+    if resolved is None:
+        ctx.trace.add(
+            "runtime package path: could not walk to project root from "
+            f"'{resolved_package_dir}'",
+        )
+        return None
+
+    ctx.trace.add(f"runtime package path: success -> '{resolved}'")
+    return resolved
+
+
 def _resolve_project_dir_with_context(ctx: ResolverContext) -> Path:
     if ctx.source_root_override is not None:
         project_root = _resolve_direct_project_root(
@@ -251,6 +261,10 @@ def _resolve_project_dir_with_context(ctx: ResolverContext) -> Path:
         ctx.trace.fail()
     else:
         ctx.trace.add("cli --source-root: not provided")
+
+    project_root = _resolve_from_runtime_package_path(ctx)
+    if project_root is not None:
+        return project_root
 
     config_git_root = _config_git_root(ctx)
     if config_git_root is not None:
@@ -280,6 +294,16 @@ def _resolve_project_dir_with_context(ctx: ResolverContext) -> Path:
         ctx.trace.add(f"env {CHEZMOI_DOTFILES_PATH_OVERRIDE}: not provided")
 
     ctx.trace.fail()
+
+
+def package_config_path() -> Path:
+    return Path(__file__).resolve().parent / "dotfiles-config.ini"
+
+
+def set_source_root_override(path: str | None) -> None:
+    global _source_root_override
+    _source_root_override = path
+    resolve_project_dir.cache_clear()
 
 
 def resolve_project_dir_with_io(

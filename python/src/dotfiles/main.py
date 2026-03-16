@@ -1,5 +1,6 @@
 import logging
 import sys
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Annotated
 
@@ -54,16 +55,25 @@ def _project_dir() -> Path:
         raise typer.Exit(code=2) from error
 
 
-def _docs_dir() -> Path:
-    return _project_dir() / "docs"
+@dataclass(frozen=True)
+class ProjectPaths:
+    project_dir: Path
+    docs_dir: Path
+    build_dir: Path
+    html_dir: Path
 
 
-def _build_dir() -> Path:
-    return _docs_dir() / "_build"
-
-
-def _html_dir() -> Path:
-    return _build_dir() / "html"
+def _project_paths() -> ProjectPaths:
+    project_dir = _project_dir()
+    docs_dir = project_dir / "docs"
+    build_dir = docs_dir / "_build"
+    html_dir = build_dir / "html"
+    return ProjectPaths(
+        project_dir=project_dir,
+        docs_dir=docs_dir,
+        build_dir=build_dir,
+        html_dir=html_dir,
+    )
 
 
 def _configure_app_context(
@@ -109,77 +119,71 @@ app.add_typer(nvim_app, name="nvim")
 
 
 @app.command()
-def info():
-    project_dir = _project_dir()
-    docs_dir = _docs_dir()
-    build_dir = _build_dir()
-    html_dir = _html_dir()
+def info() -> None:
+    paths = _project_paths()
     logging.info(f"{L.A} Project        = {PROJECT_NAME}")
-    logging.info(f"{L.B} Project dir    = {project_dir}")
-    logging.info(f"{L.B} Docs dir       = {docs_dir}")
-    logging.info(f"{L.B} Build dir      = {build_dir}")
-    logging.info(f"{L.B} HTML dir       = {html_dir}")
+    logging.info(f"{L.B} Project dir    = {paths.project_dir}")
+    logging.info(f"{L.B} Docs dir       = {paths.docs_dir}")
+    logging.info(f"{L.B} Build dir      = {paths.build_dir}")
+    logging.info(f"{L.B} HTML dir       = {paths.html_dir}")
 
 
 @app.command()
-def docs():
-    docs_dir = _docs_dir()
-    build_dir = _build_dir()
+def docs() -> None:
+    paths = _project_paths()
     logging.info(f"{L.A} Building docs for {PROJECT_NAME}")
-    args = [
+    command_args = [
         sys.executable,
         "-m",
         "sphinx",
         "--builder",
         "html",
-        str(docs_dir),
-        str(build_dir),
+        str(paths.docs_dir),
+        str(paths.html_dir),
     ]
     try:
-        run_only(args)
+        run_only(command_args)
     except RunOutputError as error:
         logging.error(f"{L.E} {error}")
         raise typer.Exit(code=2) from error
 
 
 @app.command()
-def live():
-    docs_dir = _docs_dir()
-    html_dir = _html_dir()
+def live() -> None:
+    paths = _project_paths()
     logging.info(f"{L.A} Building livedocs for {PROJECT_NAME}")
-    args = [
+    command_args = [
         sys.executable,
         "-m",
         "sphinx_autobuild",
         "--port",
         "0",
         "--open-browser",
-        str(docs_dir),
-        str(html_dir),
+        str(paths.docs_dir),
+        str(paths.html_dir),
     ]
     try:
-        run_only(args)
+        run_only(command_args)
     except RunOutputError as error:
         logging.error(f"{L.E} {error}")
         raise typer.Exit(code=2) from error
 
 
 @app.command()
-def clean():
-    docs_dir = _docs_dir()
-    build_dir = _build_dir()
+def clean() -> None:
+    paths = _project_paths()
     logging.info(f"{L.A} Cleaning docs for {PROJECT_NAME}")
-    args = [
+    command_args = [
         sys.executable,
         "-m",
         "sphinx",
         "-M",
         "clean",
-        str(docs_dir),
-        str(build_dir),
+        str(paths.docs_dir),
+        str(paths.build_dir),
     ]
     try:
-        run_only(args)
+        run_only(command_args)
     except RunOutputError as error:
         logging.error(f"{L.E} {error}")
         raise typer.Exit(code=2) from error
@@ -223,9 +227,9 @@ def nvim_sync_command(
         str | None,
         typer.Option("--override-branch-name", "--override-nvim-branch"),
     ] = None,
-):
-    project_dir = _project_dir()
+) -> None:
     """Sync runtime nvim config into local chezmoi state."""
+    project_dir = _project_dir()
     logging.info(f"{L.A} Syncing with neovim config")
     try:
         nvim_sync_with_mimic(
@@ -245,9 +249,9 @@ def nvim_sync_command(
 
 
 @nvim_app.command("info")
-def nvim_info_command(nvim_config_dir: str | None = None):
-    project_dir = _project_dir()
+def nvim_info_command(nvim_config_dir: str | None = None) -> None:
     """Show sync impact counts for runtime/local nvim configs."""
+    project_dir = _project_dir()
     logging.info(f"{L.A} Computing neovim sync info")
     _ = nvim_info(
         NvimInfoArgs(
@@ -259,18 +263,18 @@ def nvim_info_command(nvim_config_dir: str | None = None):
 
 
 @app.command()
-def init_docs():
-    docs_dir = _docs_dir()
+def init_docs() -> None:
+    paths = _project_paths()
     logging.info(f"{L.A} Setting up sphinx docs structure for {PROJECT_NAME}")
     sphinx_files = [
-        docs_dir / "conf.py",
-        docs_dir / "index.rst",
-        docs_dir / "Makefile",
+        paths.docs_dir / "conf.py",
+        paths.docs_dir / "index.rst",
+        paths.docs_dir / "Makefile",
     ]
     if all([file.exists() for file in sphinx_files]):
         logging.warning(f"{L.E} Sphinx files already exist")
         return
-    args = [
+    command_args = [
         sys.executable,
         "-m",
         "sphinx.cmd.quickstart",
@@ -282,10 +286,10 @@ def init_docs():
         "Prateek Raman",
         "--release",
         "1.0",
-        str(docs_dir),
+        str(paths.docs_dir),
     ]
     try:
-        run_only(args)
+        run_only(command_args)
     except RunOutputError as error:
         logging.error(f"{L.E} {error}")
         raise typer.Exit(code=2) from error

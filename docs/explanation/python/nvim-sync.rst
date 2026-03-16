@@ -24,15 +24,18 @@ High-level structure
    |   |-- NvimSyncWithMimicArgs
    |   `-- NvimInfoArgs
    |-- plan and diff helpers
-   `-- orchestration
-       |-- nvim_sync
-       |-- nvim_sync_with_mimic
-       `-- nvim_info
+   |   `-- managed-surface totals helpers
+   |       |-- _nvim_count_existing_top_level_files
+   |       `-- _nvim_collect_managed_surface_totals
+    `-- orchestration
+        |-- _nvim_sync
+        |-- nvim_sync_with_mimic
+        `-- nvim_info
 
 - Builds a snapshot plan from runtime and local manifests.
 - Splits file changes into add, update, unchanged buckets.
 - Removes missing runtime entries and copies changed runtime entries.
-- Computes managed-surface counts for ``dotfiles nvim info``.
+- Computes managed-surface totals through dedicated helpers before sync-change counts.
 - Resolves runtime/local paths and branch/worktree prechecks in one place.
 
 Sync flow
@@ -40,7 +43,7 @@ Sync flow
 
 1. ``nvim_sync_with_mimic`` resolves runtime/local paths from request args.
 2. It validates runtime git cleanliness and branch policy.
-3. ``nvim_sync`` resolves ``ShellOp`` from ``dry_run`` and builds sync plan.
+3. ``_nvim_sync`` resolves ``ShellOp`` from ``dry_run`` and builds sync plan.
 4. Removes explicit top-level targets except ``lua``.
 5. Prunes missing runtime files/directories from local ``lua``.
 6. Copies non-``lua`` base targets and changed top-level files.

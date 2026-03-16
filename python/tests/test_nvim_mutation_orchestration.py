@@ -1,15 +1,17 @@
+# pyright: reportPrivateUsage=false
+
 from collections.abc import Iterator
 from pathlib import Path
 
 from dotfiles.nvim import (
+    _nvim_copy_from_runtime_to_local,
+    _nvim_copy_lua_subdir_manifest,
+    _nvim_prune_missing_runtime_local_lua_subdir_entries,
+    _nvim_remove_explicit_sync_targets,
     DiskAccessor,
     NvimLuaSubdirManifest,
     NvimPathPair,
     ShellOp,
-    nvim_copy_from_runtime_to_local,
-    nvim_copy_lua_subdir_manifest,
-    nvim_prune_missing_runtime_local_lua_subdir_entries,
-    nvim_remove_explicit_sync_targets,
 )
 
 # (operation_name, first_path, second_path_or_none)
@@ -93,7 +95,7 @@ def test_remove_explicit_sync_targets_removes_only_non_lua_directories() -> None
     shell = SpyShellOp(dry_run=False)
     disk = MockDiskAccessor(existing_paths={after_local})
 
-    nvim_remove_explicit_sync_targets(
+    _nvim_remove_explicit_sync_targets(
         shell_op=shell,
         local_nvim_dir=local_nvim_dir,
         runtime_to_local_dir_pairs=runtime_to_local_dir_pairs,
@@ -132,7 +134,7 @@ def test_prune_missing_runtime_entries_removes_missing_file_and_dir() -> None:
     shell = SpyShellOp(dry_run=False)
     disk = MockDiskAccessor(existing_paths={local_nvim_dir / "lua/obsolete"})
 
-    nvim_prune_missing_runtime_local_lua_subdir_entries(
+    _nvim_prune_missing_runtime_local_lua_subdir_entries(
         shell_op=shell,
         local_nvim_dir=local_nvim_dir,
         runtime_nvim_dir=runtime_nvim_dir,
@@ -183,7 +185,7 @@ def test_prune_missing_runtime_entries_skips_when_runtime_drift_detected() -> No
         }
     )
 
-    nvim_prune_missing_runtime_local_lua_subdir_entries(
+    _nvim_prune_missing_runtime_local_lua_subdir_entries(
         shell_op=shell,
         local_nvim_dir=local_nvim_dir,
         runtime_nvim_dir=runtime_nvim_dir,
@@ -258,7 +260,7 @@ def test_copy_from_runtime_to_local_copies_base_and_changed_top_level_files() ->
         },
     )
 
-    nvim_copy_from_runtime_to_local(
+    _nvim_copy_from_runtime_to_local(
         shell_op=shell,
         local_nvim_dir=local_nvim_dir,
         runtime_nvim_dir=runtime_nvim_dir,
@@ -331,7 +333,7 @@ def test_copy_lua_subdir_manifest_copies_changed_and_ensures_parent_dir() -> Non
         },
     )
 
-    nvim_copy_lua_subdir_manifest(
+    _nvim_copy_lua_subdir_manifest(
         shell_op=shell,
         local_nvim_dir=local_nvim_dir,
         runtime_nvim_dir=runtime_nvim_dir,

@@ -1,4 +1,4 @@
-$ lsd --almost-all --tree /home/vvnraman/.local/share/chezmoi/home/dot-bash
+$ lsd --almost-all --tree home/dot-bash
 dot-bash
 ├── bash_profile
 ├── bashrc
@@ -19,4 +19,8 @@ dot-bash
 │   ├── bashrc-wsl2.sh
 │   ├── symlink_bashrc-os-config.sh.tmpl
 │   └── symlink_bashrc-user-config.sh.tmpl
-└── profile
+├── profile
+└── tests
+    ├── git-shell.bats
+    ├── run-bats-bash.sh
+    └── run-bats-fish.sh

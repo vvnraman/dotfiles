@@ -46,16 +46,16 @@ def _resolve_layout_tool() -> str:
     return "ls"
 
 
-def _layout_command(layout_tool: str, target_dir: Path) -> tuple[list[str], str]:
+def _layout_command(layout_tool: str, target_rel_path: str) -> tuple[list[str], str]:
     if layout_tool == "lsd":
-        cmd = ["lsd", "--almost-all", "--tree", str(target_dir)]
+        cmd = ["lsd", "--almost-all", "--tree", target_rel_path]
         return cmd, " ".join(cmd)
 
     if layout_tool == "tree":
-        cmd = ["tree", "-a", str(target_dir)]
+        cmd = ["tree", "-a", target_rel_path]
         return cmd, " ".join(cmd)
 
-    shell_cmd = f"ls -al {shlex.quote(str(target_dir))}/*"
+    shell_cmd = f"ls -al {shlex.quote(target_rel_path)}/*"
     return ["/bin/sh", "-c", shell_cmd], shell_cmd
 
 
@@ -79,13 +79,20 @@ def _mark_stale_layout(content: str, stale_layout_prefix: str) -> str:
 
 
 def _render_layout(
+    project_dir: Path,
     layout_tool: str,
-    target_dir: Path,
+    target_rel_path: str,
     stale_layout_prefix: str,
     existing_content: str | None = None,
 ) -> str:
-    cmd, display_cmd = _layout_command(layout_tool, target_dir)
-    proc = subprocess.run(cmd, capture_output=True, text=True, check=False)
+    cmd, display_cmd = _layout_command(layout_tool, target_rel_path)
+    proc = subprocess.run(
+        cmd,
+        capture_output=True,
+        text=True,
+        check=False,
+        cwd=project_dir,
+    )
 
     if proc.returncode == 0:
         body = proc.stdout.rstrip()
@@ -119,12 +126,12 @@ def _generate_directory_layouts(_: object) -> None:
     generated_dir.mkdir(parents=True, exist_ok=True)
 
     for name, rel_path in layout_targets.items():
-        target_dir = project_dir / rel_path
         out_path = generated_dir / f"{name}-layout.txt"
         existing_content = out_path.read_text() if out_path.exists() else None
         rendered = _render_layout(
+            project_dir,
             layout_tool,
-            target_dir,
+            rel_path,
             stale_layout_prefix,
             existing_content,
         )

@@ -14,119 +14,79 @@ if command -v lazygit 1>/dev/null 2>&1; then
   alias lg="lazygit"
 fi
 
+function _mg_script_path() {
+  if [[ -n "${BATS_TEST_MG_SCRIPT_PATH:-}" ]]; then
+    printf '%s\n' "${BATS_TEST_MG_SCRIPT_PATH}"
+    return
+  fi
+
+  if [[ -f "${HOME}/.local/bin/mg" ]]; then
+    printf '%s\n' "${HOME}/.local/bin/mg"
+    return
+  fi
+
+  if type -P mg 1>/dev/null 2>&1; then
+    type -P mg
+    return
+  fi
+
+  echo "mg not found in PATH or ${HOME}/.local/bin"
+  return 1
+}
+
+function _mg_ensure_loaded() {
+  local script_path
+  script_path="$(_mg_script_path)" || return 1
+
+  if [[ "${_MG_LOADED_SCRIPT_PATH:-}" != "${script_path}" ]]; then
+    # shellcheck source=/dev/null
+    . "${script_path}" || return 1
+    _MG_LOADED_SCRIPT_PATH="${script_path}"
+  fi
+
+  if ! declare -F my_git_main 1>/dev/null 2>&1; then
+    echo "mg script did not define my_git_main"
+    return 1
+  fi
+}
+
+function mg() {
+  _mg_ensure_loaded || return 1
+  my_git_main "$@"
+}
+
 function git-update-commit-date() {
-  local date_str
-  date_str="$(date)"
-  GIT_COMMITTER_DATE="${date_str}" \
-    git commit --amend --no-edit --date "${date_str}"
+  mg update-commit-date "$@"
 }
 
-function git-sync-origin-with-usptream() {
-  local _origin_str="$(git remote get-url origin)"
-  local _upstream_str="$(git remote get-url upstream)"
-  echo "Syncing ${_origin_str}/master with ${_upstream_str}/master"
-  git push origin upstream/master:master
-}
-
-function git-init-with-empty-commit() {
-  git init . &&
-    git commit --allow-empty --message "Initial commit."
-}
-
-function git-top() {
-  git rev-parse --show-toplevel || true
+function git-init() {
+  mg init "$@"
 }
 
 function git-clone() {
-  if [[ $# -ne 2 ]]; then
-    echo "Usage: git-clone <org> <repo>"
-    return
-  fi
-  local _org="${1}"
-  local _repo="${2}"
-  if [[ -z "${_org///}" || -z "${_repo///}" ]]; then
-    echo "<org> or <repo> is not valid."
-    return
-  fi
-  mkdir "${_repo}" &&
-    cd "${_repo}" &&
-    git clone "github:${_org}/${_repo}" "${_reop}"
-}
-
-function git-pull-all-branches() {
-  git branch -r |
-    grep -v '\->' |
-    while read remote; do
-      git branch --track "${remote#origin/}" "${remote}"
-    done
+  mg clone "$@"
 }
 
 function git-show-ignored() {
-  git ls-files . --ignored --exclude-standard --others
+  mg show-ignored "$@"
 }
 
 function git-show-untracked() {
-  git ls-files . --exclude-standard --others
+  mg show-untracked "$@"
 }
 
-function git-worktree-new-branch() {
-  if [[ $# -ne 1 ]]; then
-    echo "Usage: git-worktree-new-branch <branch>"
-    return
-  fi
-  local _branch="${1}"
-  if [[ -z "${_branch///}" ]]; then
-    echo "<branch> name is not valid."
-    return
-  fi
-  local _source_dir="$(git-top)"
-  local _base_dir="$(dirname ${_source_dir})"
-  local _project="$(basename ${_source_dir})"
-
-  echo "Branch = ${_branch}, Project = ${_project}"
-  git worktree add -b "${_branch}" "${_base_dir}/${_project}_${_branch}"
+function git-switch() {
+  mg switch "$@"
 }
 
-function git-worktree-new-remote-branch() {
-  if [[ $# -ne 2 ]]; then
-    echo "Usage: git-worktree-new-remote-branch <remote> <branch>"
-    return
-  fi
-  local _remote="${1}"
-  local _branch="${2}"
-  if [[ -z "${_remote///}" || -z "${_branch///}" ]]; then
-    echo "<remote> or <branch> name is not valid."
-    return
-  fi
-  local _source_dir="$(git-top)"
-  local _base_dir="$(dirname ${_source_dir})"
-  local _project="$(basename ${_source_dir})"
-
-  echo "Branch = ${_branch}, Project = ${_project}"
-  git remote add "${_remote}" "github:${_remote}/${_project}" &&
-    git fetch --all &&
-    git worktree add --track -b "${_branch}" \
-      "${_base_dir}/${_project}_${_remote}_${_branch}" \
-      "${_remote}_${_branch}"
+function git-new-branch() {
+  mg new-branch "$@"
 }
 
-function git-worktree-existing-remote-branch() {
-  if [[ $# -ne 2 ]]; then
-    echo "Usage: git-worktree-new-remote-branch <remote> <branch>"
-    return
-  fi
-  local _remote="${1}"
-  local _branch="${2}"
-  if [[ -z "${_remote///}" || -z "${_branch///}" ]]; then
-    echo "<remote> or <branch> name is not valid."
-    return
-  fi
-  local _source_dir="$(git-top)"
-  local _base_dir="$(dirname ${_source_dir})"
-  local _project="$(basename ${_source_dir})"
+function git-branch-new-remote() {
+  mg branch-new-remote "$@"
+}
 
-  echo "Branch = ${_branch}, Project = ${_project}"
-  git worktree add --track -b "${_branch}" \
-    "${_base_dir}/${_project}_${_remote}_${_branch}" \
-    "${_remote}_${_branch}"
+function git-branch-existing-remote() {
+  mg branch-existing-remote "$@"
 }

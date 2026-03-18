@@ -1,4 +1,4 @@
-$ lsd --almost-all --tree /home/vvnraman/.local/share/chezmoi/home/dot_config/lazygit
+$ lsd --almost-all --tree home/dot_config/lazygit
 lazygit
 ├── config.yml.tmpl
 ├── tokyonight_day.yml

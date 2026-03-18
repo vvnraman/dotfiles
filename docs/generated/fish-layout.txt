@@ -1,13 +1,15 @@
-$ lsd --almost-all --tree /home/vvnraman/.local/share/chezmoi/home/dot_config/fish
+$ lsd --almost-all --tree home/dot_config/fish
 fish
 ├── completions
-│   └── .keep
+│   ├── .keep
+│   └── mg.fish
 ├── conf.d
 │   ├── fzf-config.fish
 │   └── git-config.fish
 ├── config.fish
 ├── functions
-│   └── .keep
+│   ├── .keep
+│   └── mg.fish
 ├── generated
 │   └── fzf-fragments.fish.tmpl
 ├── linux-arch-config.fish

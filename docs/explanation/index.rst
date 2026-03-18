@@ -11,5 +11,6 @@ Explanation
    fish
    tmux
    git
+   git-workflow
    lazygit
    python/index

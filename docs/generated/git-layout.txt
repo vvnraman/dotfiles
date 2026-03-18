@@ -1,4 +1,4 @@
-$ lsd --almost-all --tree /home/vvnraman/.local/share/chezmoi/home/dot_config/git
+$ lsd --almost-all --tree home/dot_config/git
 git
 ├── global.gitignore
 ├── linux.gitconfig.tmpl

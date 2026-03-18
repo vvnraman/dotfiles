@@ -1,0 +1,484 @@
+#!/usr/bin/env bash
+# vim: set filetype=sh : */
+
+function _is_blank() {
+  [[ -z "${1//[[:space:]]/}" ]]
+}
+
+function _usage_main() {
+  cat <<'EOF'
+Usage: mg <command> [args]
+
+Commands:
+  update-commit-date
+  init <project>
+  clone [--host <host>] <org> <repo>
+  clone [--host <host>] <url>
+  show-ignored
+  show-untracked
+  switch <branch>
+  new-branch <branch>
+  branch-new-remote [--host <host>] [--url <remote-url>] <remote> <branch>
+  branch-existing-remote <remote> <branch>
+EOF
+}
+
+function _usage_clone() {
+  echo "Usage: clone [--host <host>] <org> <repo>"
+  echo "   or: clone [--host <host>] <url>"
+}
+
+function _usage_branch_new_remote() {
+  echo "Usage: branch-new-remote [--host <host>] [--url <remote-url>] <remote> <branch>"
+}
+
+function _default_git_host() {
+  if ! _is_blank "${VVN_DOTFILES_GITHUB_HOST}"; then
+    printf '%s\n' "${VVN_DOTFILES_GITHUB_HOST}"
+    return
+  fi
+
+  printf '%s\n' "github"
+}
+
+function _parse_host_url_options() {
+  local allow_url="${1}"
+  local host
+  local remote_url=""
+  local -a positional_args=()
+
+  shift
+  host="$(_default_git_host)"
+
+  while [[ $# -gt 0 ]]; do
+    case "${1}" in
+    --host)
+      shift
+      if [[ $# -eq 0 ]]; then
+        echo "Missing value for --host."
+        return 1
+      fi
+      host="${1}"
+      shift
+      ;;
+    --url)
+      if [[ "${allow_url}" -ne 1 ]]; then
+        echo "Unknown option: --url"
+        return 1
+      fi
+      shift
+      if [[ $# -eq 0 ]]; then
+        echo "Missing value for --url."
+        return 1
+      fi
+      remote_url="${1}"
+      shift
+      ;;
+    --)
+      shift
+      positional_args=("$@")
+      break
+      ;;
+    -*)
+      echo "Unknown option: ${1}"
+      return 1
+      ;;
+    *)
+      positional_args=("$@")
+      break
+      ;;
+    esac
+  done
+
+  PARSED_OPTION_HOST="${host}"
+  PARSED_OPTION_URL="${remote_url}"
+  PARSED_POSITIONAL_ARGS=("${positional_args[@]}")
+}
+
+function _parse_clone_url() {
+  local raw_url="${1}"
+  local host
+  local path
+  local org
+  local repo
+
+  raw_url="${raw_url%/}"
+  raw_url="${raw_url%.git}"
+
+  if [[ "${raw_url}" == *"://"* ]]; then
+    local no_scheme="${raw_url#*://}"
+    no_scheme="${no_scheme#*@}"
+    host="${no_scheme%%/*}"
+    path="${no_scheme#*/}"
+  elif [[ "${raw_url}" == *:* ]]; then
+    host="${raw_url%%:*}"
+    path="${raw_url#*:}"
+  else
+    return 1
+  fi
+
+  path="${path#/}"
+  if [[ "${path}" != */* ]]; then
+    return 1
+  fi
+
+  org="${path%%/*}"
+  repo="${path##*/}"
+
+  if _is_blank "${host}" || _is_blank "${org}" || _is_blank "${repo}"; then
+    return 1
+  fi
+
+  printf '%s|%s|%s\n' "${host}" "${org}" "${repo}"
+}
+
+function _require_bare_dir() {
+  local bare_dir
+
+  bare_dir="$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null)"
+  if [[ -z "${bare_dir}" ]]; then
+    echo "Not inside a git repository."
+    return 1
+  fi
+
+  printf '%s\n' "${bare_dir}"
+}
+
+function _project_from_bare_dir() {
+  local bare_dir="${1}"
+  local project_dir
+  local project
+
+  project_dir="$(dirname "${bare_dir}")"
+  project="$(basename "${project_dir}")"
+  project="${project%.git}"
+
+  printf '%s\n' "${project}"
+}
+
+function _worktree_dir_for_branch() {
+  local bare_dir="${1}"
+  local branch="${2}"
+  local project_dir
+
+  project_dir="$(dirname "${bare_dir}")"
+  printf '%s/%s\n' "${project_dir}" "${branch}"
+}
+
+function _default_init_branch() {
+  local default_branch
+
+  default_branch="$(git config --get init.defaultBranch)"
+  if _is_blank "${default_branch}"; then
+    default_branch="master"
+  fi
+
+  printf '%s\n' "${default_branch}"
+}
+
+function _default_branch_from_bare() {
+  local bare_dir="${1}"
+  local default_branch
+
+  default_branch="$(git -C "${bare_dir}" symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null)"
+  default_branch="${default_branch#origin/}"
+
+  if _is_blank "${default_branch}"; then
+    default_branch="$(git -C "${bare_dir}" branch --format='%(refname:short)' --list main master | head -n 1)"
+  fi
+
+  if _is_blank "${default_branch}"; then
+    return 1
+  fi
+
+  printf '%s\n' "${default_branch}"
+}
+
+function _normalize_bare_origin_fetch() {
+  local bare_dir="${1}"
+
+  git -C "${bare_dir}" config --unset-all remote.origin.fetch
+  git -C "${bare_dir}" config --add remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
+  git -C "${bare_dir}" fetch origin --prune
+}
+
+function _worktree_add_remote_branch() {
+  local bare_dir="${1}"
+  local remote="${2}"
+  local branch="${3}"
+  local local_branch="${remote}_${branch}"
+
+  git -C "${bare_dir}" fetch "${remote}" --prune &&
+    git -C "${bare_dir}" worktree add --track -b "${local_branch}" \
+      "../${local_branch}" \
+      "${remote}/${branch}"
+}
+
+function _ensure_remote_url() {
+  local bare_dir="${1}"
+  local remote="${2}"
+  local remote_url="${3}"
+
+  if git -C "${bare_dir}" remote get-url "${remote}" 1>/dev/null 2>&1; then
+    git -C "${bare_dir}" remote set-url "${remote}" "${remote_url}"
+    return
+  fi
+
+  git -C "${bare_dir}" remote add "${remote}" "${remote_url}"
+}
+
+function _cmd_update_commit_date() {
+  local date_str
+  date_str="$(date)"
+  GIT_COMMITTER_DATE="${date_str}" \
+    git commit --amend --no-edit --date "${date_str}"
+}
+
+function _cmd_init() {
+  if [[ $# -ne 1 ]]; then
+    echo "Usage: init <project>"
+    return 1
+  fi
+
+  local project="${1}"
+  local project_dir="${project}.git"
+  local bare_dir="${project_dir}/bare"
+  local default_branch
+  local worktree_dir
+
+  if _is_blank "${project}"; then
+    echo "<project> name is not valid."
+    return 1
+  fi
+
+  default_branch="$(_default_init_branch)"
+  worktree_dir="${project_dir}/${default_branch}"
+
+  mkdir "${project_dir}" &&
+    git init --bare "${bare_dir}" &&
+    git -C "${bare_dir}" worktree add -b "${default_branch}" "../${default_branch}" &&
+    git -C "${worktree_dir}" commit --allow-empty --message "Initial commit."
+}
+
+function _cmd_clone() {
+  local host
+  local org
+  local repo
+  local project_dir
+  local bare_dir
+  local default_branch
+  local parsed_clone
+  local parsed_host
+
+  _parse_host_url_options 0 "$@" || {
+    _usage_clone
+    return 1
+  }
+
+  host="${PARSED_OPTION_HOST}"
+  set -- "${PARSED_POSITIONAL_ARGS[@]}"
+
+  if [[ $# -eq 1 ]]; then
+    parsed_clone="$(_parse_clone_url "${1}")" || {
+      _usage_clone
+      return 1
+    }
+    IFS='|' read -r parsed_host org repo <<<"${parsed_clone}"
+    if ! _is_blank "${parsed_host}"; then
+      host="${parsed_host}"
+    fi
+  elif [[ $# -eq 2 ]]; then
+    org="${1}"
+    repo="${2}"
+  else
+    _usage_clone
+    return 1
+  fi
+
+  if _is_blank "${host}" || _is_blank "${org}" || _is_blank "${repo}"; then
+    echo "<host>, <org>, or <repo> is not valid."
+    return 1
+  fi
+
+  project_dir="${repo}.git"
+  bare_dir="${project_dir}/bare"
+
+  mkdir "${project_dir}" &&
+    git clone --bare "${host}:${org}/${repo}" "${bare_dir}" &&
+    _normalize_bare_origin_fetch "${bare_dir}" &&
+    default_branch="$(_default_branch_from_bare "${bare_dir}")" &&
+    if _is_blank "${default_branch}"; then
+      echo "Unable to determine default branch."
+      return 1
+    fi &&
+    git -C "${bare_dir}" worktree add "../${default_branch}" "${default_branch}"
+}
+
+function _cmd_show_ignored() {
+  git ls-files . --ignored --exclude-standard --others
+}
+
+function _cmd_show_untracked() {
+  git ls-files . --exclude-standard --others
+}
+
+function _cmd_switch() {
+  if [[ $# -ne 1 ]]; then
+    echo "Usage: switch <branch>"
+    return 1
+  fi
+
+  local branch="${1}"
+  local bare_dir
+  local worktree_dir
+
+  if _is_blank "${branch}"; then
+    echo "<branch> name is not valid."
+    return 1
+  fi
+
+  bare_dir="$(_require_bare_dir)" || return 1
+  worktree_dir="$(_worktree_dir_for_branch "${bare_dir}" "${branch}")"
+
+  if [[ -e "${worktree_dir}/.git" ]]; then
+    cd "${worktree_dir}" || return 1
+    return
+  fi
+
+  if git -C "${bare_dir}" show-ref --verify --quiet "refs/heads/${branch}"; then
+    git -C "${bare_dir}" worktree add "../${branch}" "${branch}" || return 1
+    cd "${worktree_dir}" || return 1
+    return
+  fi
+
+  _cmd_new_branch "${branch}" || return 1
+  cd "${worktree_dir}" || return 1
+}
+
+function _cmd_new_branch() {
+  if [[ $# -ne 1 ]]; then
+    echo "Usage: new-branch <branch>"
+    return 1
+  fi
+
+  local branch="${1}"
+  local bare_dir
+
+  if _is_blank "${branch}"; then
+    echo "<branch> name is not valid."
+    return 1
+  fi
+
+  bare_dir="$(_require_bare_dir)" || return 1
+
+  git -C "${bare_dir}" worktree add -b "${branch}" "../${branch}"
+}
+
+function _cmd_branch_new_remote() {
+  local host
+  local remote
+  local remote_url
+  local branch
+  local bare_dir
+  local project
+
+  _parse_host_url_options 1 "$@" || {
+    _usage_branch_new_remote
+    return 1
+  }
+
+  host="${PARSED_OPTION_HOST}"
+  remote_url="${PARSED_OPTION_URL}"
+  set -- "${PARSED_POSITIONAL_ARGS[@]}"
+
+  if [[ $# -ne 2 ]]; then
+    _usage_branch_new_remote
+    return 1
+  fi
+
+  remote="${1}"
+  branch="${2}"
+
+  if _is_blank "${host}" || _is_blank "${remote}" || _is_blank "${branch}"; then
+    echo "<host>, <remote>, or <branch> name is not valid."
+    return 1
+  fi
+
+  bare_dir="$(_require_bare_dir)" || return 1
+  project="$(_project_from_bare_dir "${bare_dir}")"
+
+  if _is_blank "${remote_url}"; then
+    remote_url="${host}:${remote}/${project}"
+  fi
+
+  _ensure_remote_url "${bare_dir}" "${remote}" "${remote_url}" || return 1
+
+  _worktree_add_remote_branch "${bare_dir}" "${remote}" "${branch}"
+}
+
+function _cmd_branch_existing_remote() {
+  if [[ $# -ne 2 ]]; then
+    echo "Usage: branch-existing-remote <remote> <branch>"
+    return 1
+  fi
+
+  local remote="${1}"
+  local branch="${2}"
+  local bare_dir
+
+  if _is_blank "${remote}" || _is_blank "${branch}"; then
+    echo "<remote> or <branch> name is not valid."
+    return 1
+  fi
+
+  bare_dir="$(_require_bare_dir)" || return 1
+
+  _worktree_add_remote_branch "${bare_dir}" "${remote}" "${branch}"
+}
+
+function my_git_main() {
+  local subcommand="${1:-}"
+  shift || true
+
+  case "${subcommand}" in
+  update-commit-date)
+    _cmd_update_commit_date "$@"
+    ;;
+  init)
+    _cmd_init "$@"
+    ;;
+  clone)
+    _cmd_clone "$@"
+    ;;
+  show-ignored)
+    _cmd_show_ignored "$@"
+    ;;
+  show-untracked)
+    _cmd_show_untracked "$@"
+    ;;
+  switch)
+    _cmd_switch "$@"
+    ;;
+  new-branch)
+    _cmd_new_branch "$@"
+    ;;
+  branch-new-remote)
+    _cmd_branch_new_remote "$@"
+    ;;
+  branch-existing-remote)
+    _cmd_branch_existing_remote "$@"
+    ;;
+  help|--help|-h|"")
+    _usage_main
+    ;;
+  *)
+    echo "Unknown command: ${subcommand}"
+    _usage_main
+    return 1
+    ;;
+  esac
+}
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  my_git_main "$@"
+fi

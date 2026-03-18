@@ -49,6 +49,12 @@ pytest: ## Run python test suite
 pytest:
 	$(UV_RUN) --group dev pytest python/tests
 
+.PHONY: bats
+bats: ## Run shell bats test suite
+bats:
+	bash home/dot-bash/tests/run-bats-bash.sh
+	bash home/dot-bash/tests/run-bats-fish.sh
+
 .PHONY: install
 install: ## Install dotfiles tool; example: make install args='--dirty-install-path /tmp/dotfiles-bin --no-dry-run'
 install:

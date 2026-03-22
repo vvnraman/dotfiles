@@ -40,10 +40,26 @@ function git-new-branch
   mg new-branch $argv
 end
 
-function git-branch-new-remote
-  mg branch-new-remote $argv
+function git-self-branch
+  mg self-branch $argv
 end
 
-function git-branch-existing-remote
-  mg branch-existing-remote $argv
+function git-alien-branch
+  mg alien-branch $argv
+end
+
+function git-info
+  mg info $argv
+end
+
+function git-path
+  mg path $argv
+end
+
+function git-remove-branch
+  mg remove-branch $argv
+end
+
+function git-prune
+  mg prune $argv
 end

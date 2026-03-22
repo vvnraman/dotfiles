@@ -1,0 +1,62 @@
+$ mg --help
+Usage: mg <command> [args]
+
+Commands:
+  help | --help | -h
+      Show this help text.
+
+  update-commit-date
+      Amend current commit date to now. Supports: --example.
+
+  init <project>
+      Create a bare+worktree repository layout for <project>. Supports: --help, --example.
+
+  clone [--host <host-alias>] [--dest <project-dir>] <org> <repo>
+  clone [--dest <project-dir>] <url-or-local-path>
+      Clone into <repo>.git/bare, normalize origin fetch, and create default branch worktree. Supports: --help, --example.
+
+  show-ignored
+      List ignored files. Supports: --example.
+
+  show-untracked
+      List untracked files. Supports: --example.
+
+  switch <branch>
+      Switch to a branch worktree, creating from origin/upstream when available. Supports: --example.
+
+  new-branch <branch>
+      Create a new branch worktree. Supports: --example.
+
+  self-branch <remote> <branch>
+      Use existing remote, then fetch and create tracked worktree branch <branch>. Supports: --help, --example.
+
+  alien-branch <remote> <branch>
+      Fetch existing remote and create tracked worktree branch <remote>_<branch>. Supports: --help, --example.
+
+  info
+      Show layout, remotes, remote branches, tracking locals, and worktrees. Supports: --help, --example.
+
+  path <branch>
+      Print worktree path for <branch>. Supports: --help, --example.
+
+  remove-branch [--force] <branch>
+      Remove merged branch worktree and local branch. Supports: --help, --example.
+
+  prune
+      Prune remotes and stale worktree metadata. Supports: --help, --example.
+
+Options:
+  --host <host-alias>
+      Supported by: clone only.
+
+  --dest <project-dir>
+      Supported by: clone only.
+
+Defaults:
+  Host defaults to VVN_DOTFILES_GITHUB_HOST; fallback is github.
+
+Host aliases:
+  <host-alias> is your SSH host alias from ~/.ssh/config
+  (for example: github -> github.com with User git).
+  Show resolved hostname for alias:
+    ssh -G github | rg '^hostname '

@@ -38,10 +38,10 @@ function _mg_ensure_loaded() {
   local script_path
   script_path="$(_mg_script_path)" || return 1
 
-  if [[ "${_MG_LOADED_SCRIPT_PATH:-}" != "${script_path}" ]]; then
+  if [[ "${_MG_INCLUDE_GUARD_SCRIPT_PATH:-}" != "${script_path}" ]]; then
     # shellcheck source=/dev/null
     . "${script_path}" || return 1
-    _MG_LOADED_SCRIPT_PATH="${script_path}"
+    _MG_INCLUDE_GUARD_SCRIPT_PATH="${script_path}"
   fi
 
   if ! declare -F my_git_main 1>/dev/null 2>&1; then
@@ -83,10 +83,26 @@ function git-new-branch() {
   mg new-branch "$@"
 }
 
-function git-branch-new-remote() {
-  mg branch-new-remote "$@"
+function git-self-branch() {
+  mg self-branch "$@"
 }
 
-function git-branch-existing-remote() {
-  mg branch-existing-remote "$@"
+function git-alien-branch() {
+  mg alien-branch "$@"
+}
+
+function git-info() {
+  mg info "$@"
+}
+
+function git-path() {
+  mg path "$@"
+}
+
+function git-remove-branch() {
+  mg remove-branch "$@"
+}
+
+function git-prune() {
+  mg prune "$@"
 }

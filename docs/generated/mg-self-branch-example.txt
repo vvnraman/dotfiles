@@ -1,0 +1,7 @@
+$ mg self-branch --example
+Examples:
+  mg self-branch origin feature
+      Use existing origin remote and create feature worktree.
+
+  mg self-branch upstream gift-fixme
+      Use existing upstream remote and create gift-fixme worktree.

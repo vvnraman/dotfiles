@@ -1,0 +1,10 @@
+$ mg switch --example
+Examples:
+  mg switch feature-existing
+      Jump to existing feature worktree, or create one from origin/upstream.
+
+  mg switch main
+      Return to the default branch worktree.
+
+  mg switch fix-login || mg new-branch fix-login
+      Switch to an existing branch, or create a new one explicitly.

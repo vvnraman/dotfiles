@@ -1,0 +1,7 @@
+$ mg alien-branch --example
+Examples:
+  mg alien-branch alien gift-fixme
+      Fetch alien/gift-fixme and create local alien_gift-fixme worktree.
+
+  git -C myproject.git/bare remote add alien git@github.com:alien/myproject && mg alien-branch alien gift-fixme
+      Add alien remote manually, then create prefixed local branch/worktree.

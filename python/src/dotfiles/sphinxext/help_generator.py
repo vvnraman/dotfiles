@@ -36,22 +36,57 @@ def _dotfiles_module_command(*args: str) -> list[str]:
     return [sys.executable, "-m", "dotfiles.main", *args]
 
 
-def _help_targets(generated_dir: Path) -> dict[Path, HelpTarget]:
+def _mg_help_command(project_dir: Path) -> list[str]:
+    mg_script = project_dir / "home" / "dot_local" / "bin" / "executable_mg"
+    return ["bash", str(mg_script), "--help"]
+
+
+def _mg_example_command(project_dir: Path, subcommand: str) -> list[str]:
+    mg_script = project_dir / "home" / "dot_local" / "bin" / "executable_mg"
+    return ["bash", str(mg_script), subcommand, "--example"]
+
+
+def _help_targets(project_dir: Path, generated_dir: Path) -> dict[Path, HelpTarget]:
     return {
-        generated_dir
-        / "dotfiles-cli-help.txt": HelpTarget(
+        generated_dir / "dotfiles-cli-help.txt": HelpTarget(
             display_command=["dotfiles", "--help"],
             execute_command=_dotfiles_module_command("--help"),
         ),
-        generated_dir
-        / "dotfiles-cli-nvim-help.txt": HelpTarget(
+        generated_dir / "dotfiles-cli-nvim-help.txt": HelpTarget(
             display_command=["dotfiles", "nvim", "--help"],
             execute_command=_dotfiles_module_command("nvim", "--help"),
         ),
-        generated_dir
-        / "dotfiles-cli-publish-help.txt": HelpTarget(
+        generated_dir / "dotfiles-cli-publish-help.txt": HelpTarget(
             display_command=["dotfiles", "publish", "--help"],
             execute_command=_dotfiles_module_command("publish", "--help"),
+        ),
+        generated_dir / "mg-help.txt": HelpTarget(
+            display_command=["mg", "--help"],
+            execute_command=_mg_help_command(project_dir),
+        ),
+        generated_dir / "mg-init-example.txt": HelpTarget(
+            display_command=["mg", "init", "--example"],
+            execute_command=_mg_example_command(project_dir, "init"),
+        ),
+        generated_dir / "mg-clone-example.txt": HelpTarget(
+            display_command=["mg", "clone", "--example"],
+            execute_command=_mg_example_command(project_dir, "clone"),
+        ),
+        generated_dir / "mg-switch-example.txt": HelpTarget(
+            display_command=["mg", "switch", "--example"],
+            execute_command=_mg_example_command(project_dir, "switch"),
+        ),
+        generated_dir / "mg-new-branch-example.txt": HelpTarget(
+            display_command=["mg", "new-branch", "--example"],
+            execute_command=_mg_example_command(project_dir, "new-branch"),
+        ),
+        generated_dir / "mg-self-branch-example.txt": HelpTarget(
+            display_command=["mg", "self-branch", "--example"],
+            execute_command=_mg_example_command(project_dir, "self-branch"),
+        ),
+        generated_dir / "mg-alien-branch-example.txt": HelpTarget(
+            display_command=["mg", "alien-branch", "--example"],
+            execute_command=_mg_example_command(project_dir, "alien-branch"),
         ),
     }
 
@@ -108,7 +143,7 @@ def _generate_cli_help(_: object) -> None:
     if project_dir is None:
         return
     generated_dir = _generated_dir(project_dir)
-    help_targets = _help_targets(generated_dir)
+    help_targets = _help_targets(project_dir, generated_dir)
     stale_help_prefix = "Stale - generation failed on "
 
     generated_dir.mkdir(parents=True, exist_ok=True)

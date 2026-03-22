@@ -1,0 +1,10 @@
+$ mg init --example
+Examples:
+  mg init myproject
+      Create myproject.git with bare repo and default-branch worktree.
+
+  mkdir sandbox && cd sandbox && mg init myproject
+      Create myproject.git inside a dedicated parent folder.
+
+  mg init myproject && cd myproject.git && ls
+      Initialize the layout, then inspect bare/ and branch worktree directories.

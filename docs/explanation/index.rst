@@ -12,5 +12,6 @@ Explanation
    tmux
    git
    git-workflow
+   git-scripts
    lazygit
    python/index

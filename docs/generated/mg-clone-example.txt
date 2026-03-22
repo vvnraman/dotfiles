@@ -1,0 +1,19 @@
+$ mg clone --example
+Examples:
+  mg clone vvnraman myproject
+      Clone using org/repo form and create myproject.git layout.
+
+  mg clone git@github.com:vvnraman/myproject
+      Clone using a single SSH URL argument.
+
+  mg clone /tmp/test-dir/alpha-remote.git --dest /tmp/test-dir/alpha-copy
+      Clone from local bare path into /tmp/test-dir/alpha-copy.git layout.
+
+  mg clone --dest alpha-copy alpha-remote.git
+      Clone from a relative local bare path into alpha-copy.git layout.
+
+  mg clone --host github vvnraman myproject
+      Clone with an explicit host override.
+
+  VVN_DOTFILES_GITHUB_HOST=github mg clone vvnraman myproject
+      Clone using host from environment default.

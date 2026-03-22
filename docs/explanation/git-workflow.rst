@@ -4,53 +4,71 @@ Git workflow
 ============
 
 ``mg`` is the shared git workflow command installed at ``~/.local/bin/mg`` from
-``home/dot_local/bin/executable_mg``. It manages the bare-plus-worktree layout used in this repo
-and is called by both Bash and Fish wrappers.
-
-mg command reference
---------------------
-
-- ``mg update-commit-date`` amends ``HEAD`` with the current timestamp as author and committer date.
-- ``mg init <project>`` creates ``<project>.git/bare``, adds default branch worktree, and creates an
-  empty initial commit.
-- ``mg clone [--host <host>] <org> <repo>`` creates ``<repo>.git/bare`` from ``<host>:<org>/<repo>``.
-- ``mg clone [--host <host>] <url>`` parses host/org/repo from URL-like input.
-- ``mg show-ignored`` lists ignored files in the current repository.
-- ``mg show-untracked`` lists untracked files in the current repository.
-- ``mg switch <branch>`` changes into ``<project>.git/<branch>`` worktree if present; if branch exists
-  without worktree it creates that worktree; if branch does not exist it delegates to ``new-branch``.
-- ``mg new-branch <branch>`` creates ``<project>.git/<branch>`` from current bare repository.
-- ``mg branch-new-remote [--host <host>] [--url <remote-url>] <remote> <branch>`` ensures remote URL,
-  then creates ``<project>.git/<remote>_<branch>`` tracked from ``<remote>/<branch>``.
-- ``mg branch-existing-remote <remote> <branch>`` creates ``<project>.git/<remote>_<branch>`` from an
-  already configured remote branch.
+``home/dot_local/bin/executable_mg``. It manages the bare-plus-worktree layout I use.
 
 Defaults and env
 ^^^^^^^^^^^^^^^^
 
-- ``VVN_DOTFILES_GITHUB_HOST`` sets default host for clone and derived remote URLs.
+- ``VVN_DOTFILES_GITHUB_HOST`` sets default host for ``mg clone`` org/repo form.
 - If unset, default host is ``github``.
+- ``<host-alias>`` refers to your SSH alias in ``~/.ssh/config``.
+- ``MG_GIT_VERBOSE=1`` enables shell tracing for ``mg`` command execution.
 
-Bash wrapper
-------------
+Common command examples
+-----------------------
 
-``home/dot-bash/bashrc.d/bashrc-git.sh`` defines ``mg`` as a shell function that resolves and sources
-the installed ``mg`` script once, then calls ``my_git_main`` directly for low per-command overhead.
+.. dropdown:: Show ``mg init --example`` output
 
-- ``git-*`` helper functions (for example ``git-clone`` and ``git-new-branch``) delegate to ``mg``.
-- ``git-switch`` delegates to ``mg switch``.
+   .. literalinclude:: ../generated/mg-init-example.txt
+      :language: text
+      :caption: mg init --example output
 
-Fish wrapper
-------------
+.. dropdown:: Show ``mg clone --example`` output
 
-``home/dot_config/fish/functions/mg.fish`` defines ``mg`` as a Fish function that resolves the script
-path and invokes it through ``bash``.
+   .. literalinclude:: ../generated/mg-clone-example.txt
+      :language: text
+      :caption: mg clone --example output
 
-- ``home/dot_config/fish/conf.d/git-config.fish`` exposes ``git-*`` wrappers that delegate to ``mg``.
-- ``git-switch`` delegates to ``mg switch``.
-- ``home/dot_config/fish/completions/mg.fish`` provides subcommand and option completions for ``mg``.
+.. dropdown:: Show ``mg switch --example`` output
+
+   .. literalinclude:: ../generated/mg-switch-example.txt
+      :language: text
+      :caption: mg switch --example output
+
+.. dropdown:: Show ``mg new-branch --example`` output
+
+   .. literalinclude:: ../generated/mg-new-branch-example.txt
+      :language: text
+      :caption: mg new-branch --example output
+
+.. dropdown:: Show ``mg self-branch --example`` output
+
+   .. literalinclude:: ../generated/mg-self-branch-example.txt
+      :language: text
+      :caption: mg self-branch --example output
+
+.. dropdown:: Show ``mg alien-branch --example`` output
+
+   .. literalinclude:: ../generated/mg-alien-branch-example.txt
+      :language: text
+      :caption: mg alien-branch --example output
+
+mg command help
+---------------
+
+.. dropdown:: Show ``mg --help`` output
+
+   .. literalinclude:: ../generated/mg-help.txt
+      :language: text
+      :caption: mg --help output
+
+Implementation details
+----------------------
+
+- See :ref:`Git scripts <explanation-git-scripts>` for runtime dispatch, include guards, and wrapper internals.
 
 Relevant changelogs
 -------------------
 
+- :ref:`2026-03-mar - expand mg workflow commands <changelog-2026-03-mar-expand-mg-workflow-commands>`
 - :ref:`2026-03-mar - consolidate mg git workflow wrappers <changelog-2026-03-mar-consolidate-mg-git-workflow-wrappers>`

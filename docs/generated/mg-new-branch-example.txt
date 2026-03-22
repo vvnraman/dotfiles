@@ -1,0 +1,10 @@
+$ mg new-branch --example
+Examples:
+  mg new-branch feature
+      Create a new local branch and sibling worktree.
+
+  mg new-branch release/v1
+      Create a namespaced branch with matching worktree path.
+
+  mg new-branch spike && git -C ../spike status
+      Create branch/worktree and inspect repository status there.

@@ -1,7 +1,9 @@
 {{- /* vim: set ft=gotmpl: */ -}}
+{{- $source_tmux := joinPath .chezmoi.sourceDir "dot-tmux" -}}
 {{- $environment := lower (env "VVN_DOTFILES_ENVIRONMENT") -}}
-{{- if ne $environment "" -}}
-terminal-colors-linux_{{ $environment }}.conf
+{{- $candidate := print "terminal-colors-linux_" $environment ".conf" -}}
+{{- if and (ne $environment "") (stat (joinPath $source_tmux $candidate)) -}}
+{{ $candidate }}
 {{- else -}}
 terminal-colors-linux.conf
 {{- end -}}

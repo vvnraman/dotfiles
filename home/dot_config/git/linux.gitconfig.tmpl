@@ -1,16 +1,22 @@
 # vim: ft=gitconfig
+{{ $source_git := joinPath .chezmoi.sourceDir "dot_config" "git" -}}
+{{ $candidate := print "user-" (includeTemplate "user-config.tmpl" .) ".gitconfig" -}}
+{{ $paths := includeTemplate "expand-executable-paths.tmpl" . | fromJson -}}
 [include]
-    path = ~/.config/git/user-{{ template "user-config.tmpl" . }}.gitconfig
-{{ if findExecutable "delta" (list "$HOME/.local/bin" "/usr/local/bin" "/usr/bin") }}
+{{- if stat (joinPath $source_git $candidate) }}
+    path = ~/.config/git/{{ $candidate }}
+{{- else }}
+    path = ~/.config/git/no-op.gitconfig
+{{- end }}
+{{- if findExecutable "delta" $paths }}
     path = ~/.config/git/tool-delta.gitconfig
-{{ end }}
-{{ if findExecutable "kdiff3" (list "$HOME/.local/bin" "/usr/local/bin" "/usr/bin") }}
+{{- end }}
+{{- if findExecutable "kdiff3" $paths }}
     path = ~/.config/git/tool-kdiff3.gitconfig
-{{ end }}
+{{- end }}
 
 [push]
     default = simple
 
 [core]
     excludesfile = ~/.config/git/global.gitignore
-

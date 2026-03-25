@@ -1,2 +1,8 @@
 {{- /* vim: set ft=gotmpl: */ -}}
-{{ template "user-config.tmpl" . }}-config.fish
+{{- $source_fish := joinPath .chezmoi.sourceDir "dot_config" "fish" -}}
+{{- $candidate := print (includeTemplate "user-config.tmpl" .) "-config.fish" -}}
+{{- if stat (joinPath $source_fish $candidate) -}}
+{{ $candidate }}
+{{- else -}}
+no-op.fish
+{{- end -}}

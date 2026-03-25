@@ -1,0 +1,4 @@
+{{- /* vim: set ft=gotmpl: */ -}}
+{{- $os := includeTemplate "os-config.tmpl" . -}}
+{{- $user := includeTemplate "user-config.tmpl" . -}}
+{{- print $os "-" $user -}}

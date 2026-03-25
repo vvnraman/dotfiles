@@ -1,0 +1,13 @@
+[executable_paths.linux]
+home_relative = [".local/bin"]
+absolute = ["/usr/local/bin", "/usr/bin"]
+
+[executable_paths.windows]
+home_relative = [
+  'AppData\Local\Microsoft\WinGet\Links',
+  'AppData\Local\Programs\KDiff3\bin',
+]
+# Example absolute paths on Windows:
+# 'C:\Program Files\Neovide'
+# 'C:\Program Files\ImageMagick-7.1.2-Q16-HDR'
+absolute = []

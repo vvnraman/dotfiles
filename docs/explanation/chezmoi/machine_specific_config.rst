@@ -1,69 +1,74 @@
-Machine Specific Config
+.. _explanation-chezmoi-machine-specific-config:
+
+Machine specific config
 =======================
 
-Machine specific dotfiles config is configured via :ref:`chezmoi-templates`. This
-currently only applies to bashrc files.
+This repo uses one shared dotfiles source while still allowing each machine to load the right
+variant of a config file. The selection is deterministic and based on machine identity signals
+and environment values available to chezmoi during rendering.
 
-Custom ``~./.gitconfig`` as the global config
----------------------------------------------
+Generic selection mechanism
+---------------------------
 
-I use this to keep home and work config separate.
+The machine identity selectors are built from three reusable templates:
 
-* It is named ``symlink_dot_gitconfig.tmpl`` which indicates that it should by
-  a symlink.
+- ``os-config`` from ``os-config.tmpl``
+- ``user-config`` from ``user-config.tmpl``
+- ``os-user-config`` from ``os-user-config.tmpl``
 
-* The symlink destination is ``~/.gitconfig`` and the target comes from the
-  contents of the template file using the ``username`` variable.
+.. literalinclude:: ../../../home/.chezmoitemplates/os-config.tmpl
+   :language: text
+   :lineno-match:
+   :emphasize-lines: 2,3,4,5
+   :caption: os-config.tmpl
 
-  .. code-block::
+.. literalinclude:: ../../../home/.chezmoitemplates/user-config.tmpl
+   :language: text
+   :lineno-match:
+   :emphasize-lines: 2
+   :caption: user-config.tmpl
 
-     .gitconfig_{{ .chezmoi.username }}
+.. literalinclude:: ../../../home/.chezmoitemplates/os-user-config.tmpl
+   :language: text
+   :lineno-match:
+   :emphasize-lines: 2,3,4
+   :caption: os-user-config.tmpl
 
-* So on my home PC, we get the following
+Symlink templates use these selectors to resolve a candidate target name. If that candidate exists
+in source state, chezmoi creates a symlink to it.
 
-  .. code-block::
+No-op fallback for fault tolerance
+----------------------------------
 
-     /home/vvnraman/.gitconfig -> .gitconfig_vvnraman
+Each symlink selector also checks whether the computed candidate exists in source state before
+emitting it. If the candidate is missing, the template falls back to a no-op target file.
 
-* At work, I always have a separate branch exactly 1 commit ahead of ``origin``
-  which contains the the work specific gitconfig file, which ``~/.gitconfig``
-  points to.
+This keeps the generated symlink valid even when a machine-specific variant is not present.
 
-----
+.. code-block:: text
+   :caption: Generic robust selector pattern
 
-Custom ``bashrc-custom`` config
--------------------------------
+   {{- $source_dir := joinPath .chezmoi.sourceDir "<config-root>" -}}
+   {{- $candidate := print "<prefix>-" (includeTemplate "os-config.tmpl" .) "<suffix>" -}}
+   {{- if stat (joinPath $source_dir $candidate) -}}
+   {{ $candidate }}
+   {{- else -}}
+   no-op.<ext>
+   {{- end -}}
 
-We have a ``dot-bash/symlink_bashrc-custom-machine.tmpl`` template file in our
-source directory. This file will exist in the desitnation directory as
-a regular symlink named ``dot-bash/bashrc-custom-machine``.
+Selection flow
+--------------
 
-This symlink is sourced in our ``dot-bash/profile`` as follows
+1. Chezmoi evaluates a symlink template.
+2. The template renders a selector value (os, user, or os-user).
+3. The template builds a candidate target name from that selector.
+4. If the candidate exists in source state, it is used.
+5. If the candidate is missing, the no-op target is used.
+6. Chezmoi creates the symlink to the selected target.
 
-.. code-block:: sh
-   :caption: dot-bash/profile
+Where this is used
+------------------
 
-   source_script "$HOME/dot-bash/bashrc-custom-machine"
-
-The content of this template file determines where it points to. Currently it
-contains the following template
-
-.. code-block:: sh
-
-   bashrc-custom-{{ .chezmoi.hostname }}_{{ .chezmoi.osRelease.id }}_{{ .chezmoi.osRelease.versionID }}
-
-The symlink in the destination directory points to the resolved file name based
-on the values of those template variables. On my personal laptop, inside WSL2
-Ubuntu 20.04, this resolves to the following name::
-
-  bashrc-custom-USH-LP19-RIX1_ubuntu_20.04
-
-This means that we have the following link available on my personal laptop
-
-.. code-block:: console
-
-   $ ls -l dot-bash/bashrc-custom-machine
-   lrwxrwxrwx 1 vvnraman vvnraman 40 May 10 22:04 dot-bash/bashrc-custom-machine -> bashrc-custom-USH-LP19-RIX1_ubuntu_20.04
-
-This allows us to have custom configuration in this file without affecting how
-the dotfiles affects the other machines where they get cloned.
+- :ref:`explanation-bash-configuration`
+- :ref:`explanation-fish-configuration`
+- :ref:`explanation-git-configuration`

@@ -1,2 +1,8 @@
 {{- /* vim: set ft=gotmpl: */ -}}
-os-{{ template "os-config.tmpl" . }}
+{{- $source_plugins := joinPath .chezmoi.sourceDir "dot_config" "nvim" "lua" "plugins" -}}
+{{- $candidate := print "os-" (includeTemplate "os-config.tmpl" .) -}}
+{{- if stat (joinPath $source_plugins $candidate) -}}
+{{ $candidate }}
+{{- else -}}
+no-op
+{{- end -}}

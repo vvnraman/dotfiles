@@ -98,6 +98,18 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 #
 html_theme = "pydata_sphinx_theme"
 
+mermaid_height = "360px"
+mermaid_init_js = """
+const isDark = document.documentElement.dataset.theme === "dark";
+mermaid.initialize({
+    startOnLoad: false,
+    theme: isDark ? "dark" : "neutral",
+    themeVariables: {
+        fontSize: "18px"
+    }
+});
+"""
+
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".

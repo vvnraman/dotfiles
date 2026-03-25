@@ -1,0 +1,7 @@
+# vim: ft=gitconfig
+# no-op git config
+[user]
+    name = John VVN Doe
+    email = john-vvn-doe at gmail dot com
+[init]
+    defaultBranch = master

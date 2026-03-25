@@ -17,6 +17,7 @@ dot-bash
 │   ├── bashrc-os-windows.sh
 │   ├── bashrc-user-vvnraman.sh
 │   ├── bashrc-wsl2.sh
+│   ├── no-op.sh
 │   ├── symlink_bashrc-os-config.sh.tmpl
 │   └── symlink_bashrc-user-config.sh.tmpl
 ├── profile

@@ -7,5 +7,6 @@ Reference
    :caption: Contents:
 
    chezmoi
+   templates
    python/index
    project/index

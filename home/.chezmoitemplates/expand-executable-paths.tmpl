@@ -1,0 +1,11 @@
+{{- /* vim: set ft=gotmpl: */ -}}
+{{- $cfg := index .executable_paths .chezmoi.os -}}
+{{- $home := .chezmoi.homeDir -}}
+{{- $paths := list -}}
+{{- range $p := $cfg.home_relative -}}
+  {{- $paths = append $paths (joinPath $home $p) -}}
+{{- end -}}
+{{- range $p := $cfg.absolute -}}
+  {{- $paths = append $paths $p -}}
+{{- end -}}
+{{- $paths | toJson -}}

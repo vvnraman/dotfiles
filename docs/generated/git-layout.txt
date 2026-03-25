@@ -2,6 +2,7 @@ $ lsd --almost-all --tree home/dot_config/git
 git
 ├── global.gitignore
 ├── linux.gitconfig.tmpl
+├── no-op.gitconfig
 ├── symlink_config.tmpl
 ├── tool-delta.gitconfig
 ├── tool-kdiff3.gitconfig

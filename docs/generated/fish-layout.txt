@@ -15,6 +15,7 @@ fish
 ├── linux-arch-config.fish
 ├── linux-config.fish
 ├── linux-ubuntu-config.fish
+├── no-op.fish
 ├── symlink_os-config.fish.tmpl
 ├── symlink_user-config.fish.tmpl
 └── vvnraman-config.fish

@@ -1,2 +1,8 @@
 {{- /* vim: set ft=gotmpl: */ -}}
-bashrc-os-{{ template "os-config.tmpl" . }}.sh
+{{- $source_overlays := joinPath .chezmoi.sourceDir "dot-bash" "overlays" -}}
+{{- $candidate := print "bashrc-os-" (includeTemplate "os-config.tmpl" .) ".sh" -}}
+{{- if stat (joinPath $source_overlays $candidate) -}}
+{{ $candidate }}
+{{- else -}}
+no-op.sh
+{{- end -}}

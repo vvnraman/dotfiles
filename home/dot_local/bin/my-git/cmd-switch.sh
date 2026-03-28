@@ -67,7 +67,7 @@ function _cmd_switch() {
   gitlib_require_worktree_path_not_colliding "${worktree_dir}" || return 1
 
   if git -C "${bare_dir}" show-ref --verify --quiet "refs/heads/${branch}"; then
-    git -C "${bare_dir}" worktree add "../${branch}" "${branch}" || return 1
+    gitlib_worktree_add_existing_local_branch "${bare_dir}" "${branch}" "${worktree_dir}" || return 1
     cd "${worktree_dir}" || return 1
     return
   fi
@@ -82,7 +82,7 @@ function _cmd_switch() {
       continue
     fi
 
-    git -C "${bare_dir}" worktree add --track -b "${branch}" "../${branch}" "${remote_name}/${branch}" || return 1
+    gitlib_worktree_add_tracked_branch "${bare_dir}" "${branch}" "${remote_name}/${branch}" "${worktree_dir}" || return 1
     cd "${worktree_dir}" || return 1
     return
   done

@@ -137,13 +137,172 @@ function gitlib_require_bare_dir() {
   printf '%s\n' "${bare_dir}"
 }
 
+function gitlib_repo_layout_kind() {
+  local git_common_dir="${1}"
+  local common_name
+  local parent_dir
+  local parent_name
+  local is_bare
+
+  if [[ ! -d "${git_common_dir}" ]]; then
+    return 1
+  fi
+
+  is_bare="$(git -C "${git_common_dir}" rev-parse --is-bare-repository 2>/dev/null || true)"
+  if [[ "${is_bare}" != "true" ]]; then
+    printf '%s\n' "default"
+    return 0
+  fi
+
+  common_name="$(basename "${git_common_dir}")"
+  parent_dir="$(dirname "${git_common_dir}")"
+  parent_name="$(basename "${parent_dir}")"
+
+  if [[ "${common_name}" == "bare" ]] && lib_has_suffix "${parent_name}" ".git"; then
+    printf '%s\n' "parent-bare-siblings"
+    return 0
+  fi
+
+  if lib_has_suffix "${common_name}" ".git"; then
+    printf '%s\n' "bare-siblings.git"
+    return 0
+  fi
+
+  printf '%s\n' "bare-siblings"
+}
+
+function gitlib_computed_worktree_dir_for_branch() {
+  local git_common_dir="${1}"
+  local branch="${2}"
+  local layout_kind
+  local project_dir
+  local project_parent_dir
+  local project_name
+  local default_branch
+  local default_worktree_dir
+  local worktree_parent_dir
+
+  layout_kind="$(gitlib_repo_layout_kind "${git_common_dir}")" || return 1
+
+  case "${layout_kind}" in
+  default)
+    project_dir="$(dirname "${git_common_dir}")"
+    default_branch="$(gitlib_default_local_branch_from_bare "${git_common_dir}" 2>/dev/null || true)"
+    if ! lib_is_blank "${default_branch}" && [[ "${branch}" == "${default_branch}" ]]; then
+      printf '%s\n' "${project_dir}"
+      return 0
+    fi
+
+    project_parent_dir="$(dirname "${project_dir}")"
+    project_name="$(basename "${project_dir}")"
+    printf '%s/%s-worktrees/%s\n' "${project_parent_dir}" "${project_name}" "${branch}"
+    ;;
+  parent-bare-siblings | bare-siblings.git | bare-siblings)
+    default_branch="$(gitlib_default_local_branch_from_bare "${git_common_dir}" 2>/dev/null || true)"
+    if ! lib_is_blank "${default_branch}"; then
+      default_worktree_dir="$(gitlib_existing_worktree_dir_for_branch "${git_common_dir}" "${default_branch}" 2>/dev/null || true)"
+      if ! lib_is_blank "${default_worktree_dir}"; then
+        worktree_parent_dir="$(dirname "${default_worktree_dir}")"
+        printf '%s/%s\n' "${worktree_parent_dir}" "${branch}"
+        return 0
+      fi
+    fi
+
+    case "${layout_kind}" in
+    parent-bare-siblings | bare-siblings.git)
+      printf '%s/%s\n' "$(dirname "${git_common_dir}")" "${branch}"
+      ;;
+    bare-siblings)
+      printf '%s/%s\n' "${git_common_dir}" "${branch}"
+      ;;
+    esac
+    ;;
+  *)
+    return 1
+    ;;
+  esac
+}
+
+function gitlib_worktree_parent_dir() {
+  local git_common_dir="${1}"
+  local layout_kind
+  local default_branch
+  local default_worktree_dir
+  local project_dir
+
+  layout_kind="$(gitlib_repo_layout_kind "${git_common_dir}")" || return 1
+
+  case "${layout_kind}" in
+  default)
+    project_dir="$(dirname "${git_common_dir}")"
+    printf '%s\n' "$(dirname "${project_dir}")"
+    return 0
+    ;;
+  parent-bare-siblings | bare-siblings.git | bare-siblings)
+    default_branch="$(gitlib_default_local_branch_from_bare "${git_common_dir}" 2>/dev/null || true)"
+    if ! lib_is_blank "${default_branch}"; then
+      default_worktree_dir="$(gitlib_existing_worktree_dir_for_branch "${git_common_dir}" "${default_branch}" 2>/dev/null || true)"
+      if ! lib_is_blank "${default_worktree_dir}"; then
+        printf '%s\n' "$(dirname "${default_worktree_dir}")"
+        return 0
+      fi
+    fi
+
+    case "${layout_kind}" in
+    parent-bare-siblings | bare-siblings.git)
+      printf '%s\n' "$(dirname "${git_common_dir}")"
+      ;;
+    bare-siblings)
+      printf '%s\n' "${git_common_dir}"
+      ;;
+    esac
+    ;;
+  *)
+    return 1
+    ;;
+  esac
+}
+
 function gitlib_worktree_dir_for_branch() {
   local bare_dir="${1}"
   local branch="${2}"
-  local project_dir
+  local existing_worktree_dir
 
-  project_dir="$(dirname "${bare_dir}")"
-  printf '%s/%s\n' "${project_dir}" "${branch}"
+  existing_worktree_dir="$(gitlib_existing_worktree_dir_for_branch "${bare_dir}" "${branch}" 2>/dev/null || true)"
+  if ! lib_is_blank "${existing_worktree_dir}"; then
+    printf '%s\n' "${existing_worktree_dir}"
+    return 0
+  fi
+
+  gitlib_computed_worktree_dir_for_branch "${bare_dir}" "${branch}"
+}
+
+function gitlib_worktree_add_existing_local_branch() {
+  local bare_dir="${1}"
+  local branch="${2}"
+  local worktree_dir="${3}"
+
+  mkdir -p "$(dirname "${worktree_dir}")" || return 1
+  git -C "${bare_dir}" worktree add "${worktree_dir}" "${branch}"
+}
+
+function gitlib_worktree_add_new_local_branch() {
+  local bare_dir="${1}"
+  local branch="${2}"
+  local worktree_dir="${3}"
+
+  mkdir -p "$(dirname "${worktree_dir}")" || return 1
+  git -C "${bare_dir}" worktree add -b "${branch}" "${worktree_dir}"
+}
+
+function gitlib_worktree_add_tracked_branch() {
+  local bare_dir="${1}"
+  local local_branch="${2}"
+  local remote_ref="${3}"
+  local worktree_dir="${4}"
+
+  mkdir -p "$(dirname "${worktree_dir}")" || return 1
+  git -C "${bare_dir}" worktree add --track -b "${local_branch}" "${worktree_dir}" "${remote_ref}"
 }
 
 function gitlib_existing_worktree_dir_for_branch() {
@@ -245,13 +404,11 @@ function gitlib_worktree_add_remote_branch() {
   fi
 
   if git -C "${bare_dir}" show-ref --verify --quiet "refs/heads/${local_branch}"; then
-    git -C "${bare_dir}" worktree add "../${local_branch}" "${local_branch}"
+    gitlib_worktree_add_existing_local_branch "${bare_dir}" "${local_branch}" "${resolved_worktree_dir}"
     return
   fi
 
-  git -C "${bare_dir}" worktree add --track -b "${local_branch}" \
-    "../${local_branch}" \
-    "${remote}/${remote_branch}"
+  gitlib_worktree_add_tracked_branch "${bare_dir}" "${local_branch}" "${remote}/${remote_branch}" "${resolved_worktree_dir}"
 }
 
 MG_INCLUDE_GUARD_GIT_LIB_LOADED=1

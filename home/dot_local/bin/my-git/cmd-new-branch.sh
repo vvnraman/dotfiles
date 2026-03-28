@@ -68,6 +68,6 @@ function _cmd_new_branch() {
     return 1
   fi
 
-  git -C "${bare_dir}" worktree add -b "${branch}" "../${branch}" || return 1
+  gitlib_worktree_add_new_local_branch "${bare_dir}" "${branch}" "${worktree_dir}" || return 1
   cd "${worktree_dir}" || return 1
 }

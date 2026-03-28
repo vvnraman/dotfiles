@@ -141,7 +141,7 @@ function _main_subcommand_short_description() {
     printf '%s\n' 'Create tracked worktree branch <remote>_<branch> from existing <remote>.'
     ;;
   info)
-    printf '%s\n' 'Show layout, remotes, branch tracking, and worktrees.'
+    printf '%s\n' 'Show layout kind, worktree paths, remotes, and branch tracking.'
     ;;
   path)
     printf '%s\n' 'Print managed worktree path for <branch>.'

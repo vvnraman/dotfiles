@@ -37,6 +37,16 @@ Completion metadata flow
 - ``switch``, ``new-branch``, ``path``, and ``remove-branch`` complete branch names from local branches plus remote-short names.
 - ``self-branch`` and ``alien-branch`` complete a remote first, then branch names filtered to that remote.
 
+Layout detection and worktree placement
+---------------------------------------
+
+- ``home/dot_local/bin/my-git/git-lib.sh`` detects runtime layout via ``gitlib_repo_layout_kind`` using ``git rev-parse --is-bare-repository`` plus path classification.
+- Supported layout labels are ``default``, ``parent-bare-siblings``, ``bare-siblings.git``, and ``bare-siblings``.
+- ``gitlib_worktree_dir_for_branch`` resolves an existing worktree first, then computes the expected path with ``gitlib_computed_worktree_dir_for_branch``.
+- In ``default`` layout, default branch stays at repo root and non-default branches resolve under ``<repo>-worktrees``.
+- In bare sibling layouts, new branches resolve as siblings of the detected default-branch worktree parent.
+- ``gitlib_worktree_add_*`` helpers centralize ``git worktree add`` calls and create parent directories before add.
+
 Why sourced files can share helpers
 -----------------------------------
 
@@ -101,5 +111,6 @@ When adding a subcommand
 Relevant changelogs
 -------------------
 
+- :ref:`2026-03-mar - add mg layout aware worktrees <changelog-2026-03-mar-add-mg-layout-aware-worktrees>`
 - :ref:`2026-03-mar - document mg completions and help <changelog-2026-03-mar-document-mg-completions-and-help>`
 - :ref:`2026-03-mar - expand mg workflow commands <changelog-2026-03-mar-expand-mg-workflow-commands>`

@@ -88,21 +88,39 @@ function _print_remote_branch_tracking() {
 function _print_repo_inventory() {
   local bare_dir="${1}"
   local project_dir
+  local layout_kind
   local default_branch
+  local default_branch_worktree=""
+  local sample_branch_worktree=""
   local -a remotes=()
   local remote
   local remote_url
   local have_worktrees=0
 
-  project_dir="$(dirname "${bare_dir}")"
+  project_dir="$(gitlib_worktree_parent_dir "${bare_dir}" 2>/dev/null || dirname "${bare_dir}")"
+  layout_kind="$(gitlib_repo_layout_kind "${bare_dir}" 2>/dev/null || true)"
   default_branch="$(gitlib_default_local_branch_from_bare "${bare_dir}" 2>/dev/null || true)"
 
   printf 'Parent: %s\n' "${project_dir}"
   printf 'Bare: %s\n' "${bare_dir}"
+  if lib_is_blank "${layout_kind}"; then
+    printf 'Layout: (unknown)\n'
+  else
+    printf 'Layout: %s\n' "${layout_kind}"
+  fi
   if lib_is_blank "${default_branch}"; then
     printf 'Default branch: (unknown)\n'
   else
     printf 'Default branch: %s\n' "${default_branch}"
+    default_branch_worktree="$(gitlib_worktree_dir_for_branch "${bare_dir}" "${default_branch}" 2>/dev/null || true)"
+    if ! lib_is_blank "${default_branch_worktree}"; then
+      printf 'Default worktree: %s\n' "${default_branch_worktree}"
+    fi
+  fi
+
+  sample_branch_worktree="$(gitlib_computed_worktree_dir_for_branch "${bare_dir}" "sample-branch" 2>/dev/null || true)"
+  if ! lib_is_blank "${sample_branch_worktree}"; then
+    printf 'New sample worktree: %s\n' "${sample_branch_worktree}"
   fi
 
   printf 'Remotes:\n'
@@ -143,7 +161,7 @@ function _usage_info() {
     cat <<'EOF'
 Examples:
   mg info
-      Show parent layout, default branch, remotes, and worktrees.
+      Show layout kind, worktree path rules, remotes, and worktrees.
 
   cd myproject.git/feature && mg info
       Inspect repository inventory from any worktree directory.
@@ -170,8 +188,9 @@ Usage: info
 
 Description:
   Show repository inventory for the current managed layout, including
-  parent directory, bare path, default branch, remotes, remote branches,
-  local tracking branches, and worktrees.
+  parent directory, bare path, detected layout kind, default-branch and
+  new-branch worktree locations, remotes, remote branches, local tracking
+  branches, and worktrees.
 
 Options:
   --help        Show this usage text.

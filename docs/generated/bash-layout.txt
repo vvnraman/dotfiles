@@ -24,6 +24,9 @@ dot-bash
 │   └── symlink_bashrc-user-config.sh.tmpl
 ├── profile
 └── tests
-    ├── git-shell.bats
+    ├── git-shell-bare-siblings.bats
+    ├── git-shell-common.bash
+    ├── git-shell-default-layout.bats
+    ├── git-shell-parent-bare-siblings.bats
     ├── run-bats-bash.sh
     └── run-bats-fish.sh

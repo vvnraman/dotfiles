@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 # vim: set filetype=sh : */
 
 alias gl="git log -1"
@@ -55,54 +56,8 @@ function mg() {
   my_git_main "$@"
 }
 
-function git-update-commit-date() {
-  mg update-commit-date "$@"
-}
-
-function git-init() {
-  mg init "$@"
-}
-
-function git-clone() {
-  mg clone "$@"
-}
-
-function git-show-ignored() {
-  mg show-ignored "$@"
-}
-
-function git-show-untracked() {
-  mg show-untracked "$@"
-}
-
-function git-switch() {
-  mg switch "$@"
-}
-
-function git-new-branch() {
-  mg new-branch "$@"
-}
-
-function git-self-branch() {
-  mg self-branch "$@"
-}
-
-function git-alien-branch() {
-  mg alien-branch "$@"
-}
-
-function git-info() {
-  mg info "$@"
-}
-
-function git-path() {
-  mg path "$@"
-}
-
-function git-remove-branch() {
-  mg remove-branch "$@"
-}
-
-function git-prune() {
-  mg prune "$@"
-}
+_mg_bashrc_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+if [[ -f "${_mg_bashrc_dir}/../completions/mg.bash" ]]; then
+  # shellcheck source=/dev/null
+  . "${_mg_bashrc_dir}/../completions/mg.bash"
+fi

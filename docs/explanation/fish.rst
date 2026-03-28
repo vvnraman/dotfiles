@@ -9,7 +9,6 @@ Fish configuration
   the separate scripts "look" similar in structure to our ``bash`` counterparts.
 
 - Machine-specific customization is overlayed via os and user sepcific files.
-
 - Exactly which os and which user file gets included is determined via ``chezmoi`` generated
   symlinks.
 
@@ -28,9 +27,7 @@ Load order
 Implicit Fish startup behavior
 
 1. First ``fish`` auto-loads ``conf.d/*.fish`` scripts
-
 2. Then it loads ``config.fish`` as the main startup file.
-
 3. ``config.fish`` explicitly loads os and user specific config files.
 
    .. literalinclude:: ../../home/dot_config/fish/config.fish

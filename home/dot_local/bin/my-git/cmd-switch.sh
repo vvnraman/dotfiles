@@ -50,18 +50,21 @@ function _cmd_switch() {
   local branch="${1}"
   local bare_dir
   local worktree_dir
+  local existing_worktree_dir
   local remote_name
 
   gitlib_require_valid_branch_name "${branch}" || return 1
 
   bare_dir="$(gitlib_require_bare_dir)" || return 1
-  worktree_dir="$(gitlib_worktree_dir_for_branch "${bare_dir}" "${branch}")"
-  gitlib_require_worktree_path_not_colliding "${worktree_dir}" || return 1
+  existing_worktree_dir="$(gitlib_existing_worktree_dir_for_branch "${bare_dir}" "${branch}" 2>/dev/null || true)"
 
-  if [[ -e "${worktree_dir}/.git" ]]; then
-    cd "${worktree_dir}" || return 1
+  if ! lib_is_blank "${existing_worktree_dir}"; then
+    cd "${existing_worktree_dir}" || return 1
     return
   fi
+
+  worktree_dir="$(gitlib_worktree_dir_for_branch "${bare_dir}" "${branch}")"
+  gitlib_require_worktree_path_not_colliding "${worktree_dir}" || return 1
 
   if git -C "${bare_dir}" show-ref --verify --quiet "refs/heads/${branch}"; then
     git -C "${bare_dir}" worktree add "../${branch}" "${branch}" || return 1

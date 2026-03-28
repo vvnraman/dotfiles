@@ -1,9 +1,3 @@
-function source_script() {
-  local _script_path="${1}"
-  # shellcheck disable=SC1090
-  [[ -f "${_script_path}" ]] && source "${_script_path}"
-}
-
 function prepend_to_path() {
   local dir="${1}"
   if [[ ":${PATH}:" != *":${dir}:"* ]] && [[ -d "${dir}" ]]; then

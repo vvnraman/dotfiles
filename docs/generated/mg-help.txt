@@ -2,8 +2,12 @@ $ mg --help
 Usage: mg <command> [args]
 
 Commands:
-  help | --help | -h
+  help [--short] [--short-help] [-h] | --help [--short] [--short-help] [-h]
+  -h | --short-help
       Show this help text.
+
+  Aliases: u=update-commit-date, c=clone, s=switch, n=new-branch,
+           b=self-branch, i=info, r=remove-branch.
 
   update-commit-date
       Amend current commit date to now. Supports: --example.

@@ -27,17 +27,10 @@ fi
 . "${_MG_BIN_DIR}/my-git/git-lib.sh"
 
 
-function _usage_main() {
-  cat <<'EOF'
-Usage: mg <command> [args]
+function _set_main_subcommands() {
+  local -n out_subcommands="${1}"
 
-Commands:
-  help | --help | -h
-      Show this help text.
-
-EOF
-
-  local -a help_commands=(
+  out_subcommands=(
     update-commit-date
     init
     clone
@@ -52,7 +45,190 @@ EOF
     remove-branch
     prune
   )
+}
+
+function _resolve_subcommand_alias() {
+  local subcommand="${1}"
+
+  case "${subcommand}" in
+  u)
+    printf '%s\n' 'update-commit-date'
+    ;;
+  c)
+    printf '%s\n' 'clone'
+    ;;
+  s)
+    printf '%s\n' 'switch'
+    ;;
+  n)
+    printf '%s\n' 'new-branch'
+    ;;
+  b)
+    printf '%s\n' 'self-branch'
+    ;;
+  i)
+    printf '%s\n' 'info'
+    ;;
+  r)
+    printf '%s\n' 'remove-branch'
+    ;;
+  *)
+    printf '%s\n' "${subcommand}"
+    ;;
+  esac
+}
+
+function _main_subcommand_display_name() {
+  local subcommand="${1}"
+
+  case "${subcommand}" in
+  update-commit-date)
+    printf '%s\n' 'update-commit-date | u'
+    ;;
+  clone)
+    printf '%s\n' 'clone | c'
+    ;;
+  switch)
+    printf '%s\n' 'switch | s'
+    ;;
+  new-branch)
+    printf '%s\n' 'new-branch | n'
+    ;;
+  self-branch)
+    printf '%s\n' 'self-branch | b'
+    ;;
+  info)
+    printf '%s\n' 'info | i'
+    ;;
+  remove-branch)
+    printf '%s\n' 'remove-branch | r'
+    ;;
+  *)
+    printf '%s\n' "${subcommand}"
+    ;;
+  esac
+}
+
+function _main_subcommand_short_description() {
+  local subcommand="${1}"
+
+  case "${subcommand}" in
+  update-commit-date)
+    printf '%s\n' 'Amend current commit date to now.'
+    ;;
+  init)
+    printf '%s\n' 'Create a bare+worktree repository layout for <project>.'
+    ;;
+  clone)
+    printf '%s\n' 'Clone into managed bare/worktree layout.'
+    ;;
+  show-ignored)
+    printf '%s\n' 'List ignored files.'
+    ;;
+  show-untracked)
+    printf '%s\n' 'List untracked files.'
+    ;;
+  switch)
+    printf '%s\n' 'Switch to a branch worktree, creating one when available remotely.'
+    ;;
+  new-branch)
+    printf '%s\n' 'Create a new branch worktree.'
+    ;;
+  self-branch)
+    printf '%s\n' 'Create tracked worktree branch <branch> from existing <remote>.'
+    ;;
+  alien-branch)
+    printf '%s\n' 'Create tracked worktree branch <remote>_<branch> from existing <remote>.'
+    ;;
+  info)
+    printf '%s\n' 'Show layout, remotes, branch tracking, and worktrees.'
+    ;;
+  path)
+    printf '%s\n' 'Print managed worktree path for <branch>.'
+    ;;
+  remove-branch)
+    printf '%s\n' 'Remove merged branch worktree and local branch.'
+    ;;
+  prune)
+    printf '%s\n' 'Prune remotes and stale worktree metadata.'
+    ;;
+  help)
+    printf '%s\n' 'Show this help text.'
+    ;;
+  *)
+    return 1
+    ;;
+  esac
+}
+
+function _usage_main_short() {
+  local -a help_commands=()
   local help_command
+  local label_width=0
+  local command_label
+
+  _set_main_subcommands help_commands
+
+  printf '%s\n' 'Usage: mg <command> [args]'
+  printf '\n'
+  printf '%s\n' 'Commands:'
+
+  for help_command in "${help_commands[@]}"; do
+    command_label="$(_main_subcommand_display_name "${help_command}")"
+    if [[ ${#command_label} -gt ${label_width} ]]; then
+      label_width=${#command_label}
+    fi
+  done
+
+  command_label="help"
+  if [[ ${#command_label} -gt ${label_width} ]]; then
+    label_width=${#command_label}
+  fi
+
+  for help_command in "${help_commands[@]}"; do
+    printf "  %-*s - %s\n" "${label_width}" "$(_main_subcommand_display_name "${help_command}")" "$(_main_subcommand_short_description "${help_command}")"
+  done
+  printf "  %-*s - %s\n" "${label_width}" "help" "$(_main_subcommand_short_description help)"
+}
+
+function _usage_main() {
+  local short_output=0
+
+  while [[ $# -gt 0 ]]; do
+    case "${1}" in
+    --short | --short-help | -h)
+      short_output=1
+      ;;
+    *)
+      echo "Unknown help option: ${1}"
+      return 1
+      ;;
+    esac
+    shift
+  done
+
+  if [[ "${short_output}" -eq 1 ]]; then
+    _usage_main_short
+    return 0
+  fi
+
+  cat <<'EOF'
+Usage: mg <command> [args]
+
+Commands:
+  help [--short] [--short-help] [-h] | --help [--short] [--short-help] [-h]
+  -h | --short-help
+      Show this help text.
+
+  Aliases: u=update-commit-date, c=clone, s=switch, n=new-branch,
+           b=self-branch, i=info, r=remove-branch.
+
+EOF
+
+  local -a help_commands=()
+  local help_command
+
+  _set_main_subcommands help_commands
 
   for help_command in "${help_commands[@]}"; do
     _load_subcommand_script "${help_command}" || return 1
@@ -88,6 +264,49 @@ Host aliases:
   (for example: github -> github.com with User git).
   Show resolved hostname for alias:
     ssh -G github | rg '^hostname '
+EOF
+}
+
+function _print_completion_metadata() {
+  cat <<'EOF'
+cmd|update-commit-date|u
+cmd|init|
+cmd|clone|c
+cmd|show-ignored|
+cmd|show-untracked|
+cmd|switch|s
+cmd|new-branch|n
+cmd|self-branch|b
+cmd|alien-branch|
+cmd|info|i
+cmd|path|
+cmd|remove-branch|r
+cmd|prune|
+cmd|help|
+opts|update-commit-date|--example
+opts|init|--help,--example
+opts|clone|--host,--dest,--help,--example
+opts|show-ignored|--example
+opts|show-untracked|--example
+opts|switch|--example
+opts|new-branch|--example
+opts|self-branch|--help,--example
+opts|alien-branch|--help,--example
+opts|info|--help,--example
+opts|path|--help,--example
+opts|remove-branch|--force,--help,--example
+opts|prune|--help,--example
+opts|help|--short,--short-help
+branch|switch|1|all
+branch|new-branch|1|all
+branch|path|1|all
+branch|remove-branch|1|all
+remote|self-branch|1
+remote|alien-branch|1
+remote-branch|self-branch|2
+remote-branch|alien-branch|2
+value-opt|clone|--host
+value-opt|clone|--dest
 EOF
 }
 
@@ -185,6 +404,7 @@ function _run_subcommand() {
 
 function my_git_main() {
   local subcommand="${1:-}"
+  local resolved_subcommand
   local verbose_enabled=0
   local status
 
@@ -195,7 +415,17 @@ function my_git_main() {
 
   shift || true
 
-  case "${subcommand}" in
+  resolved_subcommand="$(_resolve_subcommand_alias "${subcommand}")"
+
+  case "${resolved_subcommand}" in
+  --short-help)
+    _usage_main --short
+    status=$?
+    ;;
+  __complete-metadata)
+    _print_completion_metadata
+    status=0
+    ;;
   update-commit-date)
     _run_subcommand "update-commit-date" "$@"
     status=$?
@@ -249,7 +479,11 @@ function my_git_main() {
     status=$?
     ;;
   help | --help | -h | "")
-    _usage_main
+    if [[ "${resolved_subcommand}" == "-h" && $# -eq 0 ]]; then
+      _usage_main --short
+    else
+      _usage_main "$@"
+    fi
     status=$?
     ;;
   *)

@@ -56,15 +56,19 @@ prepend_to_path "${HOME}/bin"
 
 if [[ -d "${HOME}/dot-bash/bashrc.d" ]]; then
     for script in "$HOME/dot-bash/bashrc.d/"*.sh; do
-        source_script "${script}"
+        # shellcheck disable=SC1090
+        [[ -f "${script}" ]] && source "${script}"
     done
 fi
 
-source_script "${HOME}/dot-bash/overlays/bashrc-linwin.sh" # Common for Linux & Windows
+# shellcheck disable=SC1090,SC1091
+[[ -f "${HOME}/dot-bash/overlays/bashrc-linwin.sh" ]] && source "${HOME}/dot-bash/overlays/bashrc-linwin.sh" # Common for Linux & Windows
 
 # These come later as they can be used to override anything done before
-source_script "$HOME/dot-bash/overlays/bashrc-os-config.sh"   # symlinks
-source_script "$HOME/dot-bash/overlays/bashrc-user-config.sh" # symlinks
+# shellcheck disable=SC1090,SC1091
+[[ -f "$HOME/dot-bash/overlays/bashrc-user-config.sh" ]] && source "$HOME/dot-bash/overlays/bashrc-user-config.sh" # symlinks
+# shellcheck disable=SC1090,SC1091
+[[ -f "$HOME/dot-bash/overlays/bashrc-os-config.sh" ]] && source "$HOME/dot-bash/overlays/bashrc-os-config.sh" # symlinks
 
 ########
 # Prompt

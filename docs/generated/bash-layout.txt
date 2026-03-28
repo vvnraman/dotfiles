@@ -6,6 +6,8 @@ dot-bash
 ├── bashrc.d
 │   ├── bashrc-fzf.sh
 │   └── bashrc-git.sh
+├── completions
+│   └── mg.bash
 ├── generated
 │   └── fzf-fragments.sh.tmpl
 ├── overlays

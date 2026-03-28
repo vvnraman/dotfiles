@@ -14,9 +14,29 @@ function mg --description "Run shared git workflows"
 
   set --local should_cd 0
   set --local branch
+  set --local resolved_subcommand
+
+  switch "$argv[1]"
+  case u
+    set resolved_subcommand update-commit-date
+  case c
+    set resolved_subcommand clone
+  case s
+    set resolved_subcommand switch
+  case n
+    set resolved_subcommand new-branch
+  case b
+    set resolved_subcommand self-branch
+  case i
+    set resolved_subcommand info
+  case r
+    set resolved_subcommand remove-branch
+  case '*'
+    set resolved_subcommand "$argv[1]"
+  end
 
   if test (count $argv) -eq 2
-    switch "$argv[1]"
+    switch "$resolved_subcommand"
     case switch new-branch
       if test "$argv[2]" != --example; and test "$argv[2]" != --help
         set should_cd 1

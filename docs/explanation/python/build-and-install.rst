@@ -52,7 +52,7 @@ The following should work from any directory after this:
 Install editable dev entrypoint
 ===============================
 
-Run from repository root on your current branch:
+Run from repository root on our current branch:
 
 .. code-block:: console
 

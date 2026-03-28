@@ -1,0 +1,17 @@
+Usage: mg <command> [args]
+
+Commands:
+  update-commit-date | u - Amend current commit date to now.
+  init                   - Create a bare+worktree repository layout for <project>.
+  clone | c              - Clone into managed bare/worktree layout.
+  show-ignored           - List ignored files.
+  show-untracked         - List untracked files.
+  switch | s             - Switch to a branch worktree, creating one when available remotely.
+  new-branch | n         - Create a new branch worktree.
+  self-branch | b        - Create tracked worktree branch <branch> from existing <remote>.
+  alien-branch           - Create tracked worktree branch <remote>_<branch> from existing <remote>.
+  info | i               - Show layout, remotes, branch tracking, and worktrees.
+  path                   - Print managed worktree path for <branch>.
+  remove-branch | r      - Remove merged branch worktree and local branch.
+  prune                  - Prune remotes and stale worktree metadata.
+  help                   - Show this help text.

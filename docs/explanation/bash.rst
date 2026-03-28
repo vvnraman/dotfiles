@@ -30,7 +30,6 @@ Load order
 Implicit Bash startup behavior
 
 - Login bash reads ``.bash_profile`` (or ``.bash_login`` / ``.profile``).
-
 - Interactive non-login bash reads ``.bashrc``.
 
 Our explicit startup order is the following:
@@ -60,9 +59,9 @@ Explicit order inside ``bashrc``
 
    .. literalinclude:: ../../home/dot-bash/bashrc
       :language: bash
-      :lines: 53-67
+      :lines: 57-71
       :lineno-match:
-      :emphasize-lines: 7,11,14,15
+      :emphasize-lines: 4,9,13,15
       :caption: bashrc
 
 4. Linux distro agnostic config is present in ``dot-bash/overlays/bashrc-os-linux.sh``, which gets
@@ -76,7 +75,7 @@ Explicit order inside ``bashrc``
          .. literalinclude:: ../../home/dot-bash/overlays/bashrc-os-linux-arch.sh
             :language: ini
             :lineno-match:
-            :emphasize-lines: 5
+            :emphasize-lines: 7
             :caption: bashrc-os-linux-arch.sh
 
       .. tab-item:: Ubuntu
@@ -84,7 +83,7 @@ Explicit order inside ``bashrc``
          .. literalinclude:: ../../home/dot-bash/overlays/bashrc-os-linux-ubuntu.sh
             :language: ini
             :lineno-match:
-            :emphasize-lines: 5,9
+            :emphasize-lines: 7,12
             :caption: bashrc-os-linux-ubuntu.sh
 
 ----

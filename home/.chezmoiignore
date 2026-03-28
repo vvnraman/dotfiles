@@ -14,6 +14,9 @@
 .config/fish/conf.d/fish_frozen_theme.fish
 .config/fish/conf.d/fish_frozen_key_bindings.fish
 
+# Ignore bash/fish tests, these run in chezmoi source context, not runtime
+dot-bash/tests/
+
 {{ if ne .chezmoi.username "vvnraman" }}
 .local/bin/vvnraman/
 {{ end }}

@@ -3,16 +3,20 @@
 Git workflow
 ============
 
+.. literalinclude:: ../generated/mg-short-help.txt
+   :language: text
+   :caption: mg -h output
+
 ``mg`` is the shared git workflow command installed at ``~/.local/bin/mg`` from
 ``home/dot_local/bin/executable_mg``. It manages the bare-plus-worktree layout I use.
 
-Defaults and env
-^^^^^^^^^^^^^^^^
+Overview
+^^^^^^^^
 
 - ``VVN_DOTFILES_GITHUB_HOST`` sets default host for ``mg clone`` org/repo form.
 - If unset, default host is ``github``.
-- ``<host-alias>`` refers to your SSH alias in ``~/.ssh/config``.
-- ``MG_GIT_VERBOSE=1`` enables shell tracing for ``mg`` command execution.
+- ``switch``, ``new-branch``, ``path``, and ``remove-branch`` complete branch names from local branches plus remote-short names.
+- ``self-branch`` and ``alien-branch`` complete the second argument from branches that exist on the selected remote.
 
 Common command examples
 -----------------------
@@ -65,10 +69,13 @@ mg command help
 Implementation details
 ----------------------
 
+- ``<host-alias>`` refers to our SSH alias in ``~/.ssh/config``.
+- ``MG_GIT_VERBOSE=1`` enables shell tracing for ``mg`` command execution.
 - See :ref:`Git scripts <explanation-git-scripts>` for runtime dispatch, include guards, and wrapper internals.
 
 Relevant changelogs
 -------------------
 
+- :ref:`2026-03-mar - document mg completions and help <changelog-2026-03-mar-document-mg-completions-and-help>`
 - :ref:`2026-03-mar - expand mg workflow commands <changelog-2026-03-mar-expand-mg-workflow-commands>`
 - :ref:`2026-03-mar - consolidate mg git workflow wrappers <changelog-2026-03-mar-consolidate-mg-git-workflow-wrappers>`

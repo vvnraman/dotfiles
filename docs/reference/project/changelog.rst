@@ -5,6 +5,7 @@ Changelog
 2026
 ====
 
+- :ref:`2026-03-mar - document mg completions and help <changelog-2026-03-mar-document-mg-completions-and-help>`
 - :ref:`2026-03-mar - expand mg workflow commands <changelog-2026-03-mar-expand-mg-workflow-commands>`
 - :ref:`2026-03-mar - consolidate mg git workflow wrappers <changelog-2026-03-mar-consolidate-mg-git-workflow-wrappers>`
 - :ref:`2026-03-mar - rework python installer and cli discovery <changelog-2026-03-mar-rework-python-installer-and-cli-discovery>`
@@ -31,6 +32,7 @@ Changelog
 .. toctree::
    :hidden:
 
+   changelog/2026-03-mar-document-mg-completions-and-help
    changelog/2026-03-mar-expand-mg-workflow-commands
    changelog/2026-03-mar-consolidate-mg-git-workflow-wrappers
    changelog/2026-03-mar-rework-python-installer-and-cli-discovery

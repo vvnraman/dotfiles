@@ -12,8 +12,8 @@ end
 fish_add_path --path --prepend "$HOME/.local/bin"
 fish_add_path --path --prepend "$HOME/bin"
 
-source_script ~/.config/fish/os-config.fish
 source_script ~/.config/fish/user-config.fish
+source_script ~/.config/fish/os-config.fish
 
 # This is intentionally unconditional.
 set --universal --export STARSHIP_CONFIG ~/.config/starship/starship.toml

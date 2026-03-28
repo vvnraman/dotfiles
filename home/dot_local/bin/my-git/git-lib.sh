@@ -146,6 +146,34 @@ function gitlib_worktree_dir_for_branch() {
   printf '%s/%s\n' "${project_dir}" "${branch}"
 }
 
+function gitlib_existing_worktree_dir_for_branch() {
+  local bare_dir="${1}"
+  local branch="${2}"
+  local target_ref="refs/heads/${branch}"
+  local current_worktree=""
+  local line
+
+  while IFS= read -r line; do
+    if lib_has_prefix "${line}" "worktree "; then
+      current_worktree="${line#worktree }"
+      continue
+    fi
+
+    if [[ "${line}" == "branch ${target_ref}" ]]; then
+      if ! lib_is_blank "${current_worktree}"; then
+        printf '%s\n' "${current_worktree}"
+        return 0
+      fi
+    fi
+
+    if lib_is_blank "${line}"; then
+      current_worktree=""
+    fi
+  done < <(git -C "${bare_dir}" worktree list --porcelain)
+
+  return 1
+}
+
 function gitlib_default_branch_from_bare() {
   local bare_dir="${1}"
   local default_branch

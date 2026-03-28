@@ -1,9 +1,10 @@
 # vim: ft=gitconfig
 {{ $source_git := joinPath .chezmoi.sourceDir "dot_config" "git" -}}
 {{ $candidate := print "user-" (includeTemplate "user-config.tmpl" .) ".gitconfig" -}}
+{{ $candidate_tmpl := print $candidate ".tmpl" -}}
 {{ $paths := includeTemplate "expand-executable-paths.tmpl" . | fromJson -}}
 [include]
-{{- if stat (joinPath $source_git $candidate) }}
+{{- if or (stat (joinPath $source_git $candidate)) (stat (joinPath $source_git $candidate_tmpl)) }}
     path = ~/.config/git/{{ $candidate }}
 {{- else }}
     path = ~/.config/git/no-op.gitconfig

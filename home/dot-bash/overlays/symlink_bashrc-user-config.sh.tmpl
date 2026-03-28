@@ -1,7 +1,8 @@
 {{- /* vim: set ft=gotmpl: */ -}}
 {{- $source_overlays := joinPath .chezmoi.sourceDir "dot-bash" "overlays" -}}
 {{- $candidate := print "bashrc-user-" (includeTemplate "user-config.tmpl" .) ".sh" -}}
-{{- if stat (joinPath $source_overlays $candidate) -}}
+{{- $candidate_tmpl := print $candidate ".tmpl" -}}
+{{- if or (stat (joinPath $source_overlays $candidate)) (stat (joinPath $source_overlays $candidate_tmpl)) -}}
 {{ $candidate }}
 {{- else -}}
 no-op.sh

@@ -1,7 +1,8 @@
 {{- /* vim: set ft=gotmpl: */ -}}
 {{- $source_plugins := joinPath .chezmoi.sourceDir "dot_config" "nvim" "lua" "plugins" -}}
 {{- $candidate := print "user-" (includeTemplate "user-config.tmpl" .) -}}
-{{- if stat (joinPath $source_plugins $candidate) -}}
+{{- $candidate_tmpl := print $candidate ".tmpl" -}}
+{{- if or (stat (joinPath $source_plugins $candidate)) (stat (joinPath $source_plugins $candidate_tmpl)) -}}
 {{ $candidate }}
 {{- else -}}
 no-op

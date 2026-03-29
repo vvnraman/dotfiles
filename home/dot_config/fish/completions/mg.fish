@@ -45,7 +45,9 @@ function __mg_load_metadata
       set --local command_name $fields[2]
       set --local alias_name $fields[3]
       if test -n "$command_name"
-        set --append __mg_meta_commands $command_name
+        if not contains -- $command_name $__mg_meta_commands
+          set --append __mg_meta_commands $command_name
+        end
       end
       if test -n "$alias_name"
         set --append __mg_meta_alias_map "$command_name=$alias_name"
@@ -70,9 +72,13 @@ function __mg_map_get --argument-names key map_items
   end
 end
 
-function __mg_alias_for_command --argument-names command_name
+function __mg_aliases_for_command --argument-names command_name
   __mg_load_metadata
-  __mg_map_get "$command_name" $__mg_meta_alias_map
+  for item in $__mg_meta_alias_map
+    if string match --quiet "$command_name=*" -- $item
+      string replace -- "$command_name=" '' $item
+    end
+  end
 end
 
 function __mg_options_for_command --argument-names command_name
@@ -206,7 +212,40 @@ function __mg_complete_branch_arg1
   __mg_git_branches
 end
 
+function __mg_complete_new_branch_from
+  set --local tokens (commandline --tokenize --current-process)
+  set --local token_count (count $tokens)
+  set --local previous_index
+
+  if test $token_count -lt 3
+    return
+  end
+
+  set previous_index (math "$token_count - 1")
+  if test "$tokens[$previous_index]" = "--from"
+    __mg_git_branches
+  end
+end
+
 function __mg_complete_remove_branch_target
+  set --local tokens (commandline --tokenize --current-process)
+  set --local index (__mg_positional_arg_index)
+
+  if string match --quiet --regex '^-' -- (commandline --current-token)
+    return
+  end
+
+  if test $index -eq 1
+    __mg_git_branches
+    return
+  end
+
+  if test $index -eq 2; and test (count $tokens) -ge 3; and test "$tokens[3]" = "--force"
+    __mg_git_branches
+  end
+end
+
+function __mg_complete_remove_worktree_target
   set --local tokens (commandline --tokenize --current-process)
   set --local index (__mg_positional_arg_index)
 
@@ -257,10 +296,10 @@ complete --command mg --no-files --condition '__fish_use_subcommand' --arguments
 complete --command mg --no-files --condition '__fish_use_subcommand' --arguments --short-help
 
 for command_name in $__mg_meta_commands
-  set --local alias_name (__mg_alias_for_command "$command_name")
+  set --local aliases (__mg_aliases_for_command "$command_name")
 
   complete --command mg --no-files --condition '__fish_use_subcommand' --arguments "$command_name"
-  if test -n "$alias_name"
+  for alias_name in $aliases
     complete --command mg --no-files --condition '__fish_use_subcommand' --arguments "$alias_name"
   end
 
@@ -269,7 +308,7 @@ for command_name in $__mg_meta_commands
     set --local option_word (string replace -- '--' '' "$option_name")
 
     set --local condition_args "$command_name"
-    if test -n "$alias_name"
+    for alias_name in $aliases
       set condition_args "$condition_args $alias_name"
     end
 
@@ -289,5 +328,7 @@ complete --command mg --no-files --condition '__fish_seen_subcommand_from alien-
 
 complete --command mg --no-files --condition '__fish_seen_subcommand_from switch s' --arguments '(__mg_complete_branch_arg1)' --description 'Branch name'
 complete --command mg --no-files --condition '__fish_seen_subcommand_from new-branch n' --arguments '(__mg_complete_branch_arg1)' --description 'Branch name'
+complete --command mg --no-files --condition '__fish_seen_subcommand_from new-branch n' --arguments '(__mg_complete_new_branch_from)' --description 'Base branch'
 complete --command mg --no-files --condition '__fish_seen_subcommand_from path' --arguments '(__mg_complete_branch_arg1)' --description 'Branch name'
-complete --command mg --no-files --condition '__fish_seen_subcommand_from remove-branch r' --arguments '(__mg_complete_remove_branch_target)' --description 'Branch name'
+complete --command mg --no-files --condition '__fish_seen_subcommand_from remove-branch rb' --arguments '(__mg_complete_remove_branch_target)' --description 'Branch name'
+complete --command mg --no-files --condition '__fish_seen_subcommand_from remove-worktree rw' --arguments '(__mg_complete_remove_worktree_target)' --description 'Branch name'

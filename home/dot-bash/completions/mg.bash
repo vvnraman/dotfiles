@@ -312,6 +312,8 @@ function _mg_complete() {
   if _mg_completion_is_value_option "${command_name}" "${prev_word}"; then
     if [[ "${command_name}" == "clone" && "${prev_word}" == "--host" ]]; then
       _mg_complete_words "$(git remote 2>/dev/null)" "${cur_word}"
+    elif [[ "${command_name}" == "new-branch" && "${prev_word}" == "--from" ]]; then
+      _mg_complete_words "$(_mg_complete_branch_names)" "${cur_word}"
     fi
     _mg_dedupe_compreply
     return

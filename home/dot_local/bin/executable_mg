@@ -42,6 +42,7 @@ function _set_main_subcommands() {
     alien-branch
     info
     path
+    remove-worktree
     remove-branch
     prune
   )
@@ -69,8 +70,11 @@ function _resolve_subcommand_alias() {
   i)
     printf '%s\n' 'info'
     ;;
-  r)
+  rb)
     printf '%s\n' 'remove-branch'
+    ;;
+  rw)
+    printf '%s\n' 'remove-worktree'
     ;;
   *)
     printf '%s\n' "${subcommand}"
@@ -101,7 +105,10 @@ function _main_subcommand_display_name() {
     printf '%s\n' 'info | i'
     ;;
   remove-branch)
-    printf '%s\n' 'remove-branch | r'
+    printf '%s\n' 'remove-branch | rb'
+    ;;
+  remove-worktree)
+    printf '%s\n' 'remove-worktree | rw'
     ;;
   *)
     printf '%s\n' "${subcommand}"
@@ -129,10 +136,10 @@ function _main_subcommand_short_description() {
     printf '%s\n' 'List untracked files.'
     ;;
   switch)
-    printf '%s\n' 'Switch to a branch worktree, creating one when available remotely.'
+    printf '%s\n' 'Switch to an existing branch worktree. Does not create new branches.'
     ;;
   new-branch)
-    printf '%s\n' 'Create a new branch worktree.'
+    printf '%s\n' 'Create a new branch worktree, defaulting base to current branch.'
     ;;
   self-branch)
     printf '%s\n' 'Create tracked worktree branch <branch> from existing <remote>.'
@@ -145,6 +152,9 @@ function _main_subcommand_short_description() {
     ;;
   path)
     printf '%s\n' 'Print managed worktree path for <branch>.'
+    ;;
+  remove-worktree)
+    printf '%s\n' 'Remove a worktree only, keeping local branch refs.'
     ;;
   remove-branch)
     printf '%s\n' 'Remove merged branch worktree and local branch.'
@@ -221,7 +231,7 @@ Commands:
       Show this help text.
 
   Aliases: u=update-commit-date, c=clone, s=switch, n=new-branch,
-           b=self-branch, i=info, r=remove-branch.
+           b=self-branch, i=info, rb=remove-branch, rw=remove-worktree.
 
 EOF
 
@@ -245,6 +255,7 @@ EOF
   _usage_alien_branch
   _usage_info
   _usage_path
+  _usage_remove_worktree
   _usage_remove_branch
   _usage_prune
 
@@ -280,7 +291,8 @@ cmd|self-branch|b
 cmd|alien-branch|
 cmd|info|i
 cmd|path|
-cmd|remove-branch|r
+cmd|remove-branch|rb
+cmd|remove-worktree|rw
 cmd|prune|
 cmd|help|
 opts|update-commit-date|--example
@@ -289,24 +301,27 @@ opts|clone|--host,--dest,--help,--example
 opts|show-ignored|--example
 opts|show-untracked|--example
 opts|switch|--example
-opts|new-branch|--example
+opts|new-branch|--from,--help,--example
 opts|self-branch|--help,--example
 opts|alien-branch|--help,--example
 opts|info|--help,--example
 opts|path|--help,--example
 opts|remove-branch|--force,--help,--example
+opts|remove-worktree|--force,--help,--example
 opts|prune|--help,--example
 opts|help|--short,--short-help
 branch|switch|1|all
 branch|new-branch|1|all
 branch|path|1|all
 branch|remove-branch|1|all
+branch|remove-worktree|1|all
 remote|self-branch|1
 remote|alien-branch|1
 remote-branch|self-branch|2
 remote-branch|alien-branch|2
 value-opt|clone|--host
 value-opt|clone|--dest
+value-opt|new-branch|--from
 EOF
 }
 
@@ -350,6 +365,9 @@ function _subcommand_script_path() {
     ;;
   path)
     printf '%s\n' "${_MG_BIN_DIR}/my-git/cmd-path.sh"
+    ;;
+  remove-worktree)
+    printf '%s\n' "${_MG_BIN_DIR}/my-git/cmd-remove-worktree.sh"
     ;;
   remove-branch)
     printf '%s\n' "${_MG_BIN_DIR}/my-git/cmd-remove-branch.sh"
@@ -468,6 +486,10 @@ function my_git_main() {
     ;;
   path)
     _run_subcommand "path" "$@"
+    status=$?
+    ;;
+  remove-worktree)
+    _run_subcommand "remove-worktree" "$@"
     status=$?
     ;;
   remove-branch)

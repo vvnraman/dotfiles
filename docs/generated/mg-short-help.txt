@@ -6,12 +6,13 @@ Commands:
   clone | c              - Clone into managed bare/worktree layout.
   show-ignored           - List ignored files.
   show-untracked         - List untracked files.
-  switch | s             - Switch to a branch worktree, creating one when available remotely.
-  new-branch | n         - Create a new branch worktree.
+  switch | s             - Switch to an existing branch worktree. Does not create new branches.
+  new-branch | n         - Create a new branch worktree, defaulting base to current branch.
   self-branch | b        - Create tracked worktree branch <branch> from existing <remote>.
   alien-branch           - Create tracked worktree branch <remote>_<branch> from existing <remote>.
-  info | i               - Show layout, remotes, branch tracking, and worktrees.
+  info | i               - Show layout kind, worktree paths, remotes, and branch tracking.
   path                   - Print managed worktree path for <branch>.
-  remove-branch | r      - Remove merged branch worktree and local branch.
+  remove-worktree | rw   - Remove a worktree only, keeping local branch refs.
+  remove-branch | rb     - Remove merged branch worktree and local branch.
   prune                  - Prune remotes and stale worktree metadata.
   help                   - Show this help text.

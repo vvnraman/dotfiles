@@ -295,6 +295,16 @@ function gitlib_worktree_add_new_local_branch() {
   git -C "${bare_dir}" worktree add -b "${branch}" "${worktree_dir}"
 }
 
+function gitlib_worktree_add_new_local_branch_from_base() {
+  local bare_dir="${1}"
+  local branch="${2}"
+  local base_branch="${3}"
+  local worktree_dir="${4}"
+
+  mkdir -p "$(dirname "${worktree_dir}")" || return 1
+  git -C "${bare_dir}" worktree add -b "${branch}" "${worktree_dir}" "${base_branch}"
+}
+
 function gitlib_worktree_add_tracked_branch() {
   local bare_dir="${1}"
   local local_branch="${2}"
@@ -329,6 +339,127 @@ function gitlib_existing_worktree_dir_for_branch() {
       current_worktree=""
     fi
   done < <(git -C "${bare_dir}" worktree list --porcelain)
+
+  return 1
+}
+
+function gitlib_worktree_dir_for_basename() {
+  local bare_dir="${1}"
+  local worktree_basename="${2}"
+  local current_worktree=""
+  local current_is_bare=0
+  local line
+  local match_count=0
+  local matched_worktree=""
+
+  while IFS= read -r line; do
+    if lib_has_prefix "${line}" "worktree "; then
+      current_worktree="${line#worktree }"
+      current_is_bare=0
+      continue
+    fi
+
+    if [[ "${line}" == "bare" ]]; then
+      current_is_bare=1
+      continue
+    fi
+
+    if lib_is_blank "${line}"; then
+      if [[ -n "${current_worktree}" ]] && [[ "${current_is_bare}" -ne 1 ]] && [[ "$(basename "${current_worktree}")" == "${worktree_basename}" ]]; then
+        match_count=$((match_count + 1))
+        matched_worktree="${current_worktree}"
+      fi
+      current_worktree=""
+      current_is_bare=0
+    fi
+  done < <(git -C "${bare_dir}" worktree list --porcelain)
+
+  if [[ -n "${current_worktree}" ]] && [[ "${current_is_bare}" -ne 1 ]] && [[ "$(basename "${current_worktree}")" == "${worktree_basename}" ]]; then
+    match_count=$((match_count + 1))
+    matched_worktree="${current_worktree}"
+  fi
+
+  if [[ "${match_count}" -eq 1 ]]; then
+    printf '%s\n' "${matched_worktree}"
+    return 0
+  fi
+
+  if [[ "${match_count}" -gt 1 ]]; then
+    echo "Worktree basename is ambiguous: ${worktree_basename}" 1>&2
+    return 1
+  fi
+
+  return 1
+}
+
+function gitlib_branch_for_worktree_basename() {
+  local bare_dir="${1}"
+  local worktree_basename="${2}"
+  local current_worktree=""
+  local current_branch=""
+  local current_is_bare=0
+  local line
+  local match_count=0
+  local matched_branch=""
+  local matched_worktree=""
+
+  while IFS= read -r line; do
+    if lib_has_prefix "${line}" "worktree "; then
+      current_worktree="${line#worktree }"
+      current_branch=""
+      current_is_bare=0
+      continue
+    fi
+
+    if [[ "${line}" == "bare" ]]; then
+      current_is_bare=1
+      continue
+    fi
+
+    if lib_has_prefix "${line}" "branch refs/heads/"; then
+      current_branch="${line#branch refs/heads/}"
+      continue
+    fi
+
+    if lib_is_blank "${line}"; then
+      if [[ -n "${current_worktree}" ]] && [[ "${current_is_bare}" -ne 1 ]] && [[ "$(basename "${current_worktree}")" == "${worktree_basename}" ]]; then
+        if lib_is_blank "${current_branch}"; then
+          echo "Worktree has no local branch: ${current_worktree}" 1>&2
+          return 1
+        fi
+
+        match_count=$((match_count + 1))
+        matched_branch="${current_branch}"
+        matched_worktree="${current_worktree}"
+      fi
+      current_worktree=""
+      current_branch=""
+      current_is_bare=0
+    fi
+  done < <(git -C "${bare_dir}" worktree list --porcelain)
+
+  if [[ -n "${current_worktree}" ]] && [[ "${current_is_bare}" -ne 1 ]] && [[ "$(basename "${current_worktree}")" == "${worktree_basename}" ]]; then
+    if lib_is_blank "${current_branch}"; then
+      echo "Worktree has no local branch: ${current_worktree}" 1>&2
+      return 1
+    fi
+
+    match_count=$((match_count + 1))
+    matched_branch="${current_branch}"
+    matched_worktree="${current_worktree}"
+  fi
+
+  if [[ "${match_count}" -eq 1 ]]; then
+    printf '%s\n' "${matched_branch}"
+    return 0
+  fi
+
+  if [[ "${match_count}" -gt 1 ]]; then
+    echo "Worktree basename is ambiguous: ${worktree_basename}" 1>&2
+    echo "Use the full branch name instead of: ${worktree_basename}" 1>&2
+    echo "One matching worktree is: ${matched_worktree}" 1>&2
+    return 1
+  fi
 
   return 1
 }

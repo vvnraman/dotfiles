@@ -92,6 +92,25 @@
   [ -e "${TEST_TMPDIR}/work/demo.git/feature-new/.git" ]
 }
 
+@test "git-new-branch defaults base branch to current branch" {
+  _run_shell "cd '${TEST_TMPDIR}/work'; mg clone testorg demo; cd demo.git/main; mg switch feature-existing; mg new-branch feature-from-current"
+  [ "${status}" -eq 0 ]
+  [ -e "${TEST_TMPDIR}/work/demo.git/feature-from-current/.git" ]
+
+  run git -C "${TEST_TMPDIR}/work/demo.git/bare" merge-base --is-ancestor refs/heads/feature-existing refs/heads/feature-from-current
+  [ "${status}" -eq 0 ]
+}
+
+@test "git-new-branch --from overrides current branch base" {
+  _run_shell "cd '${TEST_TMPDIR}/work'; mg clone testorg demo; cd demo.git/main; mg switch feature-existing; mg new-branch --from main feature-from-main"
+  [ "${status}" -eq 0 ]
+  [ -e "${TEST_TMPDIR}/work/demo.git/feature-from-main/.git" ]
+  [ ! -f "${TEST_TMPDIR}/work/demo.git/feature-from-main/feature.txt" ]
+
+  run git -C "${TEST_TMPDIR}/work/demo.git/bare" merge-base --is-ancestor refs/heads/main refs/heads/feature-from-main
+  [ "${status}" -eq 0 ]
+}
+
 @test "git-self-branch uses existing remote and creates matching branch" {
   _run_shell "cd '${TEST_TMPDIR}/work'; mg clone testorg demo; cd demo.git/main; git -C ../bare remote add upstream 'file://${TEST_TMPDIR}/remotes/upstream/demo'; mg self-branch upstream feature-existing"
   [ "${status}" -eq 0 ]
@@ -318,6 +337,26 @@
   [[ "${output}" == *"/demo.git/feature-existing" ]]
 }
 
+@test "git-remove-worktree removes worktree and keeps branch" {
+  _run_shell "cd '${TEST_TMPDIR}/work'; mg clone testorg demo; cd demo.git/main; mg new-branch feature-scratch; cd ../main; mg remove-worktree feature-scratch"
+  [ "${status}" -eq 0 ]
+  [[ "${output}" == *"Deleted worktree for branch \`feature-scratch\` at \`${TEST_TMPDIR}/work/demo.git/feature-scratch\`."* ]]
+  [ ! -e "${TEST_TMPDIR}/work/demo.git/feature-scratch/.git" ]
+
+  run git -C "${TEST_TMPDIR}/work/demo.git/bare" show-ref --verify --quiet refs/heads/feature-scratch
+  [ "${status}" -eq 0 ]
+}
+
+@test "git-remove-worktree alias rw dispatches command" {
+  _run_shell "cd '${TEST_TMPDIR}/work'; mg clone testorg demo; cd demo.git/main; mg new-branch feature-rw; cd ../main; mg rw feature-rw"
+  [ "${status}" -eq 0 ]
+  [[ "${output}" == *"Deleted worktree for branch \`feature-rw\` at \`${TEST_TMPDIR}/work/demo.git/feature-rw\`."* ]]
+  [ ! -e "${TEST_TMPDIR}/work/demo.git/feature-rw/.git" ]
+
+  run git -C "${TEST_TMPDIR}/work/demo.git/bare" show-ref --verify --quiet refs/heads/feature-rw
+  [ "${status}" -eq 0 ]
+}
+
 @test "git-remove-branch removes merged branch and worktree" {
   _run_shell "cd '${TEST_TMPDIR}/work'; mg clone testorg demo; cd demo.git/main; mg new-branch feature-clean; cd ../feature-clean; printf 'clean\n' > clean.txt; git add clean.txt; git commit --message 'clean feature'; git -C ../main merge --no-ff feature-clean --message 'merge feature-clean'; cd ../main; mg remove-branch feature-clean"
   [ "${status}" -eq 0 ]
@@ -372,7 +411,7 @@
   [[ "${output}" == *"Examples:"* ]]
 }
 
-@test "bash completion suggests branch names for switch new-branch and remove-branch" {
+@test "bash completion suggests branch names for switch new-branch remove commands" {
   if [[ "${SHELL_UNDER_TEST}" != "bash" ]]; then
     skip "bash-only completion behavior"
   fi
@@ -395,11 +434,23 @@
     false
   fi
 
+  _run_shell "cd '${TEST_TMPDIR}/work/demo.git/main'; COMP_WORDS=(mg new-branch --from f); COMP_CWORD=3; _mg_complete; printf '%s\n' \"\${COMPREPLY[@]}\""
+  [ "${status}" -eq 0 ]
+  [[ "${output}" == *"feature-existing"* ]]
+
   _run_shell "cd '${TEST_TMPDIR}/work/demo.git/main'; COMP_WORDS=(mg remove-branch f); COMP_CWORD=2; _mg_complete; printf '%s\n' \"\${COMPREPLY[@]}\""
   [ "${status}" -eq 0 ]
   [[ "${output}" == *"feature-existing"* ]]
 
   _run_shell "cd '${TEST_TMPDIR}/work/demo.git/main'; COMP_WORDS=(mg remove-branch --force f); COMP_CWORD=3; _mg_complete; printf '%s\n' \"\${COMPREPLY[@]}\""
+  [ "${status}" -eq 0 ]
+  [[ "${output}" == *"feature-existing"* ]]
+
+  _run_shell "cd '${TEST_TMPDIR}/work/demo.git/main'; COMP_WORDS=(mg remove-worktree f); COMP_CWORD=2; _mg_complete; printf '%s\n' \"\${COMPREPLY[@]}\""
+  [ "${status}" -eq 0 ]
+  [[ "${output}" == *"feature-existing"* ]]
+
+  _run_shell "cd '${TEST_TMPDIR}/work/demo.git/main'; COMP_WORDS=(mg rb --force f); COMP_CWORD=3; _mg_complete; printf '%s\n' \"\${COMPREPLY[@]}\""
   [ "${status}" -eq 0 ]
   [[ "${output}" == *"feature-existing"* ]]
 }
@@ -438,7 +489,7 @@
   fi
 }
 
-@test "fish completion suggests branch names for switch new-branch and remove-branch" {
+@test "fish completion suggests branch names for switch new-branch remove commands" {
   if [[ "${SHELL_UNDER_TEST}" != "fish" ]]; then
     skip "fish-only completion behavior"
   fi
@@ -457,6 +508,10 @@
   [[ "${output}" == *"feature-existing"* ]]
   [[ "${output}" != *$'origin\tBranch name'* ]]
 
+  _run_shell "cd '${TEST_TMPDIR}/work/demo.git/main'; complete -C 'mg new-branch --from f'"
+  [ "${status}" -eq 0 ]
+  [[ "${output}" == *"feature-existing"* ]]
+
   _run_shell "cd '${TEST_TMPDIR}/work/demo.git/main'; complete -C 'mg remove-branch f'"
   [ "${status}" -eq 0 ]
   [[ "${output}" == *"feature-existing"* ]]
@@ -464,6 +519,14 @@
   _run_shell "cd '${TEST_TMPDIR}/work/demo.git/main'; complete -C 'mg remove-branch --force f'"
   [ "${status}" -eq 0 ]
   [[ "${output}" == *"feature-existing"* ]]
+
+  _run_shell "cd '${TEST_TMPDIR}/work/demo.git/main'; complete -C 'mg remove-worktree f'"
+  [ "${status}" -eq 0 ]
+  [[ "${output}" == *$'feature-existing\tBranch name'* ]]
+
+  _run_shell "cd '${TEST_TMPDIR}/work/demo.git/main'; complete -C 'mg rb --force f'"
+  [ "${status}" -eq 0 ]
+  [[ "${output}" == *$'feature-existing\tBranch name'* ]]
 }
 
 @test "fish completion keeps remote and remote-branch arguments separate" {
@@ -514,9 +577,17 @@
   [ "${status}" -eq 0 ]
   [ -e "${TEST_TMPDIR}/work/demo.git/feature-existing/.git" ]
 
-  _run_shell "cd '${TEST_TMPDIR}/work/demo.git/main'; mg r --force feature-short"
+  _run_shell "cd '${TEST_TMPDIR}/work/demo.git/main'; mg rb --force feature-short"
   [ "${status}" -eq 0 ]
   [ ! -e "${TEST_TMPDIR}/work/demo.git/feature-short/.git" ]
+
+  _run_shell "cd '${TEST_TMPDIR}/work/demo.git/main'; mg n feature-short-rb; cd ../main; mg rb --force feature-short-rb"
+  [ "${status}" -eq 0 ]
+  [ ! -e "${TEST_TMPDIR}/work/demo.git/feature-short-rb/.git" ]
+
+  _run_shell "cd '${TEST_TMPDIR}/work/demo.git/main'; mg n feature-short-rw; cd ../main; mg rw feature-short-rw"
+  [ "${status}" -eq 0 ]
+  [ ! -e "${TEST_TMPDIR}/work/demo.git/feature-short-rw/.git" ]
 
   _run_shell "cd '${TEST_TMPDIR}/work/demo.git/main'; mg u --example"
   [ "${status}" -eq 0 ]

@@ -29,19 +29,52 @@ function mg --description "Run shared git workflows"
     set resolved_subcommand self-branch
   case i
     set resolved_subcommand info
-  case r
+  case rb
     set resolved_subcommand remove-branch
+  case rw
+    set resolved_subcommand remove-worktree
   case '*'
     set resolved_subcommand "$argv[1]"
   end
 
-  if test (count $argv) -eq 2
-    switch "$resolved_subcommand"
-    case switch new-branch
+  if test "$resolved_subcommand" = switch
+    if test (count $argv) -eq 2
       if test "$argv[2]" != --example; and test "$argv[2]" != --help
         set should_cd 1
         set branch "$argv[2]"
       end
+    end
+  else if test "$resolved_subcommand" = new-branch
+    set --local positional_branch
+    set --local token_index 2
+
+    while test $token_index -le (count $argv)
+      set --local token "$argv[$token_index]"
+
+      switch "$token"
+      case --help --example
+        set positional_branch
+        break
+      case --from
+        set token_index (math "$token_index + 2")
+        continue
+      case '--*'
+        set positional_branch
+        break
+      case '*'
+        if test -n "$positional_branch"
+          set positional_branch
+          break
+        end
+        set positional_branch "$token"
+      end
+
+      set token_index (math "$token_index + 1")
+    end
+
+    if test -n "$positional_branch"
+      set should_cd 1
+      set branch "$positional_branch"
     end
   end
 

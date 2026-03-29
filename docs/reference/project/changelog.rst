@@ -6,6 +6,7 @@ Changelog
 ====
 
 - :ref:`2026-03-mar - add mg layout aware worktrees <changelog-2026-03-mar-add-mg-layout-aware-worktrees>`
+- :ref:`2026-03-mar - refine mg branch/worktree lifecycle <changelog-2026-03-mar-refine-mg-branch-worktree-lifecycle>`
 - :ref:`2026-03-mar - document mg completions and help <changelog-2026-03-mar-document-mg-completions-and-help>`
 - :ref:`2026-03-mar - expand mg workflow commands <changelog-2026-03-mar-expand-mg-workflow-commands>`
 - :ref:`2026-03-mar - consolidate mg git workflow wrappers <changelog-2026-03-mar-consolidate-mg-git-workflow-wrappers>`
@@ -34,6 +35,7 @@ Changelog
    :hidden:
 
    changelog/2026-03-mar-add-mg-layout-aware-worktrees
+   changelog/2026-03-mar-refine-mg-branch-worktree-lifecycle
    changelog/2026-03-mar-document-mg-completions-and-help
    changelog/2026-03-mar-expand-mg-workflow-commands
    changelog/2026-03-mar-consolidate-mg-git-workflow-wrappers

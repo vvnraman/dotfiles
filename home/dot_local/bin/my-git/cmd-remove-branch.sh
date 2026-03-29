@@ -27,6 +27,9 @@ Examples:
   mg remove-branch gift-fixme
       Remove merged alien branch after integration.
 
+  mg remove-branch default-demo
+      Remove by worktree basename when it maps to a local branch.
+
   mg switch main && mg remove-branch feature
       Leave target worktree, then safely remove merged branch.
 EOF
@@ -36,7 +39,7 @@ EOF
     ;;
   *)
     cat <<'EOF'
-  remove-branch [--force] <branch>
+  remove-branch [--force] <branch-or-worktree>
       Remove merged branch worktree and local branch. Supports: --help, --example.
 
 EOF
@@ -45,14 +48,14 @@ EOF
   esac
 
   cat <<'EOF'
-Usage: remove-branch [--force] <branch>
+Usage: remove-branch [--force] <branch-or-worktree>
 
 Description:
   Remove worktree and local branch for <branch>, but only when <branch>
   is fully merged into the repository default local branch.
 
 Arguments:
-  <branch>      Branch name to remove.
+  <branch-or-worktree>  Branch name or worktree basename to remove.
 
 Options:
   --force       Allow removing unmerged branch/worktree.
@@ -62,6 +65,7 @@ EOF
 }
 
 function _cmd_remove_branch() {
+  local selector
   local branch
   local bare_dir
   local worktree_dir
@@ -89,15 +93,21 @@ function _cmd_remove_branch() {
     return 1
   fi
 
-  branch="${1}"
-  gitlib_require_valid_branch_name "${branch}" || return 1
+  selector="${1}"
 
   bare_dir="$(gitlib_require_bare_dir)" || return 1
 
-  if ! git -C "${bare_dir}" show-ref --verify --quiet "refs/heads/${branch}"; then
-    echo "Branch not found: ${branch}"
-    return 1
+  if git check-ref-format --branch "${selector}" 1>/dev/null 2>&1 && git -C "${bare_dir}" show-ref --verify --quiet "refs/heads/${selector}"; then
+    branch="${selector}"
+  else
+    branch="$(gitlib_branch_for_worktree_basename "${bare_dir}" "${selector}" || true)"
+    if lib_is_blank "${branch}"; then
+      echo "Branch not found: ${selector}"
+      return 1
+    fi
   fi
+
+  gitlib_require_valid_branch_name "${branch}" || return 1
 
   default_branch="$(gitlib_default_local_branch_from_bare "${bare_dir}" 2>/dev/null || true)"
   if lib_is_blank "${default_branch}"; then

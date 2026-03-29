@@ -23,7 +23,7 @@ How dispatch works
 ------------------
 
 - Entrypoint is ``my_git_main()`` in ``home/dot_local/bin/executable_mg``.
-- ``my_git_main()`` resolves single-letter aliases (``u``, ``c``, ``s``, ``n``, ``b``, ``i``, ``r``).
+- ``my_git_main()`` resolves aliases (``u``, ``c``, ``s``, ``n``, ``b``, ``i``, ``rb``, ``rw``).
 - ``_run_subcommand()`` loads ``cmd-<name>.sh`` on demand and dispatches to ``_cmd_<name>``.
 - Name transform rule: ``-`` in subcommand names maps to ``_`` in function names.
   - Example: ``self-branch`` -> ``cmd-self-branch.sh`` -> ``_cmd_self_branch``.
@@ -34,7 +34,8 @@ Completion metadata flow
 - ``home/dot_local/bin/executable_mg`` exposes ``__complete-metadata`` with command names, aliases, options, and argument-position hints.
 - ``home/dot-bash/completions/mg.bash`` reads that metadata and applies Bash completion behavior.
 - ``home/dot_config/fish/completions/mg.fish`` reads the same metadata and registers Fish completions.
-- ``switch``, ``new-branch``, ``path``, and ``remove-branch`` complete branch names from local branches plus remote-short names.
+- ``switch``, ``new-branch``, ``path``, ``remove-branch``, and ``remove-worktree`` complete branch names from local branches plus remote-short names.
+- ``new-branch --from`` completes branch names for explicit base selection.
 - ``self-branch`` and ``alien-branch`` complete a remote first, then branch names filtered to that remote.
 
 Layout detection and worktree placement
@@ -46,6 +47,7 @@ Layout detection and worktree placement
 - In ``default`` layout, default branch stays at repo root and non-default branches resolve under ``<repo>-worktrees``.
 - In bare sibling layouts, new branches resolve as siblings of the detected default-branch worktree parent.
 - ``gitlib_worktree_add_*`` helpers centralize ``git worktree add`` calls and create parent directories before add.
+- ``gitlib_branch_for_worktree_basename`` and ``gitlib_worktree_dir_for_basename`` resolve basename selectors for ``remove-branch`` and ``remove-worktree``.
 
 Why sourced files can share helpers
 -----------------------------------
@@ -112,5 +114,6 @@ Relevant changelogs
 -------------------
 
 - :ref:`2026-03-mar - add mg layout aware worktrees <changelog-2026-03-mar-add-mg-layout-aware-worktrees>`
+- :ref:`2026-03-mar - refine mg branch/worktree lifecycle <changelog-2026-03-mar-refine-mg-branch-worktree-lifecycle>`
 - :ref:`2026-03-mar - document mg completions and help <changelog-2026-03-mar-document-mg-completions-and-help>`
 - :ref:`2026-03-mar - expand mg workflow commands <changelog-2026-03-mar-expand-mg-workflow-commands>`

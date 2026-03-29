@@ -7,7 +7,7 @@ Commands:
       Show this help text.
 
   Aliases: u=update-commit-date, c=clone, s=switch, n=new-branch,
-           b=self-branch, i=info, r=remove-branch.
+           b=self-branch, i=info, rb=remove-branch, rw=remove-worktree.
 
   update-commit-date
       Amend current commit date to now. Supports: --example.
@@ -26,10 +26,10 @@ Commands:
       List untracked files. Supports: --example.
 
   switch <branch>
-      Switch to a branch worktree, creating from origin/upstream when available. Supports: --example.
+      Switch to an existing branch worktree, adding local/tracked worktrees when branch exists. Does not create new branches. Supports: --example.
 
-  new-branch <branch>
-      Create a new branch worktree. Supports: --example.
+  new-branch [--from <branch>] <branch>
+      Create a new branch worktree. Defaults base branch to current branch when on a non-bare worktree. Supports: --help, --example.
 
   self-branch <remote> <branch>
       Use existing remote, then fetch and create tracked worktree branch <branch>. Supports: --help, --example.
@@ -43,7 +43,10 @@ Commands:
   path <branch>
       Print worktree path for <branch>. Supports: --help, --example.
 
-  remove-branch [--force] <branch>
+  remove-worktree [--force] <branch-or-worktree>
+      Remove a worktree without deleting its branch. Supports: --help, --example.
+
+  remove-branch [--force] <branch-or-worktree>
       Remove merged branch worktree and local branch. Supports: --help, --example.
 
   prune

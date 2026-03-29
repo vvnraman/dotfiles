@@ -1,10 +1,13 @@
 $ mg new-branch --example
 Examples:
   mg new-branch feature
-      Create a new local branch and sibling worktree.
+      Create a new branch from the current branch and add sibling worktree.
 
   mg new-branch release/v1
       Create a namespaced branch with matching worktree path.
+
+  mg new-branch --from main hotfix/login
+      Create hotfix/login from main, regardless of current branch.
 
   mg new-branch spike && git -C ../spike status
       Create branch/worktree and inspect repository status there.

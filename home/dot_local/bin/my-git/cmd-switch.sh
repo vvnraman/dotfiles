@@ -31,7 +31,7 @@ EOF
 
   cat <<'EOF'
   switch <branch>
-      Switch to a branch worktree, creating from origin/upstream when available. Supports: --example.
+      Switch to an existing branch worktree, adding local/tracked worktrees when branch exists. Does not create new branches. Supports: --example.
 
 EOF
 }

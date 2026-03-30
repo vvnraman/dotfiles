@@ -1,6 +1,9 @@
 # Ignore the git setup for Neovim, and other project related files.
+.config/nvim/.dockerignore
 .config/nvim/.git
 .config/nvim/.git/
+.config/nvim/.gitignore
+.config/nvim/.python-version
 .config/nvim/LICENSE
 .config/nvim/Makefile
 .config/nvim/README.rst

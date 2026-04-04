@@ -32,6 +32,9 @@ fi
 # cmake
 append_to_path "/opt/cmake/"
 
+# lua
+append_to_path "${HOME}/.luarocks/bin/"
+
 # python
 export PYENV_ROOT="${HOME}/.pyenv"
 PATH="${PATH}:${PYENV_ROOT}/bin"

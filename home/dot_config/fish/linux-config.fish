@@ -56,6 +56,9 @@ set --universal --export CMAKE_GENERATOR Ninja
 set --universal --export CMAKE_BUILD_PARALLEL_LEVEL (nproc)
 set --universal --export CMAKE_EXPORT_COMPILE_COMMANDS 1
 
+# lua
+fish_add_path --path --append "$HOME/.luarocks/bin/"
+
 # python/pyenv
 set --universal --export PYENV_ROOT "$HOME/.pyenv"
 fish_add_path --path --append "$PYENV_ROOT/bin"

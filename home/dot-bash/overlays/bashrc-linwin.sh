@@ -23,12 +23,16 @@ if command -v lsd 1>/dev/null 2>&1; then
   alias l=lsd
   alias ll="lsd --long"
   alias la="lsd --almost-all --long"
-  alias lt="lsd --almost-all --tree"
+  alias lt="lsd --almost-all --tree --depth 1"
+  alias lt2="lsd --almost-all --tree --depth 2"
+  alias lta="lsd --almost-all --tree"
 else
   alias l=ls
   alias ll="ls --human-readable -l"
   alias la="ls --almost-all --human-readable -l"
-  alias lt="tree --gitignore"
+  alias lt="tree --gitignore -L 1"
+  alias lt2="tree --gitignore -L 2"
+  alias lta="tree --gitignore"
 fi
 
 # cmake

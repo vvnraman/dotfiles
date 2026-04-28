@@ -30,12 +30,16 @@ if command --query lsd
   abbr --add l lsd
   abbr --add ll lsd --long
   abbr --add la lsd --almost-all --long
-  abbr --add lt lsd --almost-all --tree
+  abbr --add lt lsd --almost-all --tree --depth 1
+  abbr --add lt2 lsd --almost-all --tree --depth 2
+  abbr --add lta lsd --almost-all --tree
 else
   abbr --add l ls
   abbr --add ll ls --human-readable -l
   abbr --add la ls --almost-all --human-readable -l
-  abbr --add lt tree --gitignore
+  abbr --add lt tree --gitignore -L 1
+  abbr --add lt2 tree --gitignore -L 2
+  abbr --add lta tree --gitignore
 end
 
 # bat - https://github.com/sharkdp/bat

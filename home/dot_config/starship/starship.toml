@@ -12,14 +12,14 @@ $hostname\
 $directory\
 ($git_state)\
 ($git_status)\
-[](fg:prev_bg)\
+[](fg:dir_bg)\
 $cmd_duration\
 $line_break\
 $character\
 $git_branch\
 $git_commit\
 ($git_metrics)\
-[ ]()"""
+[\\$ ](fg:git_b_bg)"""
 
 palette = 'vvnraman_catppuccin'
 
@@ -32,7 +32,7 @@ vim_r_bg = '#f5a97f'
 vim_v_fg = '#d79921'
 custom_fg = '#f5bde6'
 custom_bg = '#494d64'
-user_fg = '#7dc4e4'
+user_fg = '#7287fd'
 root_fg = '#ed8796'
 host_fg = '#6e738d'
 host_bg = '#24273a'
@@ -59,28 +59,28 @@ crust = '#11111b'
 #♪♫
 [character]
 format = '$symbol'
-success_symbol = '[[](fg:prompt_bg)[♪](fg:crust bg:prompt_bg)](fg:prompt_bg)'
-error_symbol = '[[✗](fg:prompt_bg bg:red)](fg:red)'
-vimcmd_symbol = '[[](fg:vim_fg bg:prompt_bg)](fg:prompt_bg)'
-vimcmd_replace_one_symbol = '[[](fg:vim_r_fg bg:vim_r_bg)](bold fg:vim_r_bg)'
-vimcmd_replace_symbol = '[[](fg:vim_r_fg bg:vim_r_bg)](bold fg:vim_r_bg)'
-vimcmd_visual_symbol = '[[](fg:prompt_bg bg:vim_v_fg)](bold fg:vim_v_fg)'
+success_symbol = '[♪ ](fg:git_b_bg bg:prompt_bg)'
+error_symbol = '[✗ ](fg:red bg:prompt_bg)'
+vimcmd_symbol = '[ ](fg:vim_fg bg:prompt_bg)'
+vimcmd_replace_one_symbol = '[ ](bold fg:vim_r_bg bg:prompt_bg)'
+vimcmd_replace_symbol = '[ ](bold fg:vim_r_bg bg:prompt_bg)'
+vimcmd_visual_symbol = '[ ](bold fg:vim_v_fg bg:prompt_bg)'
 
 [os]
 disabled = false
-style = "fg:crust bg:prev_fg"
-format = '[](fg:prompt_bg)[$symbol]($style)'
+style = "fg:crust bg:prompt_bg"
+format = '[$symbol ]($style)'
 
 [username]
 show_always = true
 style_user = "fg:user_fg bg:crust"
 style_root = "fg:root_fg bg:crust"
-format = '[](fg:prev_fg bg:prev_bg)[ $user ]($style)'
+format = '[ $user]($style)'
 
 [shell]
 style = "fg:user_fg bg:crust"
-format = '[](fg:crust bg:crust)[$indicator]($style)'
-fish_indicator = '󰈺 '
+format = '[ $indicator ]($style)'
+fish_indicator = '󰈺'
 bash_indicator = '_'
 disabled = false
 
@@ -88,51 +88,51 @@ disabled = false
 ssh_only=false
 trim_at = "."
 style='fg:host_fg bg:host_bg'
-format = '[](fg:host_bg bg:prev_bg)[ $ssh_symbol$hostname]($style)'
+format = '[ $ssh_symbol$hostname]($style)'
 
 # BUG: This doesn't work.
 [env_var.spaces]
 symbol = ''
 variable = "SPACES__ENV"
-format = '[](fg:host_bg bg:prev_bg)[ $symbol ](fg:host_fg bg:host_bg)'
+format = '[ $symbol](fg:host_fg bg:host_bg)'
 
 [directory]
 style = "fg:dir_fg bg:dir_bg"
-format = "[](bg:prev_bg fg:dir_bg)[$path ]($style)"
+format = "[ $path ]($style)"
 home_symbol = '🏠'
 truncation_length = 8
 truncate_to_repo = false
 truncation_symbol = "…/"
 
 [git_state]
-style = "fg:peach bg:mauve"
-format = '[](bg:prev_bg fg:mauve)\([$state( $progress_current/$progress_total)]($style)\) '
+style = "fg:peach bg:dir_bg"
+format = '[ \($state( $progress_current/$progress_total)\)]($style)'
 
 [git_status]
-style = "bg:git_status_bg"
-format = '[](fg:prev_bg bg:git_status_bg)[[($all_status$ahead_behind )](fg:prompt_bg bg:git_status_bg)]($style)'
-conflicted = '[ ${count}](fg:git_s_c bg:git_status_bg)'
-stashed = '[ ⚑${count}](fg:git_s_st bg:git_status_bg)'
-deleted = '[ ${count}](fg:git_s_d bg:git_status_bg)'
-renamed = '[ ${count}](fg:git_s_r bg:git_status_bg)'
-modified = '[ ●${count}](fg:git_s_m bg:git_status_bg)'
-staged = '[ ✓${count}](fg:git_s_sg bg:git_status_bg)'
-untracked = '[ ?${count}](fg:git_s_u bg:git_status_bg)'
+style = "bg:dir_bg"
+format = '([$all_status$ahead_behind]($style))'
+conflicted = '[ ${count}](fg:git_s_c bg:dir_bg)'
+stashed = '[ ⚑${count}](fg:git_s_st bg:dir_bg)'
+deleted = '[ ${count}](fg:git_s_d bg:dir_bg)'
+renamed = '[ ${count}](fg:git_s_r bg:dir_bg)'
+modified = '[ ●${count}](fg:git_s_m bg:dir_bg)'
+staged = '[ ✓${count}](fg:git_s_sg bg:dir_bg)'
+untracked = '[ ?${count}](fg:git_s_u bg:dir_bg)'
 
 [git_branch]
 symbol = ""
-style = "bg:git_b_bg"
-format = '[](fg:git_b_bg)[[ $symbol $branch(:$remote_branch) ](fg:crust bg:git_b_bg)]($style)[](fg:git_b_bg bg:git_metrics_bg)'
+style = "fg:crust bg:git_b_bg"
+format = '[ on $symbol $branch(:$remote_branch) ]($style)'
 
 [git_metrics]
-added_style="fg:git_m_a_fg bg:git_metrics_bg"
-deleted_style="fg:git_m_d_fg bg:git_metrics_bg"
-format = '[](fg:prev_bg bg:git_metrics_bg)([$deleted]($deleted_style))([ $added]($added_style))[](fg:git_metrics_bg)'
+added_style="fg:git_m_a_fg bg:dir_bg"
+deleted_style="fg:git_m_d_fg bg:dir_bg"
+format = '(([ -$deleted]($deleted_style))([ +$added]($added_style))[ ](bg:dir_bg))'
 disabled = false
 
 [git_commit]
-style = "fg:crust bg:peach"
-format = '[](fg:peach)[\($hash$tag\)]($style)[](fg:peach) '
+style = "fg:peach"
+format = '[\($hash$tag\) ]($style)'
 tag_symbol = '  '
 
 [cmd_duration]

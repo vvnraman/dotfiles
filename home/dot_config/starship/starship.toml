@@ -12,13 +12,13 @@ $hostname\
 $directory\
 ($git_state)\
 ($git_status)\
+($git_metrics)\
 [](fg:dir_bg)\
 $cmd_duration\
 $line_break\
 $character\
 $git_branch\
 $git_commit\
-($git_metrics)\
 [\\$ ](fg:git_b_bg)"""
 
 palette = 'vvnraman_catppuccin'

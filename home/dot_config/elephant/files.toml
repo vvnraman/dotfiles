@@ -1,0 +1,29 @@
+search_dirs = [
+  "/home/vvnraman/Documents/",
+  "/home/vvnraman/Downloads/",
+  "/home/vvnraman/Dropbox/",
+  "/home/vvnraman/Pictures/",
+  "/home/vvnraman/Videos/",
+  "/home/vvnraman/code/",
+  "/home/vvnraman/obsidian/",
+]
+
+
+ignored_dirs = [
+  '(^|/)\.git(/|$)',
+  '(^|/)node_modules(/|$)',
+  '(^|/)target(/|$)',
+  '(^|/)\.cache(/|$)',
+  '(^|/)\.local/share/Trash(/|$)',
+  '(^|/)\.cargo/registry(/|$)',
+  '(^|/)\.npm(/|$)',
+
+  # From Neovim Telescope fd/rg filters
+  '(^|/)\.obsidian(/|$)',
+  '(^|/)\.dropbox\.cache(/|$)',
+  '(^|/)\.dropbox(/|$)',
+]
+
+fd_flags = ["--ignore-vcs", "--type", "file", "--type", "directory"]
+watch = false
+watch_buffer = 2000

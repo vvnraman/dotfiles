@@ -1,0 +1,9 @@
+[Unit]
+Description=Elephant backend for Walker
+PartOf=vvn_hyprstart.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/elephant
+Restart=on-failure
+RestartSec=1s

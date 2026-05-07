@@ -1,0 +1,13 @@
+[Unit]
+Description=Walker GApplication service
+After=elephant.service
+Requires=elephant.service
+PartOf=vvn_hyprstart.target
+ConditionEnvironment=WAYLAND_DISPLAY
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/walker --gapplication-service
+Restart=on-failure
+RestartSec=1s
+Slice=session.slice

@@ -1,0 +1,19 @@
+engines_as_actions = false
+always_show_default = true
+history = true
+text_prefix = "Search: "
+
+[[entries]]
+default = true
+name = "Brave"
+url = "https://search.brave.com/search?q=%TERM%"
+
+[[entries]]
+name = "Arch Wiki"
+prefix = "aw "
+url = "https://wiki.archlinux.org/index.php?search=%TERM%"
+
+[[entries]]
+name = "GitHub"
+prefix = "gh "
+url = "https://github.com/search?q=%TERM%&type=repositories"

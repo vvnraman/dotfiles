@@ -1,0 +1,130 @@
+force_keyboard_focus = true
+close_when_open = true
+click_to_close = true
+selection_wrap = true
+disable_mouse = false
+hide_action_hints = true
+hide_quick_activation = true
+theme = "default"
+
+exact_search_prefix = "'"
+global_argument_delimiter = "#"
+
+[shell]
+layer = "overlay"
+
+[placeholders]
+"default" = { input = "Search apps, commands, web…", list = "No results" }
+"desktopapplications" = { input = "Launch app…", list = "No applications" }
+"runner" = { input = "Run command…", list = "No commands" }
+"files" = { input = "Open file…", list = "No files" }
+"calc" = { input = "Calculate…", list = "No result" }
+"websearch" = { input = "Search web…", list = "No search engines" }
+"clipboard" = { input = "Clipboard…", list = "Clipboard is empty" }
+"symbols" = { input = "Symbol…", list = "No symbols" }
+"providerlist" = { input = "Choose provider…", list = "No providers" }
+
+[keybinds]
+close = ["Escape", "ctrl q"]
+next = ["Down", "ctrl j"]
+previous = ["Up", "ctrl k"]
+toggle_exact = ["ctrl e"]
+resume_last_query = ["ctrl r"]
+quick_activate = []
+
+[columns]
+symbols = 2
+
+[providers]
+max_results = 50
+default = [
+  "desktopapplications",
+  "runner",
+  "calc",
+  "websearch",
+]
+empty = [
+  "desktopapplications",
+]
+
+[providers.max_results_provider]
+desktopapplications = 20
+runner = 20
+files = 30
+websearch = 8
+clipboard = 20
+symbols = 40
+
+[[providers.prefixes]]
+prefix = ";"
+provider = "providerlist"
+
+[[providers.prefixes]]
+prefix = ">"
+provider = "runner"
+
+[[providers.prefixes]]
+prefix = "/"
+provider = "files"
+
+[[providers.prefixes]]
+prefix = "="
+provider = "calc"
+
+[[providers.prefixes]]
+prefix = "@"
+provider = "websearch"
+
+[[providers.prefixes]]
+prefix = ":"
+provider = "clipboard"
+
+[[providers.prefixes]]
+prefix = "."
+provider = "symbols"
+
+[providers.actions]
+runner = [
+  { action = "run", default = true, bind = "Return" },
+  { action = "runterminal", label = "terminal", bind = "shift Return" },
+]
+
+desktopapplications = [
+  { action = "start", default = true, bind = "Return" },
+  { action = "start:keep", label = "open + keep", bind = "shift Return", after = "KeepOpen" },
+  { action = "pin", bind = "ctrl p", after = "AsyncReload" },
+  { action = "unpin", bind = "ctrl p", after = "AsyncReload" },
+]
+
+files = [
+  { action = "open", default = true, bind = "Return" },
+  { action = "opendir", label = "open dir", bind = "ctrl Return" },
+  { action = "copypath", label = "copy path", bind = "ctrl shift c" },
+  { action = "copyfile", label = "copy file", bind = "ctrl c" },
+]
+
+clipboard = [
+  { action = "copy", default = true, bind = "Return" },
+  { action = "remove", bind = "ctrl d", after = "ClearReload" },
+  { action = "remove_all", global = true, label = "clear", bind = "ctrl shift d", after = "ClearReload" },
+]
+
+websearch = [
+  { action = "search", default = true, bind = "Return" },
+]
+
+calc = [
+  { action = "copy", default = true, bind = "Return" },
+]
+
+symbols = [
+  { action = "run_cmd", label = "paste", default = true, bind = "Return" },
+]
+
+[[emergencies]]
+text = "Restart Walker services"
+command = "systemctl --user restart elephant.service walker.service"
+
+[[emergencies]]
+text = "Terminal"
+command = "xdg-terminal-exec"

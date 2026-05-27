@@ -3,17 +3,17 @@ Description=Hyprland DE dependencies
 Documentation=man:systemd.special(7)
 RefuseManualStart=no
 StopWhenUnneeded=no
-After=elephant.service \
+After=dms.service \
+      elephant.service \
       walker.service \
-      waybar.service \
       hyprpolkitagent.service \
       hyprpaper.service \
       hypridle.service \
       dropbox.service \
       blueman-applet.service
-Wants=elephant.service \
+Wants=dms.service \
+      elephant.service \
       walker.service \
-      waybar.service \
       hyprpolkitagent.service \
       hyprpaper.service \
       hypridle.service \
